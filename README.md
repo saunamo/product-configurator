@@ -2,9 +2,24 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Deployment
 
-This project is deployed on Netlify and automatically deploys on every push to the `main` branch.
+This project is deployed on Netlify with **manual deployment** enabled.
 
-Environment variables are configured in Netlify dashboard.
+### Manual Deployment Setup
+
+1. **Disable Auto-Deploy in Netlify:**
+   - Go to Netlify Dashboard → Your Site → Site settings → Build & deploy → Continuous Deployment
+   - Under "Deploy settings", change "Automatic deploys" to **"None"** or **"Deploy only the production branch"**
+   - Or disable specific branches from auto-deploying
+
+2. **Deploy When Ready:**
+   - Push your changes to GitHub as normal
+   - Go to Netlify Dashboard → Your Site → Deploys
+   - Click **"Trigger deploy"** → **"Deploy site"** when you're ready to deploy
+   - Or use the Netlify CLI: `netlify deploy --prod`
+
+### Environment Variables
+
+Environment variables are configured in Netlify Dashboard → Site settings → Environment variables.
 
 ## Getting Started
 
