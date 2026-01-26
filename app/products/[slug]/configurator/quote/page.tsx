@@ -145,7 +145,19 @@ export default function ProductQuotePage() {
     }
   }, [hasSelections, router, productSlug]);
 
-  if (!hasSelections || !config) {
+  // Show loading state while config is loading
+  if (!config) {
+    return (
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Loading configuration...</div>
+          <div className="text-sm text-gray-500">Please wait while we load your quote details.</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasSelections) {
     return null;
   }
 
