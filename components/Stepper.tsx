@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { STEPS } from "@/constants/steps";
 import { StepId, Step } from "@/types/configurator";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
@@ -13,6 +13,7 @@ interface StepperProps {
 }
 
 export default function Stepper({ currentStepId, steps: propSteps, productSlug }: StepperProps) {
+  const router = useRouter();
   const { config } = useAdminConfig();
   const steps = propSteps || config?.steps || STEPS;
   const currentIndex = steps.findIndex((step) => step.id === currentStepId);
@@ -38,6 +39,14 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
     }
     // For legacy routing, use the full route path
     return step.route;
+  };
+
+  // Navigate without page reload
+  const handleStepClick = (step: Step) => {
+    const route = getStepRoute(step);
+    router.push(route);
+    // Update URL without reload using history API
+    window.history.pushState({}, '', route);
   };
 
   return (
@@ -76,8 +85,8 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
           return (
             <li key={step.id} className="flex flex-col items-center flex-1 relative z-10">
               {/* Circle - fixed position, always aligned */}
-              <Link
-                href={getStepRoute(step)}
+              <button
+                onClick={() => handleStepClick(step)}
                 className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity w-full"
               >
                 <div
@@ -104,7 +113,7 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
                         {step.name}
                       </span>
                     </div>
-              </Link>
+              </button>
             </li>
           );
         })}

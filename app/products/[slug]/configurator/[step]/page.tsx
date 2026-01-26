@@ -19,6 +19,15 @@ export default function ProductConfiguratorStepPage() {
   const productSlug = params.slug as string;
   const step = params.step as string;
   
+  // Sync URL with state without causing reloads
+  useEffect(() => {
+    // Update URL silently when step changes (for browser history)
+    const currentPath = `/products/${productSlug}/configurator/${step}`;
+    if (window.location.pathname !== currentPath) {
+      window.history.replaceState({}, '', currentPath);
+    }
+  }, [step, productSlug]);
+  
   // Load product config
   const [config, setConfig] = useState<ProductConfig | null>(null);
   const [selectedOptionImageUrl, setSelectedOptionImageUrl] = useState<string | undefined>(undefined);

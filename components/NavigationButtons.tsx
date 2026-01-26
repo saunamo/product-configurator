@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { STEPS } from "@/constants/steps";
 import { StepId, Step } from "@/types/configurator";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
@@ -18,6 +18,7 @@ export default function NavigationButtons({
   steps: propSteps,
   productSlug,
 }: NavigationButtonsProps) {
+  const router = useRouter();
   const { config } = useAdminConfig();
   const steps = propSteps || config?.steps || STEPS;
   const currentIndex = steps.findIndex((step) => step.id === currentStepId);
@@ -43,53 +44,60 @@ export default function NavigationButtons({
     return "/configurator/quote";
   };
 
+  // Navigate without page reload using router.push with scroll: false
+  const handleNavigate = (route: string) => {
+    router.push(route);
+    // Update URL without reload using history API
+    window.history.pushState({}, '', route);
+  };
+
   return (
     <div className="flex items-center justify-between w-full pt-6 border-t border-gray-200">
       <div>
         {previousStep ? (
-          <Link
-            href={getStepRoute(previousStep)}
+          <button
+            onClick={() => handleNavigate(getStepRoute(previousStep))}
             className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
           >
             ← Back
-          </Link>
+          </button>
         ) : (
           <span className="text-gray-400">← Back</span>
         )}
       </div>
       <div>
         {nextStep ? (
-          <Link
-            href={getStepRoute(nextStep)}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              canProceed
-                ? "bg-[#303337] text-white hover:opacity-90"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-            onClick={(e) => {
-              if (!canProceed) {
-                e.preventDefault();
+          <button
+            onClick={() => {
+              if (canProceed) {
+                handleNavigate(getStepRoute(nextStep));
               }
             }}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              canProceed
+                ? "bg-[#303337] text-white hover:opacity-90 cursor-pointer"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            disabled={!canProceed}
           >
             Next →
-          </Link>
+          </button>
         ) : (
-          <Link
-            href={getQuoteRoute()}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              canProceed
-                ? "bg-[#303337] text-white hover:opacity-90"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-            onClick={(e) => {
-              if (!canProceed) {
-                e.preventDefault();
+          <button
+            onClick={() => {
+              if (canProceed) {
+                handleNavigate(getQuoteRoute());
               }
             }}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              canProceed
+                ? "bg-[#303337] text-white hover:opacity-90 cursor-pointer"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            disabled={!canProceed}
           >
             Generate Quote →
-          </Link>
+          </button>
         )}
       </div>
     </div>
