@@ -36,10 +36,21 @@ export function generateQuote(
 
   // Iterate through all selections and build quote items
   console.log("[Quote Generation] Starting quote generation with selections:", JSON.stringify(request.selections, null, 2));
+  console.log("[Quote Generation] Config stepData keys:", Object.keys(config.stepData || {}));
   Object.entries(request.selections).forEach(([stepId, optionIds]) => {
-    const stepData = config.stepData[stepId];
+    // Try config stepData first, then fallback to default stepData
+    let stepData = config.stepData?.[stepId];
     if (!stepData) {
-      console.warn(`[Quote Generation] No stepData found for step: ${stepId}`);
+      // Fallback to default stepData if not in config
+      const { stepDataMap } = require("@/data");
+      stepData = stepDataMap[stepId];
+      if (stepData) {
+        console.log(`[Quote Generation] Using default stepData for step: ${stepId}`);
+      }
+    }
+    
+    if (!stepData) {
+      console.warn(`[Quote Generation] No stepData found for step: ${stepId} in config or defaults`);
       return;
     }
 
