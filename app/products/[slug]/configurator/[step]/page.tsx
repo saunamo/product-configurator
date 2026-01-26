@@ -866,14 +866,10 @@ export default function ProductConfiguratorStepPage() {
     }
   };
 
+  // Don't show loading state - use cached config or show nothing briefly
+  // This prevents the "Loading configuration..." flash between steps
   if (!config) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#faf9f7]">
-        <div className="text-center">
-          <div className="text-lg text-gray-600">Loading configuration...</div>
-        </div>
-      </div>
-    );
+    return null; // Return null instead of loading message for instant transitions
   }
 
   // Handle Quote step - show quote summary

@@ -188,6 +188,15 @@ export default function ConfiguratorLayout({
               }}
             >
               {children}
+              {/* Navigation buttons inside options box on tablet */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <NavigationButtons
+                  currentStepId={currentStepId}
+                  canProceed={canProceed}
+                  steps={finalSteps}
+                  productSlug={productSlug}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -219,31 +228,21 @@ export default function ConfiguratorLayout({
               }}
             >
               {children}
+              {/* Navigation buttons inside options box on desktop */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <NavigationButtons
+                  currentStepId={currentStepId}
+                  canProceed={canProceed}
+                  steps={finalSteps}
+                  productSlug={productSlug}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Navigation - Responsive */}
-      <div 
-        className="fixed bottom-0 left-0 right-0 border-t shadow-lg z-50"
-        style={{
-          backgroundColor: design?.cardBackgroundColor || "#ffffff",
-          borderColor: design?.borderColor || "#E2DEDA",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-4">
-          <NavigationButtons
-            currentStepId={currentStepId}
-            canProceed={canProceed}
-            steps={finalSteps}
-            productSlug={productSlug}
-          />
-        </div>
-      </div>
-
-      {/* Spacer for fixed bottom nav */}
-      <div className="h-20 sm:h-24" />
+      {/* Bottom Navigation removed - now inside options box */}
     </div>
   );
 }
