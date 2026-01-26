@@ -242,6 +242,8 @@ export async function POST(request: NextRequest) {
     // Save quote to server storage (for quote portal)
     // Pass Pipedrive deal ID if available (for Netlify/Pipedrive storage)
     try {
+      console.log(`[Quote API] Saving quote ${quote.id} with ${quote.items?.length || 0} items`);
+      console.log(`[Quote API] Quote items before save:`, JSON.stringify(quote.items?.slice(0, 2), null, 2), quote.items?.length > 2 ? '...' : '');
       await saveQuoteServer(quote, pipedriveDealId);
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
     } catch (error) {
