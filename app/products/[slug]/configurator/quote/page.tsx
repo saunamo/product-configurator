@@ -304,9 +304,11 @@ export default function ProductQuotePage() {
           </p>
         </div>
 
-        {/* Selections Summary */}
-        <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Selections</h3>
+        {/* Two-column layout for Quote Summary and Contact Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Selections Summary */}
+          <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Selections</h3>
           
           {/* Main Product - Show first if Pipedrive ID is configured */}
           {config.mainProductPipedriveId && (
@@ -382,7 +384,7 @@ export default function ProductQuotePage() {
 
           {/* Customer Information */}
           <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -440,6 +442,7 @@ export default function ProductQuotePage() {
               placeholder="Any special requirements or questions..."
             />
           </div>
+        </div>
         </div>
 
         {/* Error Message */}
