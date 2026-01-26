@@ -9,6 +9,9 @@ import { getProductConfig } from "@/utils/productStorage";
 import { ProductConfig } from "@/types/product";
 import { capitalize } from "@/utils/capitalize";
 import { getStepData } from "@/data";
+import Stepper from "@/components/Stepper";
+import ProductImage from "@/components/ProductImage";
+import NavigationButtons from "@/components/NavigationButtons";
 
 export default function ProductQuotePage() {
   const router = useRouter();
@@ -278,39 +281,224 @@ export default function ProductQuotePage() {
   // Find the quote step or use the last step
   const quoteStep = config.steps.find(s => s.id === "quote") || lastStep;
   
-  return (
-    <ConfiguratorLayout
-      currentStepId={quoteStep.id}
-      stepData={lastStepData || {
-        stepId: quoteStep.id,
-        title: "Generate Quote",
-        description: "Review your selections and generate a quote",
-        options: [],
-        selectionType: "single",
-        required: false,
-      }}
-      productImageUrl={config.mainProductImageUrl}
-      productName={config.productName}
-      steps={config.steps}
-      design={config.design}
-      productSlug={productSlug}
-      canProceed={!!customerEmail}
-    >
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Quote Summary</h2>
-          <p className="text-gray-600">
-            Review your selections and provide your contact information to generate a quote.
-          </p>
-        </div>
+  const design = config.design;
+  const productName = config.productName;
+  const finalSteps = config.steps && config.steps.length > 0 ? config.steps : STEPS;
+  
+  // Get product image URL
+  const productImageUrl = config.mainProductImageUrl;
 
-        {/* Two-column layout for Quote Summary and Contact Information */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Selections Summary */}
+  return (
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor: design?.backgroundColor || "#F3F0ED",
+        color: design?.textColor || "#908F8D",
+        fontFamily: design?.fontFamily || "Questrial, sans-serif",
+      }}
+    >
+      {/* Top Section - Sticky Header */}
+      <div className="sticky top-0 z-50 bg-white shadow-sm">
+        <div className="px-4 sm:px-8 py-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+            {productName}
+          </h1>
+          <Stepper currentStepId={quoteStep.id} steps={finalSteps} productSlug={productSlug} />
+        </div>
+      </div>
+
+      {/* Desktop Layout: Image + Quote Summary on left, Contact Info on right */}
+      <div className="hidden lg:flex lg:flex-row gap-4 sm:gap-8 px-4 sm:px-8 py-4 sm:py-8">
+        {/* Left: Product Image + Quote Summary - ~70% on desktop */}
+        <div className="lg:flex-[7] space-y-6">
+          {/* Product Image */}
+          <div>
+            <ProductImage
+              imageUrl={productImageUrl}
+              alt={`${productName} - Quote`}
+              isOptionImage={false}
+            />
+          </div>
+
+          {/* Quote Summary - Below Image */}
           <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Selections</h3>
+            
+            {/* Main Product - Show first if Pipedrive ID is configured */}
+            {config.mainProductPipedriveId && (
+              <div className="border-b border-gray-200 pb-4">
+                <h4 className="font-medium text-gray-900 mb-2">Sauna</h4>
+                <ul className="space-y-1">
+                  <li className="text-sm text-gray-700">
+                    {capitalize(config.productName || "Main Product")}
+                  </li>
+                </ul>
+              </div>
+            )}
+            
+            {config.steps.map((step) => {
+              const stepData = config.stepData[step.id];
+              const selectedIds = state.selections[step.id] || [];
+              if (selectedIds.length === 0 || !stepData) return null;
+
+              return (
+                <div key={step.id} className="border-b border-gray-200 pb-4 last:border-0">
+                  <h4 className="font-medium text-gray-900 mb-2">
+                    {step.id === "rear-glass-wall" ? "Rear Wall Option" : step.name}
+                  </h4>
+                  <ul className="space-y-1">
+                    {selectedIds.map((optionId) => {
+                      let option = stepData.options.find((opt) => opt.id === optionId);
+                      
+                      if (!option) {
+                        const defaultStepData = getStepData(step.id);
+                        if (defaultStepData) {
+                          option = defaultStepData.options.find((opt) => opt.id === optionId);
+                        }
+                      }
+                      
+                      if (!option) {
+                        return (
+                          <li key={optionId} className="text-sm text-gray-700">
+                            {capitalize(optionId.replace(/-/g, " "))}
+                          </li>
+                        );
+                      }
+                      
+                      let displayTitle = option.title;
+                      if (step.id === "heater") {
+                        const titleLower = option.title.toLowerCase();
+                        if (titleLower.includes("according to") || titleLower.includes("heater stone")) {
+                          displayTitle = "Heater stones";
+                        }
+                      }
+                      
+                      return (
+                        <li key={optionId} className="text-sm text-gray-700">
+                          {capitalize(displayTitle)}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right: Contact Information - ~30% on desktop */}
+        <div className="lg:flex-[3] lg:flex-shrink-0">
+          <div 
+            className="rounded-lg shadow-sm"
+            style={{
+              backgroundColor: design?.cardBackgroundColor || "#ffffff",
+              padding: design?.cardPadding || "1.5rem",
+              borderRadius: design?.borderRadius || "0.5rem",
+            }}
+          >
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Contact Information</h2>
+                <p className="text-gray-600">
+                  Please provide your contact details to generate your quote.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                    style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                    style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                    style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                    placeholder="+44 20 1234 5678"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Additional Notes (Optional)
+                  </label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={3}
+                    className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                    style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                    placeholder="Any special requirements or questions..."
+                  />
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              )}
+
+              {/* Navigation buttons - Single divider, with spacing below */}
+              <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+                <NavigationButtons
+                  currentStepId={quoteStep.id}
+                  canProceed={!!customerEmail}
+                  steps={finalSteps}
+                  productSlug={productSlug}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile/Tablet Layout: Stacked */}
+      <div className="lg:hidden px-4 sm:px-8 py-4 sm:py-8 space-y-6">
+        {/* Product Image */}
+        <div>
+          <ProductImage
+            imageUrl={productImageUrl}
+            alt={`${productName} - Quote`}
+            isOptionImage={false}
+          />
+        </div>
+
+        {/* Quote Summary */}
+        <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Selections</h3>
           
-          {/* Main Product - Show first if Pipedrive ID is configured */}
           {config.mainProductPipedriveId && (
             <div className="border-b border-gray-200 pb-4">
               <h4 className="font-medium text-gray-900 mb-2">Sauna</h4>
@@ -327,12 +515,6 @@ export default function ProductQuotePage() {
             const selectedIds = state.selections[step.id] || [];
             if (selectedIds.length === 0 || !stepData) return null;
 
-            // Debug logging for heater step
-            if (step.id === "heater") {
-              console.log("[Quote Page] Heater step - selectedIds:", selectedIds);
-              console.log("[Quote Page] Heater step - available options:", stepData.options.map(opt => ({ id: opt.id, title: opt.title })));
-            }
-
             return (
               <div key={step.id} className="border-b border-gray-200 pb-4 last:border-0">
                 <h4 className="font-medium text-gray-900 mb-2">
@@ -340,10 +522,8 @@ export default function ProductQuotePage() {
                 </h4>
                 <ul className="space-y-1">
                   {selectedIds.map((optionId) => {
-                    // First try to find in config stepData
                     let option = stepData.options.find((opt) => opt.id === optionId);
                     
-                    // If not found, try default stepData (for dynamically added options like heater stones)
                     if (!option) {
                       const defaultStepData = getStepData(step.id);
                       if (defaultStepData) {
@@ -352,16 +532,13 @@ export default function ProductQuotePage() {
                     }
                     
                     if (!option) {
-                      console.warn(`[Quote Page] Option not found in stepData or default: ${optionId} in step ${step.id}`);
-                      console.warn(`[Quote Page] Available option IDs in stepData:`, stepData.options.map(opt => opt.id));
-                      // Still render it with the optionId as fallback
                       return (
                         <li key={optionId} className="text-sm text-gray-700">
                           {capitalize(optionId.replace(/-/g, " "))}
                         </li>
                       );
                     }
-                    // For heater stones, change title from "According to selected heater" to "Heater stones"
+                    
                     let displayTitle = option.title;
                     if (step.id === "heater") {
                       const titleLower = option.title.toLowerCase();
@@ -380,79 +557,103 @@ export default function ProductQuotePage() {
               </div>
             );
           })}
-          </div>
-
-          {/* Customer Information */}
-          <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              value={customerEmail}
-              onChange={(e) => setCustomerEmail(e.target.value)}
-              className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
-              style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              placeholder="your@email.com"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
-              style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              placeholder="John Doe"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
-              style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              placeholder="+44 20 1234 5678"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Additional Notes (Optional)
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
-              style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              placeholder="Any special requirements or questions..."
-            />
-          </div>
-        </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-sm text-red-800">{error}</p>
+        {/* Contact Information */}
+        <div 
+          className="rounded-lg shadow-sm"
+          style={{
+            backgroundColor: design?.cardBackgroundColor || "#ffffff",
+            padding: design?.cardPadding || "1.5rem",
+            borderRadius: design?.borderRadius || "0.5rem",
+          }}
+        >
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Contact Information</h2>
+              <p className="text-gray-600">
+                Please provide your contact details to generate your quote.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                  style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                  style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                  style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                  placeholder="+44 20 1234 5678"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Notes (Optional)
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                  className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
+                  style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                  placeholder="Any special requirements or questions..."
+                />
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
+
+            {/* Navigation buttons - Single divider, with spacing below */}
+            <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+              <NavigationButtons
+                currentStepId={quoteStep.id}
+                canProceed={!!customerEmail}
+                steps={finalSteps}
+                productSlug={productSlug}
+              />
+            </div>
           </div>
-        )}
+        </div>
       </div>
-    </ConfiguratorLayout>
+    </div>
   );
 }
-
