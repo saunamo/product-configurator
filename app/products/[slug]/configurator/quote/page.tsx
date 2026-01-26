@@ -275,11 +275,14 @@ export default function ProductQuotePage() {
   const lastStep = config.steps[config.steps.length - 1] || STEPS[STEPS.length - 1];
   const lastStepData = config.stepData[lastStep.id];
 
+  // Find the quote step or use the last step
+  const quoteStep = config.steps.find(s => s.id === "quote") || lastStep;
+  
   return (
     <ConfiguratorLayout
-      currentStepId={lastStep.id}
+      currentStepId={quoteStep.id}
       stepData={lastStepData || {
-        stepId: lastStep.id,
+        stepId: quoteStep.id,
         title: "Generate Quote",
         description: "Review your selections and generate a quote",
         options: [],
