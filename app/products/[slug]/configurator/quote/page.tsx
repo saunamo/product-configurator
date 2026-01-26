@@ -256,7 +256,21 @@ export default function ProductQuotePage() {
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [customerEmail, customerName, customerPhone, notes, config, state.selections]);
+
+  // Listen for generateQuote event from NavigationButtons
+  useEffect(() => {
+    const handleGenerateQuoteEvent = () => {
+      if (customerEmail) {
+        handleGenerateQuote();
+      } else {
+        setError("Please enter your email address");
+      }
+    };
+    
+    window.addEventListener('generateQuote', handleGenerateQuoteEvent);
+    return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
+  }, [customerEmail, handleGenerateQuote]);
 
   const lastStep = config.steps[config.steps.length - 1] || STEPS[STEPS.length - 1];
   const lastStepData = config.stepData[lastStep.id];
