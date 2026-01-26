@@ -7,7 +7,19 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Enable build caching to speed up builds
+  NETLIFY_NEXT_PLUGIN_SKIP_CACHE = "false"
 
 # Next.js specific settings
 [functions]
   node_bundler = "esbuild"
+  # Optimize function bundling
+  included_files = ["data-store/**", "public/**"]
+
+# Build optimization
+[build.processing]
+  skip_processing = false
+
+# Cache configuration
+[[build.cache]]
+  paths = ["node_modules/.cache", ".next/cache"]
