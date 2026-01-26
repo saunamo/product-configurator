@@ -17,16 +17,33 @@ export default function ProductConfiguratorStepPage() {
   const params = useParams();
   const router = useRouter();
   const productSlug = params.slug as string;
-  const step = params.step as string;
+  // Use state to track current step - this allows instant transitions
+  const [currentStep, setCurrentStep] = useState<string>(params.step as string);
   
-  // Sync URL with state without causing reloads
+  // Sync with URL params on mount and when URL changes (browser back/forward)
   useEffect(() => {
-    // Update URL silently when step changes (for browser history)
-    const currentPath = `/products/${productSlug}/configurator/${step}`;
-    if (window.location.pathname !== currentPath) {
-      window.history.replaceState({}, '', currentPath);
+    const stepFromUrl = params.step as string;
+    if (stepFromUrl !== currentStep) {
+      setCurrentStep(stepFromUrl);
     }
-  }, [step, productSlug]);
+  }, [params.step, currentStep]);
+  
+  // Listen for popstate events (browser back/forward or our custom navigation)
+  useEffect(() => {
+    const handlePopState = () => {
+      const pathParts = window.location.pathname.split('/');
+      const stepFromUrl = pathParts[pathParts.length - 1];
+      if (stepFromUrl && stepFromUrl !== currentStep && stepFromUrl !== 'quote') {
+        setCurrentStep(stepFromUrl);
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [currentStep]);
+  
+  // Use currentStep instead of step from params for rendering
+  const step = currentStep;
   
   // Load product config
   const [config, setConfig] = useState<ProductConfig | null>(null);
