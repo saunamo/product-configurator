@@ -471,7 +471,7 @@ export default function ProductQuotePage() {
               )}
 
               {/* Navigation buttons - Single divider, with spacing below */}
-              <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+              <div className="mt-6 pb-6">
                 <NavigationButtons
                   currentStepId={quoteStep.id}
                   canProceed={!!customerEmail}
@@ -643,7 +643,7 @@ export default function ProductQuotePage() {
             )}
 
             {/* Navigation buttons - Single divider, with spacing below */}
-            <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+            <div className="mt-6 pb-6">
               <NavigationButtons
                 currentStepId={quoteStep.id}
                 canProceed={!!customerEmail}
