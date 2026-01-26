@@ -259,6 +259,34 @@ export default function ProductQuotePage() {
     return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
   }, [customerEmail, handleGenerateQuote]);
 
+  // Listen for stepchange events to handle back navigation
+  useEffect(() => {
+    const handleStepChange = (e: CustomEvent) => {
+      const route = e.detail?.route;
+      if (route && !route.includes('/quote')) {
+        // Navigate to the step page
+        router.push(route);
+      }
+    };
+
+    window.addEventListener('stepchange', handleStepChange as EventListener);
+    
+    // Also listen for browser back/forward
+    const handlePopState = () => {
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/quote')) {
+        router.push(currentPath);
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('stepchange', handleStepChange as EventListener);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [router]);
+
   // Show loading state while config is loading (AFTER all hooks)
   if (!config) {
     return (
