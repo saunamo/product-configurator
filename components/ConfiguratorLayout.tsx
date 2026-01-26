@@ -176,7 +176,7 @@ export default function ConfiguratorLayout({
               imageUrl={displayImageUrl}
               alt={`${productName} - ${stepData.title}`}
               selectedOptionLabel={selectedOptionLabel}
-              isOptionImage={!!selectedOptionImageUrl}
+              isOptionImage={shouldUseOptionImageScaling}
             />
           </div>
 
@@ -216,7 +216,7 @@ export default function ConfiguratorLayout({
               imageUrl={displayImageUrl}
               alt={`${productName} - ${stepData.title}`}
               selectedOptionLabel={selectedOptionLabel}
-              isOptionImage={!!selectedOptionImageUrl}
+              isOptionImage={shouldUseOptionImageScaling}
             />
           </div>
 
