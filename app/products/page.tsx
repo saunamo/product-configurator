@@ -2,20 +2,51 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getAllProducts, deleteProduct } from "@/utils/productStorage";
 import { Product } from "@/types/product";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProducts(getAllProducts());
+    const loadProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.products || []);
+        } else {
+          console.error("Failed to load products:", response.status);
+        }
+      } catch (error) {
+        console.error("Error loading products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
   }, []);
 
-  const handleDelete = (productId: string) => {
+  const handleDelete = async (productId: string) => {
     if (confirm("Are you sure you want to delete this product? This will also delete all its configuration.")) {
-      deleteProduct(productId);
-      setProducts(getAllProducts());
+      try {
+        const response = await fetch(`/api/products?productId=${productId}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          // Reload products
+          const productsResponse = await fetch("/api/products");
+          if (productsResponse.ok) {
+            const data = await productsResponse.json();
+            setProducts(data.products || []);
+          }
+        } else {
+          alert("Failed to delete product");
+        }
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product");
+      }
     }
   };
 
@@ -35,7 +66,11 @@ export default function ProductsPage() {
           </Link>
         </div>
 
-        {products.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <p className="text-gray-600">Loading products...</p>
+          </div>
+        ) : products.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <p className="text-gray-600 mb-4">No products yet.</p>
             <Link
