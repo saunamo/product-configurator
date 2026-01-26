@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useConfigurator } from "@/contexts/ConfiguratorContext";
 import { STEPS } from "@/constants/steps";
 import ConfiguratorLayout from "@/components/ConfiguratorLayout";
-import { getProductConfig, getAllProducts } from "@/utils/productStorage";
+import { getProductConfig } from "@/utils/productStorage";
 import { ProductConfig } from "@/types/product";
 import { capitalize } from "@/utils/capitalize";
 import { getStepData } from "@/data";
@@ -78,12 +78,25 @@ export default function ProductQuotePage() {
 
   // Load config function
   const loadConfig = async () => {
-    const products = getAllProducts();
-    const product = products.find((p) => p.slug === productSlug);
-    
-    if (product) {
-      const productConfig = await getProductConfig(product.id);
-      setConfig(productConfig);
+    try {
+      // Fetch products from API instead of localStorage
+      const productsResponse = await fetch("/api/products");
+      if (!productsResponse.ok) {
+        console.error("❌ Failed to load products:", productsResponse.status);
+        return;
+      }
+      const productsData = await productsResponse.json();
+      const products = productsData.products || [];
+      const product = products.find((p: any) => p.slug === productSlug);
+      
+      if (product) {
+        const productConfig = await getProductConfig(product.id);
+        setConfig(productConfig);
+      } else {
+        console.error("❌ Product not found with slug:", productSlug);
+      }
+    } catch (error) {
+      console.error("❌ Error loading product config:", error);
     }
   };
 
