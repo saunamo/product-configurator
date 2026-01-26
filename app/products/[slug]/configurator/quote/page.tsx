@@ -190,7 +190,7 @@ export default function ProductQuotePage() {
     
     window.addEventListener('generateQuote', handleGenerateQuoteEvent);
     return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
-  }, [customerEmail]);
+  }, [customerEmail, handleGenerateQuote]);
 
   const handleGenerateQuote = async () => {
     if (!customerEmail) {
