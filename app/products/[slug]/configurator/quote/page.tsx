@@ -423,7 +423,7 @@ export default function ProductQuotePage() {
               onChange={(e) => setCustomerPhone(e.target.value)}
               className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:bg-white"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
-              placeholder="+1 (555) 123-4567"
+              placeholder="+44 20 1234 5678"
             />
           </div>
 

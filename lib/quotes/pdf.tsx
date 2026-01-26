@@ -363,13 +363,7 @@ export function QuotePDFDocument({
           </View>
         </View>
 
-        {/* Notes */}
-        {(quote.notes || defaultNotes) && (
-          <View style={styles.notes}>
-            <Text style={styles.notesTitle}>Notes:</Text>
-            <Text style={styles.notesText}>{quote.notes || defaultNotes}</Text>
-          </View>
-        )}
+        {/* Notes - Removed from PDF, but included in Pipedrive deal */}
 
         {/* Terms & Conditions */}
         {termsAndConditions && (
