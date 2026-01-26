@@ -908,22 +908,25 @@ export default function ProductConfiguratorStepPage() {
     }
   };
 
+  // Handle Quote step - redirect to dedicated quote page with input fields
+  // This must be a useEffect (hook) and called unconditionally
+  useEffect(() => {
+    if (step === "quote" && config) {
+      // Redirect to the dedicated quote page which has the input fields
+      const quoteRoute = `/products/${productSlug}/configurator/quote`;
+      // Use router to navigate (this is a special case where we need the full page)
+      router.replace(quoteRoute);
+    }
+  }, [step, productSlug, router, config]);
+
   // Don't show loading state - use cached config or show nothing briefly
   // This prevents the "Loading configuration..." flash between steps
   if (!config) {
     return null; // Return null instead of loading message for instant transitions
   }
 
-  // Handle Quote step - redirect to dedicated quote page with input fields
+  // Show loading state briefly while redirecting to quote page
   if (step === "quote") {
-    useEffect(() => {
-      // Redirect to the dedicated quote page which has the input fields
-      const quoteRoute = `/products/${productSlug}/configurator/quote`;
-      // Use router to navigate (this is a special case where we need the full page)
-      router.replace(quoteRoute);
-    }, [step, productSlug, router]);
-    
-    // Show loading state briefly while redirecting
     return (
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
         <div className="text-center">
