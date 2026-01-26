@@ -378,10 +378,10 @@ export default function ProductQuotePage() {
               </div>
             );
           })}
-        </div>
+          </div>
 
-        {/* Customer Information */}
-        <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+          {/* Customer Information */}
+          <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
           
           <div>
