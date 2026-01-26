@@ -256,6 +256,22 @@ export default function ProductQuotePage() {
     return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
   }, [customerEmail, handleGenerateQuote]);
 
+  // Show loading state while config is loading (AFTER all hooks)
+  if (!config) {
+    return (
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Loading configuration...</div>
+          <div className="text-sm text-gray-500">Please wait while we load your quote details.</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasSelections) {
+    return null;
+  }
+
   const lastStep = config.steps[config.steps.length - 1] || STEPS[STEPS.length - 1];
   const lastStepData = config.stepData[lastStep.id];
 
