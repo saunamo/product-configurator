@@ -44,11 +44,12 @@ export default function NavigationButtons({
     return "/configurator/quote";
   };
 
-  // Navigate without page reload using router.replace with scroll: false
+  // Navigate without page reload - update URL directly without Next.js router
   const handleNavigate = (route: string) => {
-    // Use replace instead of push to avoid adding to history stack
-    // scroll: false prevents scroll to top
-    router.replace(route, { scroll: false });
+    // Update URL directly using history API (no Next.js navigation = no reload)
+    window.history.pushState({}, '', route);
+    // Dispatch custom event to notify page component
+    window.dispatchEvent(new CustomEvent('stepchange', { detail: { route } }));
   };
 
   return (
