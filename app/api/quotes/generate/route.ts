@@ -40,6 +40,22 @@ export async function POST(request: NextRequest) {
     // If productConfig is passed from client, use it (since server can't access localStorage)
     if (body.productConfig) {
       adminConfig = body.productConfig as ProductConfig;
+      // Ensure stepData exists - if missing, merge with defaults
+      if (!adminConfig.stepData || Object.keys(adminConfig.stepData).length === 0) {
+        console.log("[Quote Generation] ProductConfig missing stepData, merging with defaults");
+        adminConfig = {
+          ...adminConfig,
+          stepData: { ...stepDataMap, ...(adminConfig.stepData || {}) },
+        };
+      }
+      // Ensure steps exist
+      if (!adminConfig.steps || adminConfig.steps.length === 0) {
+        console.log("[Quote Generation] ProductConfig missing steps, using defaults");
+        adminConfig = {
+          ...adminConfig,
+          steps: STEPS,
+        };
+      }
     } else if (body.productId) {
       // Server can't access localStorage, so we need the client to pass the config
       // For now, use default config structure - client should pass full config
