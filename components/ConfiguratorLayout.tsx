@@ -108,9 +108,9 @@ export default function ConfiguratorLayout({
         fontFamily: design?.fontFamily || "Questrial, sans-serif",
       }}
     >
-      {/* Top Section */}
+      {/* Top Section - Sticky Header */}
       <div 
-        className="border-b"
+        className="sticky top-0 z-50 border-b shadow-sm"
         style={{ 
           backgroundColor: design?.cardBackgroundColor || "#ffffff",
           borderColor: design?.borderColor || "#E2DEDA",
