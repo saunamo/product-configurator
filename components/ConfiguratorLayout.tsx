@@ -63,7 +63,7 @@ export default function ConfiguratorLayout({
     (isValidImageUrl(selectedOptionImageUrl) ? selectedOptionImageUrl : undefined) ||
     (isValidImageUrl(stepData.imageUrl) ? stepData.imageUrl : undefined) ||
     (isValidImageUrl(productImageUrl) ? productImageUrl : undefined) ||
-    (isValidImageUrl(config?.mainProductImageUrl) ? config.mainProductImageUrl : undefined) ||
+    (config && isValidImageUrl(config.mainProductImageUrl) ? config.mainProductImageUrl : undefined) ||
     undefined;
   
   // Find the selected option title for the image label
