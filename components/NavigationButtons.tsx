@@ -92,7 +92,9 @@ export default function NavigationButtons({
           <button
             onClick={() => {
               if (canProceed) {
-                handleNavigate(getQuoteRoute());
+                // For quote step, dispatch event to trigger quote generation
+                // The quote page will listen for this event
+                window.dispatchEvent(new CustomEvent('generateQuote'));
               }
             }}
             className={`px-6 py-3 rounded-lg font-medium transition-colors ${
