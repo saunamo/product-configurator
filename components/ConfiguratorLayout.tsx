@@ -66,6 +66,11 @@ export default function ConfiguratorLayout({
     (config && isValidImageUrl(config.mainProductImageUrl) ? config.mainProductImageUrl : undefined) ||
     undefined;
   
+  // Determine if we should use option image scaling (for step images and option images)
+  // Step images (like accessories) should also use object-contain for better scaling
+  const isStepImage = !selectedOptionImageUrl && isValidImageUrl(stepData.imageUrl);
+  const shouldUseOptionImageScaling = !!selectedOptionImageUrl || isStepImage;
+  
   // Find the selected option title for the image label
   // Use propSelectedOptionTitle if provided (preserves exact capitalization), otherwise find by imageUrl
   const selectedOptionLabel = propSelectedOptionTitle || (() => {
@@ -142,7 +147,7 @@ export default function ConfiguratorLayout({
                 imageUrl={displayImageUrl}
                 alt={`${productName} - ${stepData.title}`}
                 selectedOptionLabel={selectedOptionLabel}
-                isOptionImage={!!selectedOptionImageUrl}
+                isOptionImage={shouldUseOptionImageScaling}
               />
             </div>
           </div>
