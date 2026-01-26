@@ -135,8 +135,11 @@ export default function QuotePortalPage() {
         {/* Items */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-bold text-[#303337] mb-4">Items</h2>
-          <div className="space-y-4">
-            {quote.items.map((item, index) => (
+          {!quote.items || quote.items.length === 0 ? (
+            <p className="text-gray-500">No items in this quote.</p>
+          ) : (
+            <div className="space-y-4">
+              {quote.items.map((item, index) => (
               <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
                 <div className="flex justify-between items-start mb-2">
                   <div>

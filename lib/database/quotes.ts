@@ -113,10 +113,14 @@ async function getQuoteFromPipedrive(quoteId: string): Promise<Quote | null> {
         // Extract JSON from note content
         const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '');
         const quoteData = JSON.parse(jsonContent);
+        console.log(`[Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
+        console.log(`[Quote Retrieval] Quote items:`, JSON.stringify(quoteData.items, null, 2));
         return {
           ...quoteData,
           createdAt: quoteData.createdAt ? new Date(quoteData.createdAt) : new Date(),
           expiresAt: quoteData.expiresAt ? new Date(quoteData.expiresAt) : undefined,
+          // Ensure items array exists
+          items: quoteData.items || [],
         } as Quote;
       }
     } catch (noteError) {
