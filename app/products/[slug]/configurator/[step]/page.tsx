@@ -20,15 +20,30 @@ export default function ProductConfiguratorStepPage() {
   // Use state to track current step - this allows instant transitions
   const [currentStep, setCurrentStep] = useState<string>(params.step as string);
   
-  // Sync with URL params on mount and when URL changes (browser back/forward)
+  // Listen for custom stepchange events (from our instant navigation)
+  useEffect(() => {
+    const handleStepChange = (e: CustomEvent<{ route: string }>) => {
+      const route = e.detail.route;
+      const pathParts = route.split('/');
+      const stepFromRoute = pathParts[pathParts.length - 1];
+      if (stepFromRoute && stepFromRoute !== currentStep) {
+        setCurrentStep(stepFromRoute);
+      }
+    };
+    
+    window.addEventListener('stepchange', handleStepChange as EventListener);
+    return () => window.removeEventListener('stepchange', handleStepChange as EventListener);
+  }, [currentStep]);
+  
+  // Sync with URL params on mount (for initial load and direct URL access)
   useEffect(() => {
     const stepFromUrl = params.step as string;
     if (stepFromUrl !== currentStep) {
       setCurrentStep(stepFromUrl);
     }
-  }, [params.step, currentStep]);
+  }, [params.step]);
   
-  // Listen for popstate events (browser back/forward or our custom navigation)
+  // Listen for popstate events (browser back/forward)
   useEffect(() => {
     const handlePopState = () => {
       const pathParts = window.location.pathname.split('/');
@@ -43,6 +58,7 @@ export default function ProductConfiguratorStepPage() {
   }, [currentStep]);
   
   // Use currentStep instead of step from params for rendering
+  // This allows instant transitions without waiting for Next.js router
   const step = currentStep;
   
   // Load product config
