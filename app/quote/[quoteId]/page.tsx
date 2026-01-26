@@ -140,25 +140,26 @@ export default function QuotePortalPage() {
           ) : (
             <div className="space-y-4">
               {quote.items.map((item, index) => (
-              <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-medium text-gray-900">{item.optionTitle}</p>
-                    <p className="text-sm text-gray-600">{item.stepName}</p>
+                <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-medium text-gray-900">{item.optionTitle}</p>
+                      <p className="text-sm text-gray-600">{item.stepName}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-gray-900">{formatCurrency(item.price)}</p>
+                      {item.quantity && item.quantity > 1 && (
+                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">{formatCurrency(item.price)}</p>
-                    {item.quantity && item.quantity > 1 && (
-                      <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                    )}
-                  </div>
+                  {item.optionDescription && (
+                    <p className="text-sm text-gray-500 mt-1">{item.optionDescription}</p>
+                  )}
                 </div>
-                {item.optionDescription && (
-                  <p className="text-sm text-gray-500 mt-1">{item.optionDescription}</p>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Totals */}
