@@ -4,6 +4,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 This project is deployed on Netlify and automatically deploys on every push to the `main` branch.
 
+Environment variables are configured in Netlify dashboard.
+
 ## Getting Started
 
 First, run the development server:
