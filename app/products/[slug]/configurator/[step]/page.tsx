@@ -914,75 +914,22 @@ export default function ProductConfiguratorStepPage() {
     return null; // Return null instead of loading message for instant transitions
   }
 
-  // Handle Quote step - show quote summary
+  // Handle Quote step - redirect to dedicated quote page with input fields
   if (step === "quote") {
-    const quoteStepData: StepData = {
-      stepId: "quote",
-      title: "Quote",
-      description: "Review your selections and generate a quote",
-      selectionType: "single",
-      required: false,
-      options: [],
-      imageUrl: config.mainProductImageUrl, // Use product image as step image
-    };
-
+    useEffect(() => {
+      // Redirect to the dedicated quote page which has the input fields
+      const quoteRoute = `/products/${productSlug}/configurator/quote`;
+      // Use router to navigate (this is a special case where we need the full page)
+      router.replace(quoteRoute);
+    }, [step, productSlug, router]);
+    
+    // Show loading state briefly while redirecting
     return (
-      <ConfiguratorLayout
-        currentStepId={"quote" as StepId}
-        stepData={quoteStepData}
-        productImageUrl={productImageUrl}
-        productName={config.productName}
-        steps={config.steps}
-        design={config.design}
-        productSlug={productSlug}
-        canProceed={true}
-        selectedOptionImageUrl={undefined}
-        selectedOptionTitle={undefined}
-      >
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: config.design?.accentColor || "#303337" }}>
-              Quote Summary
-            </h2>
-            <p className="text-sm" style={{ color: config.design?.textColor || "#908F8D" }}>
-              Review your selections and provide your contact information to generate a quote.
-            </p>
-          </div>
-
-          {/* Selections Summary */}
-          <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
-            <h3 className="text-lg font-semibold mb-4" style={{ color: config.design?.accentColor || "#303337" }}>
-              Your Selections
-            </h3>
-            {config.steps
-              .filter(s => s.id !== "quote") // Exclude quote step from selections
-              .map((stepItem) => {
-                const stepDataForSummary = config?.stepData?.[stepItem.id] || getStepData(stepItem.id);
-                const selectedIds = getSelection(stepItem.id) || [];
-                if (selectedIds.length === 0 || !stepDataForSummary) return null;
-
-                return (
-                  <div key={stepItem.id} className="border-b border-gray-200 pb-4 last:border-0">
-                    <h4 className="font-medium mb-2" style={{ color: config.design?.accentColor || "#303337" }}>
-                      {stepItem.name}
-                    </h4>
-                    <ul className="space-y-1">
-                      {selectedIds.map((optionId) => {
-                        const option = stepDataForSummary.options.find((opt) => opt.id === optionId);
-                        if (!option) return null;
-                        return (
-                          <li key={optionId} className="text-sm" style={{ color: config.design?.textColor || "#908F8D" }}>
-                            {option.title}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
-          </div>
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Loading quote...</div>
         </div>
-      </ConfiguratorLayout>
+      </div>
     );
   }
 
