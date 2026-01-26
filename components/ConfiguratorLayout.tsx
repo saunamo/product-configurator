@@ -194,7 +194,7 @@ export default function ConfiguratorLayout({
             >
               {children}
               {/* Navigation buttons inside options box on tablet */}
-              <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+              <div className="mt-6 pb-6">
                 <NavigationButtons
                   currentStepId={currentStepId}
                   canProceed={canProceed}
@@ -234,7 +234,7 @@ export default function ConfiguratorLayout({
             >
               {children}
               {/* Navigation buttons inside options box on desktop */}
-              <div className="mt-6 pt-6 border-t border-gray-200 pb-6">
+              <div className="mt-6 pb-6">
                 <NavigationButtons
                   currentStepId={currentStepId}
                   canProceed={canProceed}
