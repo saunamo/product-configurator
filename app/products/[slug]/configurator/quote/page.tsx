@@ -277,6 +277,7 @@ export default function ProductQuotePage() {
       steps={config.steps}
       design={config.design}
       productSlug={productSlug}
+      canProceed={!!customerEmail}
     >
       <div className="space-y-6">
         <div>
@@ -430,23 +431,6 @@ export default function ProductQuotePage() {
             <p className="text-sm text-red-800">{error}</p>
           </div>
         )}
-
-        {/* Generate Quote Button */}
-        <div className="flex justify-end gap-4">
-          <button
-            onClick={() => router.back()}
-            className="px-6 py-3 rounded-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={handleGenerateQuote}
-            disabled={isGenerating || !customerEmail}
-            className="px-6 py-3 rounded-lg font-medium bg-green-800 text-white hover:bg-green-900 transition-colors disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-          >
-            {isGenerating ? "Generating Quote..." : "Generate Quote →"}
-          </button>
-        </div>
       </div>
     </ConfiguratorLayout>
   );
