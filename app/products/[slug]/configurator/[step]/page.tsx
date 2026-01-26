@@ -10,7 +10,7 @@ import { useConfigurator } from "@/contexts/ConfiguratorContext";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
 import { StepId, StepData } from "@/types/configurator";
 import { DEFAULT_STEP } from "@/constants/steps";
-import { getProductConfig, getAllProducts } from "@/utils/productStorage";
+import { getProductConfig } from "@/utils/productStorage";
 import { ProductConfig } from "@/types/product";
 
 export default function ProductConfiguratorStepPage() {
@@ -25,26 +25,37 @@ export default function ProductConfiguratorStepPage() {
   
   // Load config function
   const loadConfig = async () => {
-    const products = getAllProducts();
-    const product = products.find((p) => p.slug === productSlug);
-    
-    if (product) {
-      // Force reload by adding cache-busting parameter
-      const productConfig = await getProductConfig(product.id);
-      console.log("📦 ===== LOADED CONFIG FOR PRODUCT =====");
-      console.log("📦 Product ID:", product.id);
-      console.log("📦 Product Name:", product.name);
-      console.log("📦 Main Product Image:", productConfig?.mainProductImageUrl || "Not set");
-      console.log("📦 Steps Count:", productConfig?.steps?.length);
-      console.log("📦 Step Names (FINAL - should have global settings):", productConfig?.steps?.map(s => ({ id: s.id, name: s.name })));
-      console.log("📦 =====================================");
-      setConfig(productConfig);
-      // Force a small delay to ensure state update propagates
-      setTimeout(() => {
-        console.log("📦 Config state updated. New mainProductImageUrl:", productConfig?.mainProductImageUrl);
-      }, 100);
-    } else {
-      console.error("❌ Product not found with slug:", productSlug);
+    try {
+      // Fetch products from API instead of localStorage
+      const productsResponse = await fetch("/api/products");
+      if (!productsResponse.ok) {
+        console.error("❌ Failed to load products:", productsResponse.status);
+        return;
+      }
+      const productsData = await productsResponse.json();
+      const products = productsData.products || [];
+      const product = products.find((p: any) => p.slug === productSlug);
+      
+      if (product) {
+        // Force reload by adding cache-busting parameter
+        const productConfig = await getProductConfig(product.id);
+        console.log("📦 ===== LOADED CONFIG FOR PRODUCT =====");
+        console.log("📦 Product ID:", product.id);
+        console.log("📦 Product Name:", product.name);
+        console.log("📦 Main Product Image:", productConfig?.mainProductImageUrl || "Not set");
+        console.log("📦 Steps Count:", productConfig?.steps?.length);
+        console.log("📦 Step Names (FINAL - should have global settings):", productConfig?.steps?.map((s: any) => ({ id: s.id, name: s.name })));
+        console.log("📦 =====================================");
+        setConfig(productConfig);
+        // Force a small delay to ensure state update propagates
+        setTimeout(() => {
+          console.log("📦 Config state updated. New mainProductImageUrl:", productConfig?.mainProductImageUrl);
+        }, 100);
+      } else {
+        console.error("❌ Product not found with slug:", productSlug);
+      }
+    } catch (error) {
+      console.error("❌ Error loading product config:", error);
     }
   };
 
