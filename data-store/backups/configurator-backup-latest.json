@@ -1,0 +1,4303 @@
+{
+  "timestamp": "2026-01-23T13:07:09.560Z",
+  "version": "1.0.0",
+  "description": "Complete backup of Saunamo configurator state - FINAL rendered state as shown in configurator",
+  "products": [
+    {
+      "id": "cube-125",
+      "name": "Outdoor Sauna Cube 125",
+      "slug": "cube-125",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.117Z"
+    },
+    {
+      "id": "cube-220",
+      "name": "Outdoor Sauna Cube 220",
+      "slug": "cube-220",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.216Z"
+    },
+    {
+      "id": "cube-300",
+      "name": "Outdoor Sauna Cube 300",
+      "slug": "cube-300",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.279Z"
+    },
+    {
+      "id": "hiki-s",
+      "name": "Outdoor Sauna Hiki S",
+      "slug": "hiki-s",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.375Z"
+    },
+    {
+      "id": "hiki-l",
+      "name": "Outdoor Sauna Hiki L",
+      "slug": "hiki-l",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.421Z"
+    },
+    {
+      "id": "barrel-220",
+      "name": "Outdoor Sauna Barrel 220",
+      "slug": "barrel-220",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.446Z"
+    },
+    {
+      "id": "barrel-280",
+      "name": "Outdoor Sauna Barrel 280 Deluxe",
+      "slug": "barrel-280",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.481Z"
+    },
+    {
+      "id": "aisti-150",
+      "name": "Indoor Sauna Aisti 150",
+      "slug": "aisti-150",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.504Z"
+    },
+    {
+      "id": "aisti-220",
+      "name": "Indoor Sauna Thermo Black 220",
+      "slug": "aisti-220",
+      "createdAt": "2026-01-23T09:02:55.051Z",
+      "updatedAt": "2026-01-23T09:02:55.522Z"
+    }
+  ],
+  "configs": {
+    "cube-125": {
+      "productId": "cube-125",
+      "productName": "Outdoor Sauna Cube 125",
+      "steps": [
+        {
+          "id": "rear-glass-wall",
+          "name": "Rear Glass Wall",
+          "route": "rear-glass-wall"
+        },
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Delivery",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/cube-125/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "rear-glass-wall": {
+          "stepId": "rear-glass-wall",
+          "title": "Rear Glass Wall",
+          "description": "",
+          "options": [
+            {
+              "id": "rear-glass-wall-wooden-backwall",
+              "title": "wooden backwall",
+              "description": "",
+              "imageUrl": "/cube-full-back-wall.jpg",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-half-moon-glass-backwall",
+              "title": "Half moon glass backwall",
+              "description": "",
+              "imageUrl": "/cube-back-moon.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-47kw-20kg",
+              "title": "Aava 4.7kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+              "price": 0,
+              "pipedriveProductId": 18042
+            },
+            {
+              "id": "heater-kajo-66kw-80kg",
+              "title": "Kajo 6.6kW (80kg)",
+              "description": "",
+              "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
+              "price": 0,
+              "pipedriveProductId": 18063
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-1x",
+              "title": "Under Bench (1x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17834
+            },
+            {
+              "id": "lighting-2x-25m-led",
+              "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-cube-125.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "cube-125",
+        "productName": "Outdoor Sauna Cube 125",
+        "productSlug": "cube-125",
+        "backedUpAt": "2026-01-23T13:07:09.572Z"
+      }
+    },
+    "cube-220": {
+      "productId": "cube-220",
+      "productName": "Outdoor Sauna Cube 220",
+      "steps": [
+        {
+          "id": "rear-glass-wall",
+          "name": "Rear Glass Wall",
+          "route": "rear-glass-wall"
+        },
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Delivery",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/cube-220/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "rear-glass-wall": {
+          "stepId": "rear-glass-wall",
+          "title": "Rear Glass Wall",
+          "description": "",
+          "options": [
+            {
+              "id": "rear-glass-wall-wooden-backwall",
+              "title": "wooden backwall",
+              "description": "",
+              "imageUrl": "/cube-full-back-wall.jpg",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-half-moon-glass-backwall",
+              "title": "Half moon glass backwall",
+              "description": "",
+              "imageUrl": "/cube-back-moon.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-94kw-20kg",
+              "title": "Aava 9.4kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
+              "price": 0,
+              "pipedriveProductId": 18028
+            },
+            {
+              "id": "heater-kajo-9kw-100kg",
+              "title": "Kajo 9kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
+              "price": 0,
+              "pipedriveProductId": 18056
+            },
+            {
+              "id": "heater-kajo-105kw-100kg",
+              "title": "Kajo 10.5kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
+              "price": 0,
+              "pipedriveProductId": 18049
+            },
+            {
+              "id": "heater-taika-9kw-130kg",
+              "title": "Taika 9kW (130kg)",
+              "description": "",
+              "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+              "price": 0,
+              "pipedriveProductId": 18140
+            },
+            {
+              "id": "heater-taika-105kw-200kg",
+              "title": "Taika 10.5kW (200kg)",
+              "description": "",
+              "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
+              "price": 0,
+              "pipedriveProductId": 18070
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-tuli-20-20kg",
+              "title": "Tuli 20 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-tuli-30-20kg",
+              "title": "Tuli 30 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-20-160kg",
+              "title": "Pyros 20 (160kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-2x",
+              "title": "Under Bench (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "lighting-4x-25m-led",
+              "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-cube-220.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "cube-220",
+        "productName": "Outdoor Sauna Cube 220",
+        "productSlug": "cube-220",
+        "backedUpAt": "2026-01-23T13:07:09.575Z"
+      }
+    },
+    "cube-300": {
+      "productId": "cube-300",
+      "productName": "Outdoor Sauna Cube 300",
+      "steps": [
+        {
+          "id": "rear-glass-wall",
+          "name": "Rear Glass Wall",
+          "route": "rear-glass-wall"
+        },
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Delivery",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/cube-300/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "rear-glass-wall": {
+          "stepId": "rear-glass-wall",
+          "title": "Rear Glass Wall",
+          "description": "",
+          "options": [
+            {
+              "id": "rear-glass-wall-wooden-backwall",
+              "title": "wooden backwall",
+              "description": "",
+              "imageUrl": "/cube-full-back-wall.jpg",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-half-moon-glass-backwall",
+              "title": "Half moon glass backwall",
+              "description": "",
+              "imageUrl": "/cube-back-moon.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-kajo-105kw-100kg",
+              "title": "Kajo 10.5kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
+              "price": 0,
+              "pipedriveProductId": 18049
+            },
+            {
+              "id": "heater-taika-105kw-200kg",
+              "title": "Taika 10.5kW (200kg)",
+              "description": "",
+              "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
+              "price": 0,
+              "pipedriveProductId": 18070
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-tuli-16-20kg",
+              "title": "Tuli 16 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-tuli-20-20kg",
+              "title": "Tuli 20 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-16-190kg",
+              "title": "Pyros 16 (190kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-20-160kg",
+              "title": "Pyros 20 (160kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-2x",
+              "title": "Under Bench (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "lighting-4x-25m-led",
+              "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-cube-300.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "cube-300",
+        "productName": "Outdoor Sauna Cube 300",
+        "productSlug": "cube-300",
+        "backedUpAt": "2026-01-23T13:07:09.582Z"
+      }
+    },
+    "hiki-s": {
+      "productId": "hiki-s",
+      "productName": "Outdoor Sauna Hiki S",
+      "steps": [
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Cold Plunge",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/hiki-s/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-47kw-20kg",
+              "title": "Aava 4.7kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+              "price": 0,
+              "pipedriveProductId": 18042
+            },
+            {
+              "id": "heater-kajo-66kw-80kg",
+              "title": "Kajo 6.6kW (80kg)",
+              "description": "",
+              "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
+              "price": 0,
+              "pipedriveProductId": 18063
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-noki-12-20kg",
+              "title": "Noki 12 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-1x",
+              "title": "Under Bench (1x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17834
+            },
+            {
+              "id": "lighting-2x-25m-led",
+              "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-hiki-s.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "hiki-s",
+        "productName": "Outdoor Sauna Hiki S",
+        "productSlug": "hiki-s",
+        "backedUpAt": "2026-01-23T13:07:09.586Z"
+      }
+    },
+    "hiki-l": {
+      "productId": "hiki-l",
+      "productName": "Outdoor Sauna Hiki L",
+      "steps": [
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Cold Plunge",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/hiki-l/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-94kw-20kg",
+              "title": "Aava 9.4kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
+              "price": 0,
+              "pipedriveProductId": 18028
+            },
+            {
+              "id": "heater-kajo-9kw-100kg",
+              "title": "Kajo 9kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
+              "price": 0,
+              "pipedriveProductId": 18056
+            },
+            {
+              "id": "heater-kajo-105kw-100kg",
+              "title": "Kajo 10.5kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
+              "price": 0,
+              "pipedriveProductId": 18049
+            },
+            {
+              "id": "heater-taika-9kw-130kg",
+              "title": "Taika 9kW (130kg)",
+              "description": "",
+              "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+              "price": 0,
+              "pipedriveProductId": 18140
+            },
+            {
+              "id": "heater-taika-105kw-200kg",
+              "title": "Taika 10.5kW (200kg)",
+              "description": "",
+              "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
+              "price": 0,
+              "pipedriveProductId": 18070
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-tuli-16-20kg",
+              "title": "Tuli 16 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-tuli-20-20kg",
+              "title": "Tuli 20 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-16-190kg",
+              "title": "Pyros 16 (190kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-20-160kg",
+              "title": "Pyros 20 (160kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-2x",
+              "title": "Under Bench (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "lighting-4x-25m-led",
+              "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-hiki-l.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "hiki-l",
+        "productName": "Outdoor Sauna Hiki L",
+        "productSlug": "hiki-l",
+        "backedUpAt": "2026-01-23T13:07:09.589Z"
+      }
+    },
+    "barrel-220": {
+      "productId": "barrel-220",
+      "productName": "Outdoor Sauna Barrel 220",
+      "steps": [
+        {
+          "id": "rear-glass-wall",
+          "name": "Rear Glass Wall",
+          "route": "rear-glass-wall"
+        },
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Delivery",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/barrel-220/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "rear-glass-wall": {
+          "stepId": "rear-glass-wall",
+          "title": "Rear Glass Wall",
+          "description": "",
+          "options": [
+            {
+              "id": "rear-glass-wall-wooden-backwall",
+              "title": "wooden backwall",
+              "description": "",
+              "imageUrl": "/barrel-full-back-wall.png",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-half-moon-glass-backwall",
+              "title": "Half moon glass backwall",
+              "description": "",
+              "imageUrl": "/barrel-half-moon.png",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-full-glass-backwall",
+              "title": "full glass backwall",
+              "description": "",
+              "imageUrl": "/barrel-full-glass-wall.png",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-94kw-20kg",
+              "title": "Aava 9.4kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
+              "price": 0,
+              "pipedriveProductId": 18028
+            },
+            {
+              "id": "heater-kajo-9kw-100kg",
+              "title": "Kajo 9kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
+              "price": 0,
+              "pipedriveProductId": 18056
+            },
+            {
+              "id": "heater-taika-9kw-130kg",
+              "title": "Taika 9kW (130kg)",
+              "description": "",
+              "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+              "price": 0,
+              "pipedriveProductId": 18140
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-noki12-20kg",
+              "title": "Noki12 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-tuli-16-20kg",
+              "title": "Tuli 16 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-2x",
+              "title": "Under Bench (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "lighting-4x-25m-led",
+              "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-barrel-220.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "barrel-220",
+        "productName": "Outdoor Sauna Barrel 220",
+        "productSlug": "barrel-220",
+        "backedUpAt": "2026-01-23T13:07:09.592Z"
+      }
+    },
+    "barrel-280": {
+      "productId": "barrel-280",
+      "productName": "Outdoor Sauna Barrel 280 Deluxe",
+      "steps": [
+        {
+          "id": "rear-glass-wall",
+          "name": "Rear Glass Wall",
+          "route": "rear-glass-wall"
+        },
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "woodburning-heaters",
+          "name": "Woodburning Heaters",
+          "route": "woodburning-heaters"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Delivery",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/barrel-280/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "rear-glass-wall": {
+          "stepId": "rear-glass-wall",
+          "title": "Rear Glass Wall",
+          "description": "",
+          "options": [
+            {
+              "id": "rear-glass-wall-wooden-backwall",
+              "title": "wooden backwall",
+              "description": "",
+              "imageUrl": "/barrel-full-back-wall.png",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-half-moon-glass-backwall",
+              "title": "Half moon glass backwall",
+              "description": "",
+              "imageUrl": "/barrel-half-moon.png",
+              "price": 0
+            },
+            {
+              "id": "rear-glass-wall-full-glass-backwall",
+              "title": "full glass backwall",
+              "description": "",
+              "imageUrl": "/barrel-full-glass-wall.png",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-94kw-20kg",
+              "title": "Aava 9.4kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
+              "price": 0,
+              "pipedriveProductId": 18028
+            },
+            {
+              "id": "heater-kajo-9kw-100kg",
+              "title": "Kajo 9kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
+              "price": 0,
+              "pipedriveProductId": 18056
+            },
+            {
+              "id": "heater-kajo-105kw-100kg",
+              "title": "Kajo 10.5kW (100kg)",
+              "description": "",
+              "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
+              "price": 0,
+              "pipedriveProductId": 18049
+            },
+            {
+              "id": "heater-taika-9kw-130kg",
+              "title": "Taika 9kW (130kg)",
+              "description": "",
+              "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+              "price": 0,
+              "pipedriveProductId": 18140
+            },
+            {
+              "id": "heater-taika-105kw-200kg",
+              "title": "Taika 10.5kW (200kg)",
+              "description": "",
+              "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
+              "price": 0,
+              "pipedriveProductId": 18070
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "woodburning-heaters": {
+          "stepId": "woodburning-heaters",
+          "title": "Woodburning Heaters",
+          "description": "",
+          "options": [
+            {
+              "id": "woodburning-heaters-tuli-16-20kg",
+              "title": "Tuli 16 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-tuli-20-20kg",
+              "title": "Tuli 20 (20kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-16-190kg",
+              "title": "Pyros 16 (190kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "woodburning-heaters-pyros-20-160kg",
+              "title": "Pyros 20 (160kg)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-2x",
+              "title": "Under Bench (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            },
+            {
+              "id": "lighting-4x-25m-led",
+              "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-exterior",
+              "title": "Wood treament exterior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17839
+            },
+            {
+              "id": "electrical-assembly-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/outdoor-sauna-barrel-280-deluxe.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "barrel-280",
+        "productName": "Outdoor Sauna Barrel 280 Deluxe",
+        "productSlug": "barrel-280",
+        "backedUpAt": "2026-01-23T13:07:09.594Z"
+      }
+    },
+    "aisti-150": {
+      "productId": "aisti-150",
+      "productName": "Indoor Sauna Aisti 150",
+      "steps": [
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Cold Plunge",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/aisti-150/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-47kw-20kg",
+              "title": "Aava 4.7kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+              "price": 0,
+              "pipedriveProductId": 18042
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-1x",
+              "title": "Under Bench (1x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17834
+            },
+            {
+              "id": "lighting-2x-25m-led",
+              "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/indoor-sauna-aisti-150.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "aisti-150",
+        "productName": "Indoor Sauna Aisti 150",
+        "productSlug": "aisti-150",
+        "backedUpAt": "2026-01-23T13:07:09.597Z"
+      }
+    },
+    "aisti-220": {
+      "productId": "aisti-220",
+      "productName": "Indoor Sauna Thermo Black 220",
+      "steps": [
+        {
+          "id": "heater",
+          "name": "Heater",
+          "route": "heater"
+        },
+        {
+          "id": "lighting",
+          "name": "Lighting",
+          "route": "lighting"
+        },
+        {
+          "id": "aromas-accessories",
+          "name": "Aromas & Sauna Accessories",
+          "route": "aromas-accessories"
+        },
+        {
+          "id": "electrical-assembly",
+          "name": "Electrical Installation & Sauna Assembly",
+          "route": "electrical-assembly"
+        },
+        {
+          "id": "cold-plunge",
+          "name": "Cold Plunge",
+          "route": "cold-plunge"
+        },
+        {
+          "id": "hot-tubs",
+          "name": "Cold Plunge",
+          "route": "hot-tubs"
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "route": "/configurator/delivery"
+        },
+        {
+          "id": "quote",
+          "name": "Quote",
+          "route": "/products/aisti-220/configurator/quote"
+        }
+      ],
+      "stepData": {
+        "heater": {
+          "stepId": "heater",
+          "title": "Heater",
+          "description": "",
+          "options": [
+            {
+              "id": "heater-aava-47kw-20kg",
+              "title": "Aava 4.7kW (20kg)",
+              "description": "",
+              "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+              "price": 0,
+              "pipedriveProductId": 18042
+            },
+            {
+              "id": "heater-kajo-66kw-80kg",
+              "title": "Kajo 6.6kW (80kg)",
+              "description": "",
+              "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
+              "price": 0,
+              "pipedriveProductId": 18063
+            },
+            {
+              "id": "heater-stone-according-to-heater",
+              "title": "According to selected heater",
+              "description": "Heater stones quantity and price calculated based on selected heater model",
+              "imageUrl": "/images/heater-stones.jpg",
+              "price": 0,
+              "dynamicPricing": true,
+              "pricingCalculation": {
+                "type": "heater-stones",
+                "description": "Price calculated based on selected heater model (kg / 20kg × £29.50 per package)",
+                "basePricePerPackage": 29.5,
+                "packageSize": 20,
+                "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50"
+              }
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "lighting": {
+          "stepId": "lighting",
+          "title": "Lighting",
+          "description": "",
+          "options": [
+            {
+              "id": "lighting-1x",
+              "title": "Under Bench (1x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17834
+            },
+            {
+              "id": "lighting-2x-25m-led",
+              "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+              "description": "",
+              "imageUrl": "",
+              "price": 0
+            }
+          ],
+          "selectionType": "single",
+          "required": false,
+          "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+        },
+        "aromas-accessories": {
+          "stepId": "aromas-accessories",
+          "title": "Aromas & Sauna Accessories",
+          "description": "",
+          "options": [
+            {
+              "id": "aromas-accessories-accessory-set",
+              "title": "Accessory set",
+              "description": "",
+              "imageUrl": "/images/1769072721626-veveawvms6.webp",
+              "price": 0,
+              "pipedriveProductId": 17933
+            },
+            {
+              "id": "aromas-accessories-sauna-scent-set",
+              "title": "Sauna scent set",
+              "description": "",
+              "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+              "price": 0,
+              "pipedriveProductId": 17838
+            },
+            {
+              "id": "aromas-accessories-sauna-hats",
+              "title": "Sauna hat",
+              "description": "",
+              "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+              "price": 0
+            }
+          ],
+          "selectionType": "multi",
+          "required": false
+        },
+        "electrical-assembly": {
+          "stepId": "electrical-assembly",
+          "title": "Electrical Installation & Sauna Assembly",
+          "description": "",
+          "options": [
+            {
+              "id": "electrical-assembly-wood-treament-interior",
+              "title": "Wood treament interior",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17833
+            },
+            {
+              "id": "electrical-assembly-assembly",
+              "title": "Assembly",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17856
+            },
+            {
+              "id": "electrical-assembly-electrical-work",
+              "title": "Electrical work",
+              "description": "",
+              "imageUrl": "",
+              "price": 0,
+              "pipedriveProductId": 17971
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+        },
+        "cold-plunge": {
+          "stepId": "cold-plunge",
+          "title": "Cold Plunge",
+          "description": "",
+          "options": [
+            {
+              "id": "cold-plunge-ice-bath-ergo",
+              "title": "Ice bath Ergo",
+              "description": "",
+              "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+              "price": 0,
+              "pipedriveProductId": 17881
+            },
+            {
+              "id": "cold-plunge-ice-bath-cube",
+              "title": "Ice bath Cube",
+              "description": "",
+              "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+              "price": 0,
+              "pipedriveProductId": 16408
+            },
+            {
+              "id": "cold-plunge-ice-bath-ofuro",
+              "title": "Ice bath Ofuro",
+              "description": "",
+              "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+              "price": 0,
+              "pipedriveProductId": 17873
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+        },
+        "hot-tubs": {
+          "stepId": "hot-tubs",
+          "title": "Hot Tubs",
+          "description": "",
+          "options": [
+            {
+              "id": "hot-tubs-hot-tub-cube-200",
+              "title": "Hot tub Cube 200",
+              "description": "",
+              "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+              "price": 0,
+              "pipedriveProductId": 17812
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-200",
+              "title": "Hot tub Therma 200",
+              "description": "",
+              "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+              "price": 0,
+              "pipedriveProductId": 17782
+            },
+            {
+              "id": "hot-tubs-hot-tub-therma-220",
+              "title": "Hot tub Therma 220",
+              "description": "",
+              "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+              "price": 0,
+              "pipedriveProductId": 17952
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-s",
+              "title": "Hot tub Vellamo S",
+              "description": "",
+              "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+              "price": 0,
+              "pipedriveProductId": 16421
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-m",
+              "title": "Hot tub Vellamo M",
+              "description": "",
+              "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+              "price": 0,
+              "pipedriveProductId": 16423
+            },
+            {
+              "id": "hot-tubs-hot-tub-vellamo-l",
+              "title": "Hot tub Vellamo L",
+              "description": "",
+              "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+              "price": 0,
+              "pipedriveProductId": 16426
+            }
+          ],
+          "selectionType": "multi",
+          "required": false,
+          "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+        },
+        "delivery": {
+          "stepId": "delivery",
+          "title": "Delivery",
+          "description": "Choose your delivery option",
+          "selectionType": "single",
+          "required": true,
+          "options": [
+            {
+              "id": "delivery-standard",
+              "title": "Standard Delivery",
+              "description": "Curbside delivery within 2-3 weeks",
+              "imageUrl": "",
+              "price": 200
+            }
+          ],
+          "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
+        },
+        "quote": {
+          "stepId": "quote",
+          "title": "Quote",
+          "description": "Review your selections and generate a quote",
+          "selectionType": "single",
+          "required": false,
+          "options": []
+        }
+      },
+      "design": {
+        "backgroundColor": "#F3F0ED",
+        "textColor": "#908F8D",
+        "accentColor": "#303337",
+        "cardBackgroundColor": "#ffffff",
+        "borderColor": "#E2DEDA",
+        "fontFamily": "Questrial, sans-serif",
+        "headingFontSize": "1.875rem",
+        "bodyFontSize": "1rem",
+        "cardPadding": "1.5rem",
+        "sectionSpacing": "2rem",
+        "borderRadius": "0.5rem",
+        "imageWidth": "70%",
+        "panelWidth": "30%"
+      },
+      "priceSource": "pipedrive",
+      "quoteSettings": {
+        "companyName": "Saunamo, Arbor Eco LDA",
+        "companyAddress": "",
+        "companyCity": "",
+        "companyState": "",
+        "companyZip": "",
+        "companyCountry": "",
+        "companyPhone": "",
+        "companyEmail": "",
+        "companyWebsite": "",
+        "companyLogoUrl": "",
+        "quoteValidityDays": 30,
+        "taxRate": 0,
+        "taxEnabled": false,
+        "currency": "USD",
+        "discountCampaigns": [],
+        "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+        "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+        "notes": "",
+        "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+      },
+      "mainProductImageUrl": "/indoor-sauna-thermo-black-220-4432644.webp",
+      "_quoteGenerationMetadata": {
+        "heaterStonesCalculation": {
+          "basePricePerPackage": 29.5,
+          "packageSize": 20,
+          "calculationLogic": "Extract kg from selected heater title, divide by 20, multiply by £29.50",
+          "titleTransformation": "According to selected heater -> Heater stones"
+        },
+        "lightingMultiplierLogic": {
+          "description": "Lighting options with 'Nx' in title use base option price × multiplier",
+          "example": "2x 2.5m LED uses base option price × 2"
+        },
+        "priceSync": {
+          "source": "pipedrive",
+          "description": "Prices synced from Pipedrive product catalog before quote generation",
+          "fallback": "If Pipedrive price is 0 or missing, uses option's default price"
+        },
+        "vatCalculation": {
+          "description": "VAT rate extracted from Pipedrive product or uses quoteSettings.taxRate",
+          "calculation": "Item price × quantity × VAT rate = VAT amount",
+          "totalVat": "Sum of all item VAT amounts"
+        },
+        "discountApplication": {
+          "description": "Discounts from active campaigns applied to subtotal",
+          "types": [
+            "percentage",
+            "fixed"
+          ],
+          "calculation": "Percentage: subtotal × (discountValue / 100), Fixed: discountValue"
+        }
+      },
+      "_quoteSummaryDisplay": {
+        "grouping": "Items grouped by step (stepName)",
+        "titleTransformations": {
+          "heaterStones": "According to selected heater -> Heater stones"
+        },
+        "quantityDisplay": {
+          "heaterStones": "Shown as 'Heater stones (N packages)' in quote summary",
+          "lighting": "Shown as multiplier in quantity column"
+        }
+      },
+      "_pdfStyling": {
+        "colors": {
+          "backgroundColor": "#F3F0ED",
+          "textColor": "#908F8D",
+          "accentColor": "#303337",
+          "cardBackgroundColor": "#ffffff",
+          "borderColor": "#E2DEDA"
+        },
+        "fonts": {
+          "family": "Helvetica",
+          "sizes": {
+            "companyName": 24,
+            "title": 20,
+            "body": 12,
+            "label": 10
+          }
+        },
+        "layout": {
+          "pagePadding": 40,
+          "tableColumns": {
+            "description": "35%",
+            "priceVat0": "18%",
+            "vat": "12%",
+            "quantity": "10%",
+            "total": "25%"
+          }
+        },
+        "companyInfo": {
+          "name": "Saunamo, Arbor Eco LDA",
+          "logoUrl": "",
+          "address": "",
+          "phone": "",
+          "email": "",
+          "website": ""
+        }
+      },
+      "_backupMetadata": {
+        "productId": "aisti-220",
+        "productName": "Indoor Sauna Thermo Black 220",
+        "productSlug": "aisti-220",
+        "backedUpAt": "2026-01-23T13:07:09.605Z"
+      }
+    }
+  }
+}

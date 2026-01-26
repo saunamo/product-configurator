@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Quote - {{productName}}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Questrial', Arial, sans-serif; background-color: #F3F0ED; line-height: 1.6;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #F3F0ED; padding: 20px;">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <table role="presentation" style="width: 600px; max-width: 100%; background-color: #F3F0ED; border-collapse: collapse;">
+          <!-- Logo Section -->
+          <tr>
+            <td style="padding: 30px 20px; text-align: center; background-color: #F3F0ED;">
+              <div style="color: #303337; font-size: 32px; font-weight: bold; letter-spacing: 2px;">
+                {{companyName}}
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 20px 20px 10px 20px; background-color: #F3F0ED;">
+              <h2 style="margin: 0; color: #303337; font-size: 24px; font-weight: normal;">
+                Hi {{customerName}},
+              </h2>
+            </td>
+          </tr>
+          
+          <!-- Product Image -->
+          {{#if productImageUrl}}
+          <tr>
+            <td style="padding: 20px; background-color: #F3F0ED;">
+              <img src="{{productImageUrl}}" alt="{{productName}}" style="width: 100%; max-width: 600px; height: auto; border-radius: 8px; display: block;" />
+            </td>
+          </tr>
+          {{/if}}
+          
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 20px; background-color: #F3F0ED;">
+              <p style="margin: 0 0 30px 0; color: #303337; font-size: 16px; line-height: 1.6;">
+                Thank you for requesting a quote for a <span style="color: #D4A574;">{{productName}}</span> from {{companyName}}! View the quote easily in our quote portal through this link:
+              </p>
+              
+              <!-- View Quote Button -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                <tr>
+                  <td align="center" style="padding: 0;">
+                    <a href="{{quotePortalUrl}}" style="display: inline-block; padding: 15px 40px; background-color: #303337; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold; text-align: center;">
+                      View quote
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- Quote Summary -->
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; margin: 30px 0;">
+                <h3 style="margin: 0 0 15px 0; color: #303337; font-size: 18px; font-weight: bold;">Quote Summary</h3>
+                <p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Quote ID:</strong> {{quoteId}}</p>
+                <p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Total:</strong> £{{total}}</p>
+                {{#if notes}}
+                <p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Notes:</strong> {{notes}}</p>
+                {{/if}}
+              </div>
+              
+              <p style="margin: 30px 0 0 0; color: #303337; font-size: 16px;">
+                If you have any questions about this quote, please don't hesitate to contact us.
+              </p>
+              
+              <p style="margin: 20px 0 0 0; color: #303337; font-size: 16px;">
+                Best regards,<br>
+                <strong>The {{companyName}} Team</strong>
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px; text-align: center; background-color: #F3F0ED;">
+              <p style="margin: 0; color: #908F8D; font-size: 12px;">
+                This is an automated email. Please do not reply directly to this message.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

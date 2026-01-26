@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Questrial:wght@400&display=swap');
+
+:root {
+  --background: #F3F0ED;
+  --foreground: #908F8D;
+  --button-bg: #303337;
+  --divider-bg: #E2DEDA;
+}
+
+html, body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Questrial', sans-serif !important;
+}
+
+*, *::before, *::after {
+  font-family: 'Questrial', sans-serif !important;
+}
+
+/* Prevent Cursor IDE overlays from blocking interactions */
+[data-cursor-element-id] {
+  pointer-events: none !important;
+}
+
+/* Ensure interactive elements are clickable */
+button, [role="button"], a, input[type="button"], input[type="submit"] {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Admin panel input fields - white text */
+/* Exclude quote form inputs which should have black text */
+input[type="text"]:not(.quote-form-input),
+input[type="number"]:not(.quote-form-input),
+input[type="email"]:not(.quote-form-input),
+input[type="url"]:not(.quote-form-input),
+textarea:not(.quote-form-input),
+select:not(.quote-form-input) {
+  color: #ffffff !important;
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

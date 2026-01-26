@@ -1,0 +1,422 @@
+{
+  "productName": "The Skuare",
+  "steps": [
+    {
+      "id": "rear-glass-wall",
+      "name": "Rear Wall",
+      "route": "/configurator/rear-glass-wall"
+    },
+    {
+      "id": "lighting",
+      "name": "Lighting",
+      "route": "/configurator/lighting"
+    },
+    {
+      "id": "heater",
+      "name": "Heater",
+      "route": "/configurator/heater"
+    },
+    {
+      "id": "aromas-accessories",
+      "name": "Aromas & Sauna Accessories",
+      "route": "/configurator/aromas-accessories"
+    },
+    {
+      "id": "electrical-assembly",
+      "name": "Electrical Installation & Sauna Assembly",
+      "route": "/configurator/electrical-assembly"
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery",
+      "route": "/configurator/delivery"
+    },
+    {
+      "id": "cold-plunge",
+      "name": "Cold Plunge",
+      "route": "/configurator/cold-plunge"
+    }
+  ],
+  "stepData": {
+    "rear-glass-wall": {
+      "stepId": "rear-glass-wall",
+      "title": "Rear Wall Options",
+      "description": "Choose your rear glass wall option for barrel and cube saunas",
+      "selectionType": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "glass-half-moon",
+          "title": "Half Moon Glass Wall",
+          "description": "Elegant half moon design for enhanced aesthetics",
+          "imageUrl": "/cube-back-moon.jpg",
+          "price": 0
+        },
+        {
+          "id": "wooden-backwall",
+          "title": "Wooden backwall",
+          "description": "Traditional wooden back wall option",
+          "imageUrl": "/cube-full-back-wall.jpg",
+          "price": 0
+        },
+        {
+          "id": "full-glass-backwall",
+          "title": "Full glass backwall",
+          "description": "Full glass back wall for maximum visibility",
+          "imageUrl": "/barrel-full-glass-wall.png",
+          "price": 0
+        },
+        {
+          "id": "glass-standard",
+          "title": "Standard Glass Wall",
+          "description": "Premium tempered glass with standard finish",
+          "imageUrl": "/images/glass-standard.jpg",
+          "price": 0
+        },
+        {
+          "id": "glass-frosted",
+          "title": "Frosted Glass Wall",
+          "description": "Elegant frosted finish for enhanced privacy",
+          "imageUrl": "/images/glass-frosted.jpg",
+          "price": 250
+        },
+        {
+          "id": "glass-clear",
+          "title": "Clear Glass Wall",
+          "description": "Crystal clear glass for maximum visibility",
+          "imageUrl": "/images/glass-clear.jpg",
+          "price": 150
+        }
+      ]
+    },
+    "lighting": {
+      "stepId": "lighting",
+      "title": "Lighting",
+      "description": "Select your preferred lighting configuration",
+      "selectionType": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "lighting-under-bench",
+          "title": "Under Bench",
+          "description": "Subtle lighting installed under the bench for ambient illumination",
+          "imageUrl": "/images/lighting-under-bench.jpg",
+          "price": 350
+        },
+        {
+          "id": "lighting-under-bench-backrests",
+          "title": "Under Bench + Behind Backrests",
+          "description": "Comprehensive lighting solution with under bench and backrest illumination",
+          "imageUrl": "/images/lighting-under-bench-backrests.jpg",
+          "price": 550
+        },
+        {
+          "id": "lighting-wall-only",
+          "title": "Wall Light Only",
+          "description": "Minimalist wall-mounted lighting for focused illumination",
+          "imageUrl": "/images/lighting-wall-only.jpg",
+          "price": 200
+        }
+      ]
+    },
+    "heater": {
+      "stepId": "heater",
+      "title": "Heater",
+      "description": "Choose your sauna heater",
+      "selectionType": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "heater-standard",
+          "title": "Standard Heater",
+          "description": "Reliable 6kW electric heater with digital controls",
+          "imageUrl": "/images/heater-standard.jpg",
+          "price": 1200
+        },
+        {
+          "id": "heater-premium",
+          "title": "Premium Heater",
+          "description": "Advanced 9kW heater with WiFi connectivity and app control",
+          "imageUrl": "/images/heater-premium.jpg",
+          "price": 1800
+        },
+        {
+          "id": "heater-wood",
+          "title": "Wood-Fired Heater",
+          "description": "Traditional wood-burning heater for authentic sauna experience",
+          "imageUrl": "/images/heater-wood.jpg",
+          "price": 2500
+        }
+      ]
+    },
+    "aromas-accessories": {
+      "stepId": "aromas-accessories",
+      "title": "Aromas & Sauna Accessories",
+      "description": "Enhance your sauna experience with aromas and accessories",
+      "selectionType": "multi",
+      "required": false,
+      "options": [
+        {
+          "id": "aroma-essentials",
+          "title": "Aroma Essential Set",
+          "description": "Curated collection of eucalyptus, birch, and pine essential oils",
+          "imageUrl": "/images/aroma-essentials.jpg",
+          "price": 45
+        },
+        {
+          "id": "accessory-bucket",
+          "title": "Traditional Water Bucket",
+          "description": "Handcrafted wooden bucket with ladle for authentic sauna ritual",
+          "imageUrl": "/images/accessory-bucket.jpg",
+          "price": 85
+        },
+        {
+          "id": "accessory-timer",
+          "title": "Sauna Timer",
+          "description": "Premium hourglass timer for perfect sauna sessions",
+          "imageUrl": "/images/accessory-timer.jpg",
+          "price": 35
+        },
+        {
+          "id": "accessory-towels",
+          "title": "Premium Sauna Towels",
+          "description": "Set of 4 organic cotton sauna towels",
+          "imageUrl": "/images/accessory-towels.jpg",
+          "price": 120
+        }
+      ]
+    },
+    "electrical-assembly": {
+      "stepId": "electrical-assembly",
+      "title": "Electrical Installation & Sauna Assembly",
+      "description": "Select installation and assembly services",
+      "selectionType": "multi",
+      "required": false,
+      "options": [
+        {
+          "id": "electrical-installation",
+          "title": "Electrical Installation",
+          "description": "Professional electrical installation by certified electricians",
+          "imageUrl": "/images/electrical-installation.jpg",
+          "price": 800
+        },
+        {
+          "id": "sauna-assembly",
+          "title": "Sauna Assembly",
+          "description": "Complete assembly service by our expert team",
+          "imageUrl": "/images/sauna-assembly.jpg",
+          "price": 1200
+        },
+        {
+          "id": "full-service",
+          "title": "Full Service Package",
+          "description": "Complete electrical installation and assembly service",
+          "imageUrl": "/images/full-service.jpg",
+          "price": 1800
+        }
+      ]
+    },
+    "delivery": {
+      "stepId": "delivery",
+      "title": "Delivery",
+      "description": "Choose your delivery option",
+      "selectionType": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "delivery-standard",
+          "title": "Standard Delivery",
+          "description": "Curbside delivery within 2-3 weeks",
+          "imageUrl": "/images/delivery-standard.jpg",
+          "price": 200
+        },
+        {
+          "id": "delivery-express",
+          "title": "Express Delivery",
+          "description": "Priority delivery within 1 week",
+          "imageUrl": "/images/delivery-express.jpg",
+          "price": 400
+        },
+        {
+          "id": "delivery-white-glove",
+          "title": "White Glove Delivery",
+          "description": "Premium delivery with placement and setup assistance",
+          "imageUrl": "/images/delivery-white-glove.jpg",
+          "price": 600
+        }
+      ]
+    },
+    "cold-plunge": {
+      "stepId": "cold-plunge",
+      "title": "Cold Plunge",
+      "description": "Add a cold plunge experience to complement your sauna",
+      "selectionType": "single",
+      "required": false,
+      "options": [
+        {
+          "id": "cold-plunge-basic",
+          "title": "Basic Cold Plunge",
+          "description": "Compact cold plunge tub with basic features",
+          "imageUrl": "/images/cold-plunge-basic.jpg",
+          "price": 2500
+        },
+        {
+          "id": "cold-plunge-premium",
+          "title": "Premium Cold Plunge",
+          "description": "Advanced cold plunge with temperature control and filtration",
+          "imageUrl": "/images/cold-plunge-premium.jpg",
+          "price": 4500
+        },
+        {
+          "id": "cold-plunge-none",
+          "title": "No Cold Plunge",
+          "description": "Continue without cold plunge",
+          "imageUrl": "/images/cold-plunge-none.jpg",
+          "price": 0
+        }
+      ]
+    }
+  },
+  "design": {
+    "backgroundColor": "#faf9f7",
+    "textColor": "#1a3a2e",
+    "accentColor": "#1a3a2e",
+    "cardBackgroundColor": "#ffffff",
+    "borderColor": "#e5e7eb",
+    "fontFamily": "Arial, Helvetica, sans-serif",
+    "headingFontSize": "1.875rem",
+    "bodyFontSize": "1rem",
+    "cardPadding": "1.5rem",
+    "sectionSpacing": "2rem",
+    "borderRadius": "0.5rem",
+    "imageWidth": "70%",
+    "panelWidth": "30%"
+  },
+  "priceSource": "pipedrive",
+  "quoteSettings": {
+    "companyName": "SaunaMo",
+    "companyAddress": "",
+    "companyCity": "",
+    "companyState": "",
+    "companyZip": "",
+    "companyCountry": "",
+    "companyPhone": "",
+    "companyEmail": "",
+    "companyWebsite": "",
+    "companyLogoUrl": "",
+    "quoteValidityDays": 30,
+    "taxRate": 0,
+    "taxEnabled": false,
+    "currency": "USD",
+    "discountCampaigns": [],
+    "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+    "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+    "notes": "",
+    "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+  },
+  "globalSettings": {
+    "stepNames": {
+      "aromas-accessories": "Accessories",
+      "electrical-assembly": "Installation",
+      "hot-tubs": "Hot Tubs"
+    },
+    "stepSubheaders": {},
+    "stepImages": {
+      "electrical-assembly": "/images/1769073363578-3ap68uegbf2.jpg",
+      "lighting": "/images/1769073539150-w1298ql4wj.jpg",
+      "cold-plunge": "/images/1769074673291-vn7r482tj1l.webp",
+      "delivery": "/images/1769084980555-i3qjrai1i89.png",
+      "hot-tubs": "/images/1769085017872-xx6wut271z.webp",
+      "aromas-accessories": "/images/1769169330318-e9etacwqp0e.webp"
+    },
+    "optionImages": {
+      "aromas-accessories-accessory-set": "/images/1769072721626-veveawvms6.webp",
+      "aromas-accessories-sauna-scent-set": "/images/1769072729343-9d1tu44grn.webp",
+      "aromas-accessories-sauna-hats": "/images/1769072748464-fjgmyzm8fq.jpg",
+      "heater-noki12-20kg": "/images/1769072768893-pvbso478r5.webp",
+      "heater-noki-12-20kg": "/images/1769072776224-5zan3e6f3x.webp",
+      "heater-pyros-16-190kg": "/images/1769072781898-8up6kvj6uc6.webp",
+      "heater-taika-105kw-200kg": "/images/1769072850701-sot2uq6kri.webp",
+      "heater-taika-9kw-130kg": "/images/1769072854724-41o3ijnycpa.webp",
+      "heater-kajo-105kw-100kg": "/images/1769072861496-c4v8vy4g9cn.webp",
+      "heater-kajo-9kw-100kg": "/images/1769072897850-ijdb9qujb5l.webp",
+      "heater-aava-94kw-20kg": "/images/1769072919112-tq8m05ttrma.webp",
+      "heater-aava-47kw-20kg": "/images/1769072924930-naxhh9ct5e.webp",
+      "heater-kajo-66kw-80kg": "/images/1769072939937-5y9dgnqzh2a.webp",
+      "cold-plunge-ice-bath-ergo": "/images/1769073038605-2hzpoua13ma.webp",
+      "cold-plunge-ice-bath-cube": "/images/1769073043001-mpi3sz4rql7.webp",
+      "cold-plunge-ice-bath-ofuro": "/images/1769073046790-0nkedztwc2pj.webp",
+      "hot-tubs-hot-tub-cube-200": "/images/1769073486169-3jwfyqrmfh6.webp",
+      "hot-tubs-hot-tub-therma-200": "/images/1769073489412-gvscb8qtxa.webp",
+      "hot-tubs-hot-tub-therma-220": "/images/1769073495023-oqy7hldi4b.webp",
+      "hot-tubs-hot-tub-vellamo-s": "/images/1769073500919-yl8itok6zgc.webp",
+      "hot-tubs-hot-tub-vellamo-m": "/images/1769073506017-bwpva4xkymm.webp",
+      "hot-tubs-hot-tub-vellamo-l": "/images/1769073511819-bpi441in7gp.webp",
+      "heater-according-to-selected-heater": "/images/1769073999533-cq05kp070vi.webp",
+      "stones-according-to-selected-heater": "/images/1769163278618-j26ztxiz44g.webp",
+      "heater-stone-according-to-heater": "/images/1769163548710-a88kdw7q75d.webp"
+    },
+    "optionTitles": {
+      "aromas-accessories-accessory-set": "Accessory set",
+      "aromas-accessories-sauna-scent-set": "Sauna scent set",
+      "aromas-accessories-sauna-hats": "Sauna hat",
+      "lighting-1x": "Under Bench (1x 2.5m LED)",
+      "lighting-2x": "Under Bench (2x 2.5m LED)",
+      "electrical-assembly-interior": "Wood treament interior",
+      "electrical-assembly-electrical-work": "Electrical work",
+      "electrical-assembly-assembly": "Assembly",
+      "lighting-2x-25m-led": "Under Bench + Behind Backrests (2x 2.5m LED)",
+      "lighting-4x-25m-led": "Under Bench + Behind Backrests (4x 2.5m LED)",
+      "heater-according-to-selected-heater": "Heater stones cccording to selected heaters size",
+      "cube_glass-half-moon": "Half Moon Glass ",
+      "stones-according-to-selected-heater": "Stones according to selected heater",
+      "heater-stone-according-to-heater": "Add Heater Stones",
+      "delivery-standard": "Standard Delivery UK"
+    },
+    "optionPipedriveProducts": {
+      "aromas-accessories-accessory-set": 17933,
+      "aromas-accessories-sauna-scent-set": 17838,
+      "heater-aava-47kw-20kg": 18042,
+      "heater-kajo-66kw-80kg": 18063,
+      "heater-according-to-selected-heater": 17944,
+      "heater-aava-94kw-20kg": 18028,
+      "heater-kajo-9kw-100kg": 18056,
+      "heater-kajo-105kw-100kg": 18049,
+      "heater-taika-9kw-130kg": 18140,
+      "heater-taika-105kw-200kg": 18070,
+      "heater-pyros-16-190kg": 18163,
+      "heater-noki-12-20kg": 18161,
+      "heater-noki12-20kg": 18161,
+      "hot-tubs-hot-tub-cube-200": 17812,
+      "hot-tubs-hot-tub-therma-200": 17782,
+      "hot-tubs-hot-tub-therma-220": 17952,
+      "hot-tubs-hot-tub-vellamo-s": 16421,
+      "hot-tubs-hot-tub-vellamo-m": 16423,
+      "hot-tubs-hot-tub-vellamo-l": 16426,
+      "cube_glass-half-moon": 17725,
+      "barrel_glass-half-moon": 17725,
+      "barrel_full-glass-backwall": 17726,
+      "lighting-1x": 17834,
+      "electrical-installation": 17971,
+      "sauna-assembly": 17856,
+      "electrical-assembly-wood-treament-exterior": 17839,
+      "electrical-assembly-interior": 17833,
+      "electrical-assembly-wood-treament-interior": 17833,
+      "electrical-assembly-assembly": 17856,
+      "electrical-assembly-electrical-work": 17971,
+      "cold-plunge-ice-bath-ergo": 17881,
+      "cold-plunge-ice-bath-cube": 16408,
+      "cold-plunge-ice-bath-ofuro": 17873,
+      "stones-according-to-selected-heater": 17944,
+      "heater-stone-according-to-heater": 17944,
+      "delivery-standard": 18212
+    },
+    "optionIncluded": {
+      "barrel_wooden-backwall": true,
+      "cube_wooden-backwall": true,
+      "cube_glass-half-moon": false
+    },
+    "stepMoreInfoEnabled": {},
+    "stepMoreInfoUrl": {}
+  }
+}
