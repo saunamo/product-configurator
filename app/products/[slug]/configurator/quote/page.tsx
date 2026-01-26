@@ -178,21 +178,7 @@ export default function ProductQuotePage() {
     return total;
   };
 
-  // Listen for generateQuote event from NavigationButtons
-  useEffect(() => {
-    const handleGenerateQuoteEvent = () => {
-      if (customerEmail) {
-        handleGenerateQuote();
-      } else {
-        setError("Please enter your email address");
-      }
-    };
-    
-    window.addEventListener('generateQuote', handleGenerateQuoteEvent);
-    return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
-  }, [customerEmail, handleGenerateQuote]);
-
-  const handleGenerateQuote = async () => {
+  const handleGenerateQuote = useCallback(async () => {
     if (!customerEmail) {
       setError("Please enter your email address");
       return;
