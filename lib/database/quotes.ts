@@ -151,6 +151,9 @@ async function getQuoteFromPipedrive(quoteId: string): Promise<Quote | null> {
  * Uses Pipedrive for Netlify, file system for local dev
  */
 export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise<void> {
+  console.log(`[saveQuote] Saving quote ${quote.id}, items count: ${quote.items?.length || 0}`);
+  console.log(`[saveQuote] Quote items:`, JSON.stringify(quote.items, null, 2));
+  
   // In serverless (Netlify), use Pipedrive
   if (isServerless && pipedriveDealId) {
     await saveQuoteToPipedrive(quote, pipedriveDealId);
