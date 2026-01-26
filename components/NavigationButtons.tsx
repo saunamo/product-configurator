@@ -46,7 +46,12 @@ export default function NavigationButtons({
 
   // Navigate without page reload - update URL directly without Next.js router
   const handleNavigate = (route: string) => {
-    // Update URL directly using history API (no Next.js navigation = no reload)
+    // For quote step, use Next.js router to go to dedicated quote page
+    if (route.includes('/quote')) {
+      router.replace(route);
+      return;
+    }
+    // For other steps, use instant navigation
     window.history.pushState({}, '', route);
     // Dispatch custom event to notify page component
     window.dispatchEvent(new CustomEvent('stepchange', { detail: { route } }));
