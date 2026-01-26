@@ -41,12 +41,13 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
     return step.route;
   };
 
-  // Navigate without page reload
+  // Navigate without page reload - update URL using history API only
   const handleStepClick = (step: Step) => {
     const route = getStepRoute(step);
-    router.push(route);
-    // Update URL without reload using history API
+    // Update URL without triggering Next.js navigation (no reload)
     window.history.pushState({}, '', route);
+    // Trigger a custom event to notify the page component to update
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   return (

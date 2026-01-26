@@ -44,11 +44,12 @@ export default function NavigationButtons({
     return "/configurator/quote";
   };
 
-  // Navigate without page reload using router.push with scroll: false
+  // Navigate without page reload - update URL using history API only
   const handleNavigate = (route: string) => {
-    router.push(route);
-    // Update URL without reload using history API
+    // Update URL without triggering Next.js navigation (no reload)
     window.history.pushState({}, '', route);
+    // Trigger a custom event to notify the page component to update
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   return (
