@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Deployment
+
+This project is deployed on Netlify and automatically deploys on every push to the `main` branch.
+
 ## Getting Started
 
 First, run the development server:
