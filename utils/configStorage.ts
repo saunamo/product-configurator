@@ -48,10 +48,14 @@ export async function loadConfigFromStorage(): Promise<AdminConfig | null> {
   if (typeof window === "undefined") return null;
 
   try {
-    // Try to load from server first
-    const response = await fetch("/api/admin/config", {
+    // Try to load from server first (with cache-busting)
+    const response = await fetch(`/api/admin/config?t=${Date.now()}`, {
       method: "GET",
       cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+      },
     });
 
     if (response.ok) {
