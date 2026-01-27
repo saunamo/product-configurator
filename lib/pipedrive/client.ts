@@ -324,10 +324,13 @@ export async function createNote(noteData: {
   pinned_to_person_flag?: number;
   pinned_to_organization_flag?: number;
 }) {
-  return pipedriveRequest<{ data: any }>("/notes", {
+  console.log(`[Pipedrive createNote] deal_id: ${noteData.deal_id}, content_len: ${noteData.content?.length}`);
+  const result = await pipedriveRequest<{ data: any; success: boolean }>("/notes", {
     method: "POST",
     body: JSON.stringify(noteData),
   });
+  console.log(`[Pipedrive createNote] Response - success: ${result?.success}, note_id: ${result?.data?.id}`);
+  return result;
 }
 
 /**

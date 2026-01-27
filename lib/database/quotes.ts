@@ -38,185 +38,133 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
     throw new Error("No Pipedrive deal ID provided. Cannot save quote.");
   }
 
+  console.log(`\n========================================`);
+  console.log(`[Quote Save] STARTING QUOTE SAVE TO PIPEDRIVE`);
+  console.log(`[Quote Save] Deal ID: ${dealId}`);
+  console.log(`[Quote Save] Quote ID: ${quote.id}`);
+  console.log(`========================================\n`);
+
   try {
-    // Store full quote JSON in a custom field or as a note
-    // Using a custom field named "quote_data" (you'll need to create this in Pipedrive)
-    // Or we can use the deal's notes field
-    
     const quoteData = {
       ...quote,
       createdAt: quote.createdAt instanceof Date ? quote.createdAt.toISOString() : quote.createdAt,
       expiresAt: quote.expiresAt instanceof Date ? quote.expiresAt.toISOString() : quote.expiresAt,
     };
     
-    console.log(`[Quote Save] Saving quote to Pipedrive deal ${dealId} with ${quoteData.items?.length || 0} items`);
-    console.log(`[Quote Save] Quote ID: ${quote.id}`);
-    console.log(`[Quote Save] Quote items (first 2):`, JSON.stringify(quoteData.items?.slice(0, 2), null, 2));
+    console.log(`[Quote Save] Quote has ${quoteData.items?.length || 0} items`);
 
-    // Store full quote JSON as a note in Pipedrive
-    // Retry logic for Pipedrive API calls (sometimes they can be flaky)
-    let lastError: any = null;
-    let noteCreated = false;
-    let createdNoteId: number | undefined;
+    // Create the note content - use compact JSON
+    const noteContent = `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData)}`;
+    console.log(`[Quote Save] Note content length: ${noteContent.length} characters`);
     
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        console.log(`[Quote Save] Attempt ${attempt}/3: Creating note in Pipedrive deal ${dealId}...`);
-        
-        // Create the note content - use compact JSON to avoid size issues
-        const noteContent = `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData)}`;
-        console.log(`[Quote Save] Note content length: ${noteContent.length} characters`);
-        
-        // Check if content is too large (Pipedrive has limits)
-        if (noteContent.length > 50000) {
-          console.warn(`[Quote Save] WARNING: Note content is large (${noteContent.length} chars). Pipedrive may reject it.`);
-        }
-        
-        // Create note - EXACTLY like the test endpoint that works
-        const noteResponse = await createNote({
-          content: noteContent,
-          deal_id: dealId,
-          pinned_to_deal_flag: 1,
-        });
-        
-        // Check if we got a valid response
-        if (!noteResponse || !noteResponse.data) {
-          throw new Error(`Invalid response from createNote: ${JSON.stringify(noteResponse)}`);
-        }
-        
-        createdNoteId = noteResponse.data.id;
-        if (!createdNoteId) {
-          throw new Error(`Note created but no ID returned. Response: ${JSON.stringify(noteResponse)}`);
-        }
-        
-        console.log(`✅ Note created successfully! Note ID: ${createdNoteId}, Deal ID: ${dealId}`);
-        console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note with ${quoteData.items?.length || 0} items (attempt ${attempt})`);
-        
-        // Wait longer for indexing (Pipedrive can be slow)
-        console.log(`[Quote Save] Waiting 2 seconds for note to be indexed...`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Verify the note was actually created
-        console.log(`[Quote Save] Verifying note creation...`);
-        const { getDealNotes } = await import("@/lib/pipedrive/client");
-        const notesResponse = await getDealNotes(dealId);
-        const notes = notesResponse.data || [];
-        
-        console.log(`[Quote Save] Found ${notes.length} total notes in deal ${dealId}`);
-        
-        const foundNote = notes.find((note: any) => 
-          note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
-        );
-        
-        if (foundNote) {
-          console.log(`✅ Verification successful: Note found in deal ${dealId} (Note ID: ${foundNote.id})`);
-          noteCreated = true;
-          return; // Success - exit function
-        } else {
-          // Note was not found - this is a CRITICAL failure
-          // Even if we got a note ID, if we can't find it, it wasn't actually created
-          console.error(`❌ CRITICAL: Note creation reported success (ID: ${createdNoteId}) but note NOT found in deal ${dealId}!`);
-          console.error(`❌ Total notes in deal: ${notes.length}`);
-          console.error(`❌ Available note IDs: ${notes.map((n: any) => n.id).join(', ') || 'none'}`);
-          console.error(`❌ This means the note was NOT actually created, despite getting a note ID`);
-          
-          // Try one more time with longer wait
-          if (attempt < 3) {
-            console.log(`[Quote Save] Retrying verification with longer wait (attempt ${attempt + 1})...`);
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 more seconds
-            const retryNotesResponse = await getDealNotes(dealId);
-            const retryNotes = retryNotesResponse.data || [];
-            const retryFoundNote = retryNotes.find((note: any) => 
-              note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
-            );
-            
-            if (retryFoundNote) {
-              console.log(`✅ Note found on retry verification! Note ID: ${retryFoundNote.id}`);
-              noteCreated = true;
-              return;
-            }
-          }
-          
-          // If we still can't find it, this is a failure
-          throw new Error(`Note creation failed: Got note ID ${createdNoteId} but note not found in deal ${dealId} after verification`);
-        }
-      } catch (noteError: any) {
-        lastError = noteError;
-        // Extract error details - Pipedrive errors come from pipedriveRequest
-        const errorMessage = noteError?.message || String(noteError);
-        const errorStatus = noteError?.status;
-        const errorResponseText = noteError?.responseText || 'N/A';
-        
-        console.error(`[Quote Save] Attempt ${attempt}/3 FAILED:`);
-        console.error(`[Quote Save] Error message: ${errorMessage}`);
-        console.error(`[Quote Save] Error status: ${errorStatus}`);
-        console.error(`[Quote Save] Error response: ${errorResponseText}`);
-        console.error(`[Quote Save] Full error object:`, JSON.stringify(noteError, Object.getOwnPropertyNames(noteError)));
-        
-        // Check if it's a content size issue
-        if (noteContent.length > 50000) {
-          console.error(`[Quote Save] WARNING: Note content is large (${noteContent.length} chars). Pipedrive may have size limits.`);
-          // Try creating a smaller note with just essential data
-          if (attempt === 1) {
-            console.log(`[Quote Save] Attempting to create smaller note with essential data only...`);
-            try {
-              const essentialData = {
-                id: quoteData.id,
-                productName: quoteData.productName,
-                customerEmail: quoteData.customerEmail,
-                customerName: quoteData.customerName,
-                items: quoteData.items,
-                total: quoteData.total,
-                subtotal: quoteData.subtotal,
-                createdAt: quoteData.createdAt,
-              };
-              const smallerContent = `QUOTE_DATA_JSON:\n${JSON.stringify(essentialData)}`;
-              console.log(`[Quote Save] Smaller note content length: ${smallerContent.length} characters`);
-              
-              const smallerNoteResponse = await createNote({
-                content: smallerContent,
-                deal_id: dealId,
-                pinned_to_deal_flag: 1,
-              });
-              
-              if (smallerNoteResponse?.data?.id) {
-                console.log(`✅ Smaller note created successfully! Note ID: ${smallerNoteResponse.data.id}`);
-                createdNoteId = smallerNoteResponse.data.id;
-                noteCreated = true;
-                return; // Success with smaller note
-              }
-            } catch (smallerError: any) {
-              console.error(`[Quote Save] Smaller note also failed:`, smallerError?.message);
-            }
-          }
-        }
-        
-        // If it's a rate limit error, wait longer
-        if (noteError?.status === 429 || errorMessage?.includes('rate limit')) {
-          const waitTime = attempt * 2000; // 2s, 4s, 6s
-          console.log(`[Quote Save] Rate limited, waiting ${waitTime}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        } else if (attempt < 3) {
-          // Wait before retrying (exponential backoff)
-          const waitTime = attempt * 1000; // 1s, 2s
-          console.log(`[Quote Save] Waiting ${waitTime}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        }
-      }
+    // STEP 1: Create the note
+    console.log(`\n[Quote Save] STEP 1: Creating note in Pipedrive...`);
+    console.log(`[Quote Save] Calling createNote with deal_id: ${dealId}`);
+    
+    let noteResponse: any;
+    try {
+      noteResponse = await createNote({
+        content: noteContent,
+        deal_id: dealId,
+        pinned_to_deal_flag: 1,
+      });
+      
+      console.log(`[Quote Save] createNote RAW RESPONSE:`);
+      console.log(JSON.stringify(noteResponse, null, 2));
+    } catch (createError: any) {
+      console.error(`\n❌ [Quote Save] createNote THREW AN ERROR:`);
+      console.error(`❌ Error name: ${createError?.name}`);
+      console.error(`❌ Error message: ${createError?.message}`);
+      console.error(`❌ Error stack: ${createError?.stack?.substring(0, 300)}`);
+      throw createError;
     }
     
-    // If we get here, all retries failed
-    console.error(`❌ CRITICAL: Failed to save quote to Pipedrive after 3 attempts`);
-    console.error(`❌ Last error:`, {
-      message: lastError?.message,
-      status: lastError?.status,
-      stack: lastError?.stack?.substring(0, 500),
-    });
-    console.error(`❌ Deal ${dealId} was created but quote note was NOT saved`);
-    console.error(`❌ Quote ${quote.id} will NOT be retrievable from Pipedrive`);
-    throw new Error(`Failed to save quote to Pipedrive: ${lastError?.message || 'Unknown error'}`);
-  } catch (error) {
-    console.error("Failed to save quote to Pipedrive:", error);
+    // STEP 2: Check response
+    console.log(`\n[Quote Save] STEP 2: Checking response...`);
+    console.log(`[Quote Save] noteResponse exists: ${!!noteResponse}`);
+    console.log(`[Quote Save] noteResponse.data exists: ${!!noteResponse?.data}`);
+    console.log(`[Quote Save] noteResponse.data.id: ${noteResponse?.data?.id}`);
+    console.log(`[Quote Save] noteResponse.success: ${noteResponse?.success}`);
+    
+    if (!noteResponse || !noteResponse.data || !noteResponse.data.id) {
+      console.error(`\n❌ [Quote Save] INVALID RESPONSE - note was NOT created`);
+      console.error(`❌ Full response: ${JSON.stringify(noteResponse)}`);
+      throw new Error(`Note creation failed - invalid response: ${JSON.stringify(noteResponse)}`);
+    }
+    
+    const createdNoteId = noteResponse.data.id;
+    console.log(`✅ [Quote Save] Note ID received: ${createdNoteId}`);
+    
+    // STEP 3: Wait for Pipedrive to index
+    console.log(`\n[Quote Save] STEP 3: Waiting 3 seconds for Pipedrive to index...`);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // STEP 4: Verify the note exists
+    console.log(`\n[Quote Save] STEP 4: Verifying note exists in deal ${dealId}...`);
+    
+    let notesResponse: any;
+    try {
+      notesResponse = await getDealNotes(dealId);
+      console.log(`[Quote Save] getDealNotes RAW RESPONSE:`);
+      console.log(JSON.stringify(notesResponse, null, 2));
+    } catch (getError: any) {
+      console.error(`\n❌ [Quote Save] getDealNotes THREW AN ERROR:`);
+      console.error(`❌ Error message: ${getError?.message}`);
+      throw getError;
+    }
+    
+    const notes = notesResponse?.data || [];
+    console.log(`[Quote Save] Total notes found in deal: ${notes.length}`);
+    
+    if (notes.length > 0) {
+      console.log(`[Quote Save] Note IDs in deal: ${notes.map((n: any) => n.id).join(', ')}`);
+      notes.forEach((note: any, idx: number) => {
+        console.log(`[Quote Save] Note ${idx + 1}: ID=${note.id}, content starts with: ${note.content?.substring(0, 50)}...`);
+      });
+    }
+    
+    // Check if our note is there
+    const foundNote = notes.find((note: any) => 
+      note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
+    );
+    
+    if (foundNote) {
+      console.log(`\n✅✅✅ [Quote Save] SUCCESS! Note verified in deal ${dealId}`);
+      console.log(`✅ Note ID: ${foundNote.id}`);
+      console.log(`✅ Content length: ${foundNote.content?.length || 0} chars`);
+      return; // Success!
+    }
+    
+    // Note not found - try one more time with longer wait
+    console.log(`\n⚠️ [Quote Save] Note NOT found yet, waiting 5 more seconds...`);
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    const retryResponse = await getDealNotes(dealId);
+    const retryNotes = retryResponse?.data || [];
+    console.log(`[Quote Save] Retry: Total notes found: ${retryNotes.length}`);
+    
+    const retryFoundNote = retryNotes.find((note: any) => 
+      note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
+    );
+    
+    if (retryFoundNote) {
+      console.log(`\n✅✅✅ [Quote Save] SUCCESS on retry! Note verified in deal ${dealId}`);
+      return;
+    }
+    
+    // CRITICAL FAILURE - note was not created despite getting an ID
+    console.error(`\n❌❌❌ [Quote Save] CRITICAL FAILURE ❌❌❌`);
+    console.error(`❌ createNote returned ID ${createdNoteId} but note NOT found in deal ${dealId}`);
+    console.error(`❌ This is a Pipedrive API issue - the note was not actually created`);
+    console.error(`❌ Total notes in deal after retries: ${retryNotes.length}`);
+    console.error(`❌ Available note IDs: ${retryNotes.map((n: any) => n.id).join(', ') || 'none'}`);
+    
+    throw new Error(`CRITICAL: Note ID ${createdNoteId} returned but note not found in deal ${dealId}`);
+    
+  } catch (error: any) {
+    console.error(`\n❌ [Quote Save] FINAL ERROR:`);
+    console.error(`❌ Message: ${error?.message}`);
+    console.error(`❌ Stack: ${error?.stack?.substring(0, 500)}`);
     throw error;
   }
 }
