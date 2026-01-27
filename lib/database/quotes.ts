@@ -123,8 +123,6 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
         console.warn(`No Pipedrive deal found for quote ${quoteId} after ${retries} attempts`);
         return null;
       }
-
-      const dealId = matchingDeal.item.id;
       
       // Get deal details
       const deal = await getDeal(dealId);
