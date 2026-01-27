@@ -116,8 +116,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Sync prices from Pipedrive if configured AND token is available
+    // Check Pipedrive token once at the top
     const pipedriveToken = process.env.PIPEDRIVE_API_TOKEN;
+    
+    // Sync prices from Pipedrive if configured AND token is available
     if (adminConfig.priceSource === "pipedrive" && pipedriveToken) {
       try {
         // Sync prices from Pipedrive products if configured
@@ -174,8 +176,7 @@ export async function POST(request: NextRequest) {
     // Create deal in Pipedrive if configured (OPTIONAL - don't fail if this doesn't work)
     let pipedriveDealId: number | undefined;
     
-    // Check if Pipedrive is configured before attempting to create deal
-    const pipedriveToken = process.env.PIPEDRIVE_API_TOKEN;
+    // Use the pipedriveToken already declared above
     if (pipedriveToken) {
       try {
         // Collect Pipedrive product IDs from quote items
