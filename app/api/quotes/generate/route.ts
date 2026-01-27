@@ -188,13 +188,21 @@ export async function POST(request: NextRequest) {
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
     if (zapierWebhookUrl) {
       try {
-        // Get product image URL - ensure it's absolute (not relative)
-        let productImageUrl = (body.productConfig as any)?.mainProductImageUrl || "";
+        // Get product image URL - check multiple sources
+        const productConfig = body.productConfig as any;
+        let productImageUrl = productConfig?.mainProductImageUrl || "";
+        
+        // If still empty, try to get from admin config (fallback)
+        if (!productImageUrl && adminConfig) {
+          productImageUrl = (adminConfig as any)?.mainProductImageUrl || "";
+        }
+        
         // If it's a relative URL, make it absolute
         if (productImageUrl && !productImageUrl.startsWith('http')) {
           const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://saunamo.co.uk";
           productImageUrl = `${baseUrl}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`;
         }
+        
         // Always append quote ID to portal URL, even if base URL is set in env
         const basePortalUrl = process.env.QUOTE_PORTAL_URL || `${process.env.NEXT_PUBLIC_APP_URL || "https://saunamo.co.uk"}/quote`;
         const quotePortalUrl = `${basePortalUrl}/${quote.id}`;
@@ -207,7 +215,7 @@ export async function POST(request: NextRequest) {
           customerPhone: body.customerPhone || "",
           productName: quote.productName,
           productId: body.productId,
-          productImageUrl: productImageUrl,
+          productImageUrl: productImageUrl, // Product image for email template
           total: quote.total,
           subtotal: quote.subtotal,
           tax: quote.tax || 0,
@@ -222,12 +230,23 @@ export async function POST(request: NextRequest) {
           expiresAt: quote.expiresAt,
           notes: body.notes || "",
           // Additional data for Zapier email generation
-          quotePortalUrl: quotePortalUrl,
+          quotePortalUrl: quotePortalUrl, // Link to quote portal page
           companyName: companyName,
           // Include PDF as base64 if available (Zapier can attach it to email)
           pdfBase64: pdfBuffer ? pdfBuffer.toString('base64') : undefined,
           pdfFilename: pdfBuffer ? `quote-${quote.id}.pdf` : undefined,
         };
+
+        // Log webhook payload for debugging (excluding base64 PDF)
+        console.log("📤 Sending webhook to Zapier:", {
+          quoteId: webhookPayload.quoteId,
+          customerEmail: webhookPayload.customerEmail,
+          productName: webhookPayload.productName,
+          productImageUrl: webhookPayload.productImageUrl,
+          quotePortalUrl: webhookPayload.quotePortalUrl,
+          hasPdf: !!webhookPayload.pdfBase64,
+          itemCount: webhookPayload.items.length,
+        });
 
         const webhookResponse = await fetch(zapierWebhookUrl, {
           method: "POST",

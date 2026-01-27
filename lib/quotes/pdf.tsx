@@ -9,11 +9,12 @@ import { join } from "path";
 import { Quote } from "@/types/quote";
 
 // Define styles for the PDF - matching portal quote page exactly with smaller fonts
+// Note: Questrial font (used in portal) is not available in react-pdf, using Helvetica (sans-serif) as closest match
 const styles = StyleSheet.create({
   page: {
     padding: 24,
     fontSize: 10,
-    fontFamily: "Helvetica",
+    fontFamily: "Helvetica", // Closest match to Questrial (sans-serif) available in react-pdf
     backgroundColor: "#F3F0ED", // Portal background color
   },
   sectionBox: {
