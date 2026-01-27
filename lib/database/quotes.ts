@@ -115,15 +115,29 @@ async function getQuoteFromPipedrive(quoteId: string): Promise<Quote | null> {
       if (quoteNote) {
         // Extract JSON from note content
         const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '');
-        const quoteData = JSON.parse(jsonContent);
+        let quoteData;
+        try {
+          quoteData = JSON.parse(jsonContent);
+        } catch (parseError) {
+          console.error(`[Quote Retrieval] Failed to parse quote JSON from Pipedrive note:`, parseError);
+          console.error(`[Quote Retrieval] Note content (first 500 chars):`, quoteNote.content.substring(0, 500));
+          return null;
+        }
         console.log(`[Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
         console.log(`[Quote Retrieval] Quote items:`, JSON.stringify(quoteData.items, null, 2));
+        
+        // Ensure items array exists and is properly formatted
+        const items = Array.isArray(quoteData.items) ? quoteData.items : [];
+        if (items.length === 0 && quoteData.items) {
+          console.warn(`[Quote Retrieval] Items array is empty but quoteData.items exists:`, quoteData.items);
+        }
+        
         return {
           ...quoteData,
           createdAt: quoteData.createdAt ? new Date(quoteData.createdAt) : new Date(),
           expiresAt: quoteData.expiresAt ? new Date(quoteData.expiresAt) : undefined,
-          // Ensure items array exists
-          items: quoteData.items || [],
+          // Ensure items array exists and is an array
+          items: items,
         } as Quote;
       }
     } catch (noteError) {
