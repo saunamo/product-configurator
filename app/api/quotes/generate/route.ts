@@ -248,16 +248,38 @@ export async function POST(request: NextRequest) {
       console.log("ℹ️ ZAPIER_WEBHOOK_URL not configured, skipping webhook (email will not be sent)");
     }
 
-    // Save quote to server storage (for quote portal)
+    // Save quote to server storage (for quote portal) - MUST happen before response
     // Pass Pipedrive deal ID if available (for Netlify/Pipedrive storage)
     try {
       console.log(`[Quote API] Saving quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items before save:`, JSON.stringify(quote.items?.slice(0, 2), null, 2), quote.items?.length > 2 ? '...' : '');
       await saveQuoteServer(quote, pipedriveDealId);
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
+      
+      // Verify quote was saved by trying to read it back (for file system)
+      if (!process.env.NETLIFY && !process.env.VERCEL) {
+        try {
+          const { getQuoteById } = await import("@/lib/database/quotes");
+          const verifyQuote = await getQuoteById(quote.id);
+          if (verifyQuote) {
+            console.log(`✅ Verified quote ${quote.id} can be retrieved with ${verifyQuote.items?.length || 0} items`);
+          } else {
+            console.warn(`⚠️ Warning: Quote ${quote.id} was saved but cannot be retrieved immediately`);
+          }
+        } catch (verifyError) {
+          console.warn(`⚠️ Could not verify quote save:`, verifyError);
+        }
+      }
     } catch (error) {
       console.error("Failed to save quote to server:", error);
-      // Continue even if save fails
+      // Don't continue if save fails - return error
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to save quote. Please try again.",
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({

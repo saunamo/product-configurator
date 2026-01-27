@@ -19,12 +19,21 @@ export default function QuotePortalPage() {
 
     const loadQuote = async () => {
       try {
-        const response = await fetch(`/api/quotes/${quoteId}`);
+        // Add cache-busting timestamp to prevent stale data
+        const response = await fetch(`/api/quotes/${quoteId}?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+          },
+        });
         if (!response.ok) {
           if (response.status === 404) {
             setError("Quote not found");
+            console.error(`[Quote Portal] Quote ${quoteId} not found (404)`);
           } else {
             setError("Failed to load quote");
+            console.error(`[Quote Portal] Failed to load quote ${quoteId}: ${response.status}`);
           }
           setLoading(false);
           return;
