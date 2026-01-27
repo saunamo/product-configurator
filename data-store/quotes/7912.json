@@ -1,0 +1,54 @@
+{
+  "id": "7912",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "customerName": "Ville",
+  "items": [
+    {
+      "stepId": "main-product",
+      "stepName": "Sauna",
+      "optionId": "main-product",
+      "optionTitle": "Outdoor Sauna Cube 125",
+      "optionDescription": "Base product",
+      "price": 6458.33,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "rear-glass-wall",
+      "stepName": "Rear Wall Option",
+      "optionId": "rear-glass-wall-wooden-backwall",
+      "optionTitle": "Wooden backwall",
+      "optionDescription": "",
+      "price": 0,
+      "quantity": 1
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-aava-47kw-20kg",
+      "optionTitle": "Aava 4.7kW (20kg)",
+      "optionDescription": "",
+      "price": 495.83,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-according-to-selected-heater",
+      "optionTitle": "Heater stones (1 package)",
+      "optionDescription": "",
+      "price": 29.5,
+      "quantity": 1,
+      "heaterStonesCalculatedPrice": 29.5,
+      "heaterStonesQuantity": 1
+    }
+  ],
+  "subtotal": 6983.66,
+  "tax": 1390.832,
+  "total": 8374.492,
+  "createdAt": "2026-01-27T16:04:51.442Z",
+  "expiresAt": "2026-02-26T16:04:51.442Z",
+  "notes": ""
+}

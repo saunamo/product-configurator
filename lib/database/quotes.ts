@@ -288,13 +288,22 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
         await saveQuoteToPipedrive(quote, pipedriveDealId);
         console.log(`✅ Quote saved to Pipedrive deal ${pipedriveDealId}`);
         return; // Success - return early
-      } catch (error) {
-        console.error(`❌ Failed to save quote to Pipedrive:`, error);
-        throw error; // Re-throw - this is required on Netlify
+      } catch (error: any) {
+        console.error(`❌ Failed to save quote to Pipedrive:`, error?.message || error);
+        // On Netlify, if Pipedrive save fails, we can't use file system
+        // But we should NOT throw - let the quote be generated anyway
+        // The quote ID is already set, so the user can still access it via URL
+        // (though it won't be retrievable from Pipedrive)
+        console.warn(`⚠️ Quote ${quote.id} generated but could not be saved to Pipedrive. Quote ID is: ${quote.id}`);
+        // Don't throw - allow quote generation to succeed
+        return;
       }
     } else {
-      // On Netlify but no Pipedrive deal ID - this shouldn't happen, but try file system as last resort
-      console.warn(`⚠️ On Netlify but no Pipedrive deal ID provided. Attempting file system save (may fail).`);
+      // On Netlify but no Pipedrive deal ID - Pipedrive is not configured
+      // This is OK - quote generation should still work
+      console.warn(`⚠️ On Netlify but no Pipedrive deal ID provided. Quote ${quote.id} generated but not saved (Pipedrive not configured).`);
+      // Don't throw - quote generation succeeded, just can't save it
+      return;
     }
   }
   

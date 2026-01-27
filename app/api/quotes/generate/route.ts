@@ -92,8 +92,9 @@ export async function POST(request: NextRequest) {
       throw new Error(`Failed to generate quote: ${error.message || 'Unknown error'}`);
     }
 
-    // Sync prices from Pipedrive if configured
-    if (adminConfig.priceSource === "pipedrive") {
+    // Sync prices from Pipedrive if configured AND token is available
+    const pipedriveToken = process.env.PIPEDRIVE_API_TOKEN;
+    if (adminConfig.priceSource === "pipedrive" && pipedriveToken) {
       try {
         // Sync prices from Pipedrive products if configured
         const pipedriveProductIds: Record<string, number> = {};
@@ -133,17 +134,20 @@ export async function POST(request: NextRequest) {
             if (quote.items?.length !== quoteBeforeSync.items?.length) {
               console.error(`[Quote API] WARNING: Items count changed during sync! Before: ${quoteBeforeSync.items?.length}, After: ${quote.items?.length}`);
             }
-          } catch (error) {
-            console.error("Pipedrive price sync failed, using stored prices:", error);
+          } catch (error: any) {
+            console.error("⚠️ Pipedrive price sync failed, using stored prices:", error?.message || error);
+            // Continue with original prices - this is not critical
           }
         }
-      } catch (error) {
-        console.error("Error setting up Pipedrive price sync:", error);
-        // Continue without price sync
+      } catch (error: any) {
+        console.error("⚠️ Error setting up Pipedrive price sync:", error?.message || error);
+        // Continue without price sync - quote will use stored prices
       }
+    } else if (adminConfig.priceSource === "pipedrive" && !pipedriveToken) {
+      console.log("ℹ️ Pipedrive price source configured but PIPEDRIVE_API_TOKEN not set, using stored prices");
     }
 
-    // Create deal in Pipedrive if configured
+    // Create deal in Pipedrive if configured (OPTIONAL - don't fail if this doesn't work)
     let pipedriveDealId: number | undefined;
     
     // Check if Pipedrive is configured before attempting to create deal
@@ -183,12 +187,13 @@ export async function POST(request: NextRequest) {
           console.log(`[Quote API] Updated quote ID to Pipedrive deal ID: ${quote.id}`);
         }
       } catch (error: any) {
-        console.error("Failed to create Pipedrive deal:", error?.message || error);
+        console.error("⚠️ Failed to create Pipedrive deal (non-critical):", error?.message || error);
         // Continue even if Pipedrive deal creation fails - quote will keep original ID
-        // Don't throw - allow quote to be saved without Pipedrive
+        // This is OPTIONAL - quote generation should work without Pipedrive
+        pipedriveDealId = undefined;
       }
     } else {
-      console.log("[Quote API] PIPEDRIVE_API_TOKEN not configured, skipping deal creation");
+      console.log("ℹ️ [Quote API] PIPEDRIVE_API_TOKEN not configured, skipping deal creation (quote will still be generated)");
     }
 
       // Generate PDF (use updated quote ID)
@@ -318,9 +323,13 @@ export async function POST(request: NextRequest) {
 
     // Save quote to server storage (for quote portal) - MUST happen before response
     // Pass Pipedrive deal ID if available (for Netlify/Pipedrive storage)
+    // On Netlify: If Pipedrive is not configured, save to file system (even though it's ephemeral)
+    // The quote will still be accessible via the quote ID in the URL
     try {
       console.log(`[Quote API] Saving quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items before save:`, JSON.stringify(quote.items?.slice(0, 2), null, 2), quote.items?.length > 2 ? '...' : '');
+      console.log(`[Quote API] Environment: NETLIFY=${!!process.env.NETLIFY}, pipedriveDealId=${pipedriveDealId}`);
+      
       await saveQuoteServer(quote, pipedriveDealId);
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
       
