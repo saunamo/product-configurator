@@ -14,8 +14,9 @@ export function generateQuote(
   request: QuoteGenerationRequest,
   config: AdminConfig
 ): Quote {
-  const items: QuoteItem[] = [];
-  let subtotal = 0;
+  try {
+    const items: QuoteItem[] = [];
+    let subtotal = 0;
 
   // Add main product as first item if mainProductPipedriveId is configured
   const productConfig = request.productConfig as any;
@@ -368,27 +369,32 @@ export function generateQuote(
   const tax = subtotalAfterDiscount * taxRate;
   const total = subtotalAfterDiscount + tax;
 
-  // Calculate expiration date from quote settings
-  const validityDays = config.quoteSettings?.quoteValidityDays || 30;
-  const expiresAt = new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000);
+    // Calculate expiration date from quote settings
+    const validityDays = config.quoteSettings?.quoteValidityDays || 30;
+    const expiresAt = new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000);
 
-  return {
-    id: `quote-${Date.now()}-${Math.random().toString(36).substring(7)}`,
-    productName: config.productName,
-    customerEmail: request.customerEmail,
-    customerName: request.customerName,
-    customerPhone: request.customerPhone,
-    items,
-    subtotal,
-    discount: discount > 0 ? discount : undefined,
-    discountDescription: discount > 0 ? discountDescription : undefined,
-    tax: tax > 0 ? tax : undefined,
-    taxRate: taxRate > 0 ? taxRate : undefined,
-    total,
-    createdAt: new Date(),
-    expiresAt,
-    notes: request.notes || config.quoteSettings?.notes,
-  };
+    return {
+      id: `quote-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+      productName: config.productName,
+      customerEmail: request.customerEmail,
+      customerName: request.customerName,
+      customerPhone: request.customerPhone,
+      items,
+      subtotal,
+      discount: discount > 0 ? discount : undefined,
+      discountDescription: discount > 0 ? discountDescription : undefined,
+      tax: tax > 0 ? tax : undefined,
+      taxRate: taxRate > 0 ? taxRate : undefined,
+      total,
+      createdAt: new Date(),
+      expiresAt,
+      notes: request.notes || config.quoteSettings?.notes,
+    };
+  } catch (error: any) {
+    console.error("[generateQuote] Error generating quote:", error);
+    console.error("[generateQuote] Error stack:", error.stack);
+    throw new Error(`Quote generation failed: ${error.message || 'Unknown error'}`);
+  }
 }
 
 /**

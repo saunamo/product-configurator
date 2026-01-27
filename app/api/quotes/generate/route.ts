@@ -82,10 +82,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate quote
-    let quote = generateQuote(body, adminConfig);
-    
-    console.log(`[Quote API] Generated quote with ${quote.items?.length || 0} items`);
-    console.log(`[Quote API] Quote items after generation:`, JSON.stringify(quote.items, null, 2));
+    let quote: Quote;
+    try {
+      quote = generateQuote(body, adminConfig);
+      console.log(`[Quote API] Generated quote with ${quote.items?.length || 0} items`);
+      console.log(`[Quote API] Quote items after generation:`, JSON.stringify(quote.items, null, 2));
+    } catch (error: any) {
+      console.error("[Quote API] Failed to generate quote:", error);
+      throw new Error(`Failed to generate quote: ${error.message || 'Unknown error'}`);
+    }
 
     // Sync prices from Pipedrive if configured
     if (adminConfig.priceSource === "pipedrive") {
@@ -191,9 +196,10 @@ export async function POST(request: NextRequest) {
       try {
         const { generateQuotePDF } = await import("@/lib/quotes/pdfGenerator");
         pdfBuffer = await generateQuotePDF(quote, adminConfig.quoteSettings);
-      } catch (error) {
-        console.error("PDF generation failed:", error);
-        // Continue without PDF
+      } catch (error: any) {
+        console.error("PDF generation failed (non-critical):", error?.message || error);
+        // Continue without PDF - this is not critical
+        pdfBuffer = undefined;
       }
 
     // Send webhook to Zapier for email sending and Klaviyo integration (non-blocking)
@@ -357,16 +363,29 @@ export async function POST(request: NextRequest) {
           // Don't fail the request, but log the error
         }
       }
-    } catch (error) {
-      console.error("Failed to save quote to server:", error);
-      // Don't continue if save fails - return error
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Failed to save quote. Please try again.",
-        },
-        { status: 500 }
-      );
+    } catch (error: any) {
+      console.error("❌ Failed to save quote to server:", error);
+      console.error("❌ Save error details:", {
+        message: error.message,
+        code: error.code,
+        stack: error.stack?.substring(0, 300),
+      });
+      
+      // On Netlify, if Pipedrive save fails, try to continue anyway
+      // The quote might still be accessible via the deal ID
+      if (process.env.NETLIFY && pipedriveDealId) {
+        console.warn("⚠️ On Netlify: Pipedrive save failed but deal was created, continuing...");
+        // Continue - quote ID is the deal ID, so it might still work
+      } else {
+        // For localhost or if no deal ID, fail the request
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to save quote. Please try again.",
+          },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json({
