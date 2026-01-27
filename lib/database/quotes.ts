@@ -172,7 +172,24 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
   console.log(`[saveQuote] Quote items:`, JSON.stringify(quote.items, null, 2));
   console.log(`[saveQuote] isServerless: ${isServerless}, pipedriveDealId: ${pipedriveDealId}`);
   
-  // Always save to file system (for local dev and as backup for serverless)
+  // On Netlify (serverless), save to Pipedrive only (file system is ephemeral)
+  if (isServerless) {
+    if (pipedriveDealId) {
+      try {
+        await saveQuoteToPipedrive(quote, pipedriveDealId);
+        console.log(`✅ Quote saved to Pipedrive deal ${pipedriveDealId}`);
+        return; // Success - return early
+      } catch (error) {
+        console.error(`❌ Failed to save quote to Pipedrive:`, error);
+        throw error; // Re-throw - this is required on Netlify
+      }
+    } else {
+      // On Netlify but no Pipedrive deal ID - this shouldn't happen, but try file system as last resort
+      console.warn(`⚠️ On Netlify but no Pipedrive deal ID provided. Attempting file system save (may fail).`);
+    }
+  }
+  
+  // For local development, save to file system
   await ensureQuotesDir();
   
   const quoteFile = join(QUOTES_DIR, `${quote.id}.json`);
@@ -188,17 +205,6 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
   } catch (error) {
     console.error(`❌ Failed to save quote to file system:`, error);
     throw error; // Re-throw so caller knows save failed
-  }
-  
-  // Also save to Pipedrive if in serverless and deal ID is available
-  if (isServerless && pipedriveDealId) {
-    try {
-      await saveQuoteToPipedrive(quote, pipedriveDealId);
-      console.log(`✅ Quote also saved to Pipedrive deal ${pipedriveDealId}`);
-    } catch (error) {
-      console.error(`❌ Failed to save quote to Pipedrive (but file system save succeeded):`, error);
-      // Don't throw - file system save succeeded, that's the important one
-    }
   }
 }
 
