@@ -273,22 +273,27 @@ export default function ProductConfiguratorStepPage() {
       };
     }
     
+    // Apply step image with priority: product-specific > admin stepData > global settings > default (none)
+    // Check admin stepData imageUrl (from Steps tab) if no product-specific image
+    const adminStepData = adminConfig?.stepData?.[step];
+    if (!baseStepData.imageUrl && adminStepData?.imageUrl) {
+      baseStepData = {
+        ...baseStepData,
+        imageUrl: adminStepData.imageUrl,
+      };
+      console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepData.imageUrl}"`);
+    }
+    
     // Apply global step image if available (from admin config global settings)
     // This ensures step images uploaded in Global Settings tab are displayed
-    // Priority: product-specific image > global image > default (none)
+    // Only apply if no other image is set
     const globalStepImage = adminConfig?.globalSettings?.stepImages?.[step];
-    if (globalStepImage) {
-      if (!baseStepData.imageUrl) {
-        // No product-specific image - use global image
-        baseStepData = {
-          ...baseStepData,
-          imageUrl: globalStepImage,
-        };
-        console.log(`🖼️ useMemo: Applied global step image for ${step}: "${globalStepImage}"`);
-      } else {
-        // Product-specific image exists - it takes priority
-        console.log(`🖼️ useMemo: Step ${step} has product-specific image "${baseStepData.imageUrl}", global image "${globalStepImage}" ignored`);
-      }
+    if (globalStepImage && !baseStepData.imageUrl) {
+      baseStepData = {
+        ...baseStepData,
+        imageUrl: globalStepImage,
+      };
+      console.log(`🖼️ useMemo: Applied global step image for ${step}: "${globalStepImage}"`);
     }
     
     console.log(`📋 useMemo: Using stepData source:`, {
