@@ -248,9 +248,14 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
     }
   }
 
-  // Fallback to file system
+  // Fallback to file system (for localhost)
   try {
+    // Ensure quotes directory exists
+    await ensureQuotesDir();
+    
     const quoteFile = join(QUOTES_DIR, `${quoteId}.json`);
+    console.log(`[getQuoteById] Attempting to read quote file: ${quoteFile}`);
+    
     const data = await readFile(quoteFile, "utf-8");
     const quote = JSON.parse(data) as any;
     
@@ -262,8 +267,12 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
       // Ensure items array exists
       items: quote.items || [],
     } as Quote;
-  } catch (error) {
-    console.error(`❌ Failed to load quote ${quoteId} from file system:`, error);
+  } catch (error: any) {
+    if (error.code === 'ENOENT') {
+      console.error(`❌ Quote file not found: ${quoteId}.json (file does not exist)`);
+    } else {
+      console.error(`❌ Failed to load quote ${quoteId} from file system:`, error);
+    }
     return null;
   }
 }

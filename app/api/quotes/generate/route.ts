@@ -257,17 +257,34 @@ export async function POST(request: NextRequest) {
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
       
       // Verify quote was saved by trying to read it back (for file system)
+      // Add a small delay to allow file system to flush
       if (!process.env.NETLIFY && !process.env.VERCEL) {
+        // Wait a bit for file system to flush
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         try {
           const { getQuoteById } = await import("@/lib/database/quotes");
-          const verifyQuote = await getQuoteById(quote.id);
-          if (verifyQuote) {
-            console.log(`✅ Verified quote ${quote.id} can be retrieved with ${verifyQuote.items?.length || 0} items`);
-          } else {
-            console.warn(`⚠️ Warning: Quote ${quote.id} was saved but cannot be retrieved immediately`);
+          // Retry up to 3 times with increasing delays
+          let verifyQuote = null;
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            verifyQuote = await getQuoteById(quote.id);
+            if (verifyQuote) {
+              console.log(`✅ Verified quote ${quote.id} can be retrieved with ${verifyQuote.items?.length || 0} items (attempt ${attempt})`);
+              break;
+            }
+            if (attempt < 3) {
+              console.log(`⚠️ Quote ${quote.id} not found on attempt ${attempt}, retrying in ${attempt * 100}ms...`);
+              await new Promise(resolve => setTimeout(resolve, attempt * 100));
+            }
+          }
+          
+          if (!verifyQuote) {
+            console.error(`❌ CRITICAL: Quote ${quote.id} was saved but cannot be retrieved after 3 attempts`);
+            // Don't fail the request, but log the error
           }
         } catch (verifyError) {
-          console.warn(`⚠️ Could not verify quote save:`, verifyError);
+          console.error(`❌ Error verifying quote save:`, verifyError);
+          // Don't fail the request, but log the error
         }
       }
     } catch (error) {

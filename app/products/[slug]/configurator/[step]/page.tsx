@@ -273,32 +273,39 @@ export default function ProductConfiguratorStepPage() {
       };
     }
     
-    // Apply step image with priority: product-specific > admin stepData > global settings > default (none)
-    // Check admin stepData imageUrl (from Steps tab) if no product-specific image
-    // Note: adminStepData was already retrieved above, but we need to check it again here for imageUrl
-    const adminStepDataForImage = adminConfig?.stepData?.[step];
-    if (!baseStepData.imageUrl && adminStepDataForImage?.imageUrl) {
-      baseStepData = {
-        ...baseStepData,
-        imageUrl: adminStepDataForImage.imageUrl,
-      };
-      console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepDataForImage.imageUrl}"`);
-    } else if (baseStepData.imageUrl) {
-      console.log(`🖼️ useMemo: Step ${step} already has imageUrl: "${baseStepData.imageUrl}"`);
-    } else if (adminStepDataForImage?.imageUrl) {
-      console.log(`🖼️ useMemo: Step ${step} has admin stepData imageUrl but baseStepData also has one (shouldn't happen): "${adminStepDataForImage.imageUrl}"`);
-    }
-    
-    // Apply global step image if available (from admin config global settings)
-    // This ensures step images uploaded in Global Settings tab are displayed
-    // Only apply if no other image is set
+    // Apply step image with priority: product-specific > global settings (Global Settings tab) > admin stepData (Steps tab) > default (none)
+    // Global Settings stepImages take precedence over stepData.imageUrl because they're more recent/updated
     const globalStepImage = adminConfig?.globalSettings?.stepImages?.[step];
-    if (globalStepImage && !baseStepData.imageUrl) {
-      baseStepData = {
-        ...baseStepData,
-        imageUrl: globalStepImage,
-      };
-      console.log(`🖼️ useMemo: Applied global step image for ${step}: "${globalStepImage}"`);
+    const adminStepDataForImage = adminConfig?.stepData?.[step];
+    
+    // Priority: product-specific > global settings > admin stepData
+    if (!baseStepData.imageUrl) {
+      if (globalStepImage) {
+        // Global Settings tab image (highest priority for admin images)
+        baseStepData = {
+          ...baseStepData,
+          imageUrl: globalStepImage,
+        };
+        console.log(`🖼️ useMemo: Applied global step image for ${step}: "${globalStepImage}"`);
+      } else if (adminStepDataForImage?.imageUrl) {
+        // Steps tab image (fallback)
+        baseStepData = {
+          ...baseStepData,
+          imageUrl: adminStepDataForImage.imageUrl,
+        };
+        console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepDataForImage.imageUrl}"`);
+      }
+    } else {
+      // Product-specific image takes precedence, but log what we have
+      console.log(`🖼️ useMemo: Step ${step} already has product-specific imageUrl: "${baseStepData.imageUrl}"`);
+      // Still apply global step image if it exists (override product-specific if needed)
+      if (globalStepImage) {
+        baseStepData = {
+          ...baseStepData,
+          imageUrl: globalStepImage,
+        };
+        console.log(`🖼️ useMemo: Overriding with global step image for ${step}: "${globalStepImage}"`);
+      }
     }
     
     console.log(`📋 useMemo: Using stepData source:`, {
