@@ -150,10 +150,11 @@ export default function ProductConfiguratorStepPage() {
     // Don't merge - use one or the other to avoid duplicates
     const configStepData = config?.stepData?.[step];
     const defaultStepData = getStepData(step);
+    const adminStepData = adminConfig?.stepData?.[step];
     
-    // Use config stepData if it exists, otherwise fall back to default
+    // Use config stepData if it exists, otherwise fall back to admin config stepData, then default
     // This prevents duplicate options
-    let baseStepData = configStepData || defaultStepData;
+    let baseStepData = configStepData || adminStepData || defaultStepData;
     
     if (!baseStepData) return null;
     
