@@ -2,20 +2,39 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Deployment
 
-This project is deployed on Netlify with **manual deployment** enabled.
+⚠️ **IMPORTANT: Automatic deployments are DISABLED to save Netlify build credits.**
 
-### Manual Deployment Setup
+### How to Disable Automatic Deployments (One-Time Setup)
 
-1. **Disable Auto-Deploy in Netlify:**
-   - Go to Netlify Dashboard → Your Site → Site settings → Build & deploy → Continuous Deployment
-   - Under "Deploy settings", change "Automatic deploys" to **"None"** or **"Deploy only the production branch"**
-   - Or disable specific branches from auto-deploying
+1. **Go to Netlify Dashboard:**
+   - Visit https://app.netlify.com
+   - Select your site (saunamo-product-configurator)
 
-2. **Deploy When Ready:**
-   - Push your changes to GitHub as normal
-   - Go to Netlify Dashboard → Your Site → Deploys
-   - Click **"Trigger deploy"** → **"Deploy site"** when you're ready to deploy
-   - Or use the Netlify CLI: `netlify deploy --prod`
+2. **Disable Auto-Deploy:**
+   - Navigate to: **Site settings** → **Build & deploy** → **Continuous Deployment**
+   - Under "Deploy settings", find **"Automatic deploys"**
+   - Change it to **"None"** (this stops all automatic builds)
+   - Click **"Save"**
+
+3. **Verify:**
+   - After disabling, pushing to GitHub will NOT trigger builds
+   - You'll see "Automatic deploys: None" in the settings
+
+### Manual Deployment (When You're Ready)
+
+When you want to deploy changes:
+
+1. **Push to GitHub** (as normal):
+   ```bash
+   git push origin main
+   ```
+
+2. **Deploy Manually in Netlify:**
+   - Go to Netlify Dashboard → Your Site → **Deploys** tab
+   - Click **"Trigger deploy"** → **"Deploy site"**
+   - Or use Netlify CLI: `netlify deploy --prod`
+
+3. **Build will start manually** (uses credits only when you trigger it)
 
 ### Environment Variables
 
