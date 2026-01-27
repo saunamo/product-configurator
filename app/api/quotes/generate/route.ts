@@ -246,6 +246,8 @@ export async function POST(request: NextRequest) {
 
     // CRITICAL: Only send webhook if quote was saved successfully
     // The URL in the email must point to a quote that actually exists
+    // Initialize quoteSaved early - will be set later when quote is saved
+    let quoteSaved = false;
     let webhookResult: { success: boolean; error?: string } | undefined;
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
     
