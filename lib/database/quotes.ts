@@ -62,28 +62,50 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         console.log(`[Quote Save] Attempt ${attempt}/3: Creating note in Pipedrive deal ${dealId}...`);
-        const noteContent = `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData, null, 2)}`;
+        
+        // Create the note content - use compact JSON to avoid size issues
+        const noteContent = `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData)}`;
         console.log(`[Quote Save] Note content length: ${noteContent.length} characters`);
         
+        // Check if content is too large (Pipedrive has limits)
+        if (noteContent.length > 50000) {
+          console.warn(`[Quote Save] WARNING: Note content is large (${noteContent.length} chars). Pipedrive may reject it.`);
+        }
+        
+        // Create note - EXACTLY like the test endpoint that works
         const noteResponse = await createNote({
           content: noteContent,
           deal_id: dealId,
-          pinned_to_deal_flag: 1, // Pin the note so it's easy to find
+          pinned_to_deal_flag: 1,
         });
         
-        createdNoteId = noteResponse.data?.id;
+        // Check if we got a valid response
+        if (!noteResponse || !noteResponse.data) {
+          throw new Error(`Invalid response from createNote: ${JSON.stringify(noteResponse)}`);
+        }
+        
+        createdNoteId = noteResponse.data.id;
+        if (!createdNoteId) {
+          throw new Error(`Note created but no ID returned. Response: ${JSON.stringify(noteResponse)}`);
+        }
+        
         console.log(`✅ Note created successfully! Note ID: ${createdNoteId}, Deal ID: ${dealId}`);
         console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note with ${quoteData.items?.length || 0} items (attempt ${attempt})`);
         
-        // Verify the note was actually created by trying to retrieve it
-        console.log(`[Quote Save] Verifying note creation...`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s for indexing
+        // Wait longer for indexing (Pipedrive can be slow)
+        console.log(`[Quote Save] Waiting 2 seconds for note to be indexed...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
+        // Verify the note was actually created
+        console.log(`[Quote Save] Verifying note creation...`);
         const { getDealNotes } = await import("@/lib/pipedrive/client");
         const notesResponse = await getDealNotes(dealId);
         const notes = notesResponse.data || [];
+        
+        console.log(`[Quote Save] Found ${notes.length} total notes in deal ${dealId}`);
+        
         const foundNote = notes.find((note: any) => 
-          note.content?.startsWith('QUOTE_DATA_JSON:') || note.id === createdNoteId
+          note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
         );
         
         if (foundNote) {
@@ -91,8 +113,11 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
           noteCreated = true;
           return; // Success - exit function
         } else {
-          console.warn(`⚠️ Note created but not found in verification (may need more time to index)`);
-          // Still consider it a success if we got a note ID back
+          // If we got a note ID but can't find it, it might still be indexing
+          // But we should log this as a warning
+          console.warn(`⚠️ Note created (ID: ${createdNoteId}) but not found in verification. This may be an indexing delay.`);
+          console.warn(`⚠️ Available note IDs: ${notes.map((n: any) => n.id).join(', ')}`);
+          // Still return success if we got a note ID - it was created
           if (createdNoteId) {
             noteCreated = true;
             return;
