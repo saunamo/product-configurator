@@ -13,7 +13,8 @@ const DATA_DIR = join(process.cwd(), "data-store");
 const QUOTES_DIR = join(DATA_DIR, "quotes");
 
 // Check if we're in a serverless environment (Netlify, Vercel, etc.)
-const isServerless = process.env.NETLIFY || process.env.VERCEL || !process.env.FILE_SYSTEM_AVAILABLE;
+// On localhost, NETLIFY and VERCEL are undefined, so isServerless will be false
+const isServerless = !!(process.env.NETLIFY || process.env.VERCEL);
 
 /**
  * Ensure quotes directory exists (only for file-based storage)
@@ -187,7 +188,7 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
 export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise<void> {
   console.log(`[saveQuote] Saving quote ${quote.id}, items count: ${quote.items?.length || 0}`);
   console.log(`[saveQuote] Quote items:`, JSON.stringify(quote.items, null, 2));
-  console.log(`[saveQuote] isServerless: ${isServerless}, pipedriveDealId: ${pipedriveDealId}`);
+  console.log(`[saveQuote] isServerless: ${isServerless}, NETLIFY: ${process.env.NETLIFY}, VERCEL: ${process.env.VERCEL}, pipedriveDealId: ${pipedriveDealId}`);
   
   // On Netlify (serverless), save to Pipedrive only (file system is ephemeral)
   if (isServerless) {
@@ -206,7 +207,8 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
     }
   }
   
-  // For local development, save to file system
+  // For local development, ALWAYS save to file system
+  console.log(`[saveQuote] Saving to file system (localhost mode)`);
   await ensureQuotesDir();
   
   const quoteFile = join(QUOTES_DIR, `${quote.id}.json`);
@@ -219,8 +221,15 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
   try {
     await writeFile(quoteFile, JSON.stringify(quoteToSave, null, 2), "utf-8");
     console.log(`✅ Quote saved to file: ${quote.id} at ${quoteFile}`);
-  } catch (error) {
+    
+    // Verify file was written
+    const { readFile } = await import("fs/promises");
+    const verifyData = await readFile(quoteFile, "utf-8");
+    const verifyQuote = JSON.parse(verifyData);
+    console.log(`✅ Verified quote file written: ${verifyQuote.id} with ${verifyQuote.items?.length || 0} items`);
+  } catch (error: any) {
     console.error(`❌ Failed to save quote to file system:`, error);
+    console.error(`❌ Error details:`, error.message, error.code, error.path);
     throw error; // Re-throw so caller knows save failed
   }
 }
