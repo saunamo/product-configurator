@@ -85,11 +85,35 @@ export async function POST(request: NextRequest) {
     let quote: Quote;
     try {
       quote = generateQuote(body, adminConfig);
-      console.log(`[Quote API] Generated quote with ${quote.items?.length || 0} items`);
+      
+      // Validate quote was generated
+      if (!quote) {
+        throw new Error("Quote generation returned undefined");
+      }
+      
+      if (!quote.id) {
+        throw new Error("Quote generated but missing ID");
+      }
+      
+      if (!quote.items || !Array.isArray(quote.items)) {
+        console.warn(`[Quote API] Quote generated but items is not an array:`, quote.items);
+        quote.items = quote.items || [];
+      }
+      
+      console.log(`[Quote API] Generated quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items after generation:`, JSON.stringify(quote.items, null, 2));
     } catch (error: any) {
       console.error("[Quote API] Failed to generate quote:", error);
-      throw new Error(`Failed to generate quote: ${error.message || 'Unknown error'}`);
+      console.error("[Quote API] Error stack:", error.stack);
+      console.error("[Quote API] Request body:", JSON.stringify(body, null, 2));
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Failed to generate quote: ${error.message || 'Unknown error'}`,
+          details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+        },
+        { status: 500 }
+      );
     }
 
     // Sync prices from Pipedrive if configured AND token is available
@@ -392,24 +416,52 @@ export async function POST(request: NextRequest) {
       console.error("❌ Save error details:", {
         message: error.message,
         code: error.code,
-        stack: error.stack?.substring(0, 300),
+        stack: error.stack?.substring(0, 500),
+        quoteId: quote?.id,
+        hasQuote: !!quote,
+        pipedriveDealId,
+        isNetlify: !!process.env.NETLIFY,
       });
       
       // On Netlify, if Pipedrive save fails, try to continue anyway
       // The quote might still be accessible via the deal ID
       if (process.env.NETLIFY && pipedriveDealId) {
         console.warn("⚠️ On Netlify: Pipedrive save failed but deal was created, continuing...");
+        quoteSaved = true; // Mark as saved since deal exists
         // Continue - quote ID is the deal ID, so it might still work
       } else {
-        // For localhost or if no deal ID, fail the request
+        // For localhost or if no deal ID, fail the request with detailed error
         return NextResponse.json(
           {
             success: false,
-            error: "Failed to save quote. Please try again.",
+            error: `Failed to save quote: ${error.message || 'Unknown error'}`,
+            details: process.env.NODE_ENV === 'development' ? {
+              message: error.message,
+              code: error.code,
+              stack: error.stack?.substring(0, 500),
+              quoteId: quote?.id,
+            } : undefined,
           },
           { status: 500 }
         );
       }
+    }
+
+    // Final validation before returning
+    if (!quote || !quote.id) {
+      console.error("❌ CRITICAL: Quote is missing or has no ID before returning response");
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Quote generation failed: Quote is missing or invalid",
+          details: process.env.NODE_ENV === 'development' ? {
+            hasQuote: !!quote,
+            quoteId: quote?.id,
+            quoteKeys: quote ? Object.keys(quote) : [],
+          } : undefined,
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
@@ -434,19 +486,20 @@ export async function POST(request: NextRequest) {
       status: error.status,
     });
     
-    // Return more detailed error in development, generic in production
-    const errorMessage = process.env.NODE_ENV === 'development' 
-      ? error.message || "Failed to generate quote"
-      : "Failed to generate quote. Please try again.";
-    
+    // Return detailed error message in both dev and production
+    // This helps debug issues on Netlify
     return NextResponse.json(
       {
         success: false,
-        error: errorMessage,
-        ...(process.env.NODE_ENV === 'development' && {
-          details: error.stack,
+        error: error.message || "Failed to generate quote. Please try again.",
+        details: process.env.NODE_ENV === 'development' ? {
+          stack: error.stack,
           errorType: error.name,
-        }),
+          code: error.code,
+        } : {
+          // In production, still include error message for debugging
+          message: error.message,
+        },
       },
       { status: 500 }
     );
