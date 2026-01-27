@@ -300,9 +300,14 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
       }
     } else {
       // On Netlify but no Pipedrive deal ID - Pipedrive is not configured
-      // This is OK - quote generation should still work
-      console.warn(`⚠️ On Netlify but no Pipedrive deal ID provided. Quote ${quote.id} generated but not saved (Pipedrive not configured).`);
-      // Don't throw - quote generation succeeded, just can't save it
+      // CRITICAL: On Netlify, quotes MUST be saved to Pipedrive to be retrievable
+      // The file system is read-only, so quotes can't be saved there
+      // If Pipedrive is not configured, the quote URL in the email won't work
+      console.error(`❌ CRITICAL: On Netlify but no Pipedrive deal ID. Quote ${quote.id} cannot be saved permanently.`);
+      console.error(`❌ The quote URL will not work because the quote cannot be retrieved.`);
+      console.error(`❌ Please configure PIPEDRIVE_API_TOKEN in Netlify environment variables.`);
+      // Still don't throw - let the quote generation complete, but log the error
+      // The quote will be generated but won't be accessible via URL
       return;
     }
   }

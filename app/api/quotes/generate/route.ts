@@ -340,6 +340,14 @@ export async function POST(request: NextRequest) {
       quoteSaved = true;
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
       
+      // CRITICAL CHECK: On Netlify, quotes must be saved to Pipedrive to be retrievable
+      if (process.env.NETLIFY && !pipedriveDealId) {
+        console.error(`❌ WARNING: Quote ${quote.id} was not saved to Pipedrive on Netlify.`);
+        console.error(`❌ The quote URL in the email will not work because the quote cannot be retrieved.`);
+        console.error(`❌ Please configure PIPEDRIVE_API_TOKEN in Netlify environment variables.`);
+        quoteSaved = false; // Mark as not saved so webhook is skipped
+      }
+      
       // For Netlify: Wait longer for Pipedrive note to be indexed before responding
       // This gives Pipedrive time to make the note searchable
       if (process.env.NETLIFY && pipedriveDealId) {
