@@ -170,10 +170,10 @@ export function QuotePDFDocument({
           </View>
         </View>
 
-        {/* Customer Information & Quote Details - Combined */}
+        {/* Customer Information - Combined with Quote Details */}
         <View style={[styles.sectionBox, { marginBottom: 24 }]}>
           <Text style={styles.sectionTitle}>Customer Information</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 12, marginBottom: 16 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 12 }}>
             <View style={{ width: "50%", marginBottom: 12 }}>
               <Text style={styles.fieldLabel}>Name</Text>
               <Text style={styles.fieldValue}>{quote.customerName || "N/A"}</Text>
@@ -188,22 +188,18 @@ export function QuotePDFDocument({
                 <Text style={styles.fieldValue}>{quote.customerPhone}</Text>
               </View>
             )}
-          </View>
-          
-          <Text style={[styles.sectionTitle, { marginTop: 16, marginBottom: 12 }]}>Quote Details</Text>
-          <View style={{ marginTop: 12 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
-              <Text style={styles.detailLabel}>Product:</Text>
-              <Text style={styles.detailValue}>{quote.productName}</Text>
+            <View style={{ width: "50%", marginBottom: 12 }}>
+              <Text style={styles.fieldLabel}>Product</Text>
+              <Text style={styles.fieldValue}>{quote.productName}</Text>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
-              <Text style={styles.detailLabel}>Quote Date:</Text>
-              <Text style={styles.detailValue}>{formatDate(quote.createdAt)}</Text>
+            <View style={{ width: "50%", marginBottom: 12 }}>
+              <Text style={styles.fieldLabel}>Quote Date</Text>
+              <Text style={styles.fieldValue}>{formatDate(quote.createdAt)}</Text>
             </View>
             {quote.expiresAt && (
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={styles.detailLabel}>Valid Until:</Text>
-                <Text style={styles.detailValue}>{formatDate(quote.expiresAt)}</Text>
+              <View style={{ width: "50%", marginBottom: 12 }}>
+                <Text style={styles.fieldLabel}>Valid Until</Text>
+                <Text style={styles.fieldValue}>{formatDate(quote.expiresAt)}</Text>
               </View>
             )}
           </View>
