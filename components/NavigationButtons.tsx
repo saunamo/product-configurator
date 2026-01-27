@@ -58,20 +58,20 @@ export default function NavigationButtons({
   };
 
   return (
-    <div className="flex items-center justify-between w-full pt-6 border-t border-gray-200">
-      <div>
+    <div className="flex items-center justify-between w-full gap-3 sm:gap-4">
+      <div className="flex-shrink-0">
         {previousStep ? (
           <button
             onClick={() => handleNavigate(getStepRoute(previousStep))}
-            className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+            className="text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm sm:text-base px-2 sm:px-0 py-2 sm:py-0"
           >
             ← Back
           </button>
         ) : (
-          <span className="text-gray-400">← Back</span>
+          <span className="text-gray-400 text-sm sm:text-base px-2 sm:px-0 py-2 sm:py-0">← Back</span>
         )}
       </div>
-      <div>
+      <div className="flex-shrink-0">
         {nextStep ? (
           <button
             onClick={() => {
@@ -79,7 +79,7 @@ export default function NavigationButtons({
                 handleNavigate(getStepRoute(nextStep));
               }
             }}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base whitespace-nowrap ${
               canProceed
                 ? "bg-[#303337] text-white hover:opacity-90 cursor-pointer"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -97,7 +97,7 @@ export default function NavigationButtons({
                 window.dispatchEvent(new CustomEvent('generateQuote'));
               }
             }}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base whitespace-nowrap ${
               canProceed
                 ? "bg-[#303337] text-white hover:opacity-90 cursor-pointer"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"

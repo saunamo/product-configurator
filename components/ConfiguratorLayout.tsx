@@ -121,9 +121,9 @@ export default function ConfiguratorLayout({
           borderColor: design?.borderColor || "#E2DEDA",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-3 sm:py-4 md:py-6">
           <h1 
-            className="font-bold mb-4 sm:mb-6 text-xl sm:text-3xl"
+            className="font-bold mb-3 sm:mb-4 md:mb-6 text-lg sm:text-xl md:text-3xl"
             style={{ 
               fontSize: design?.headingFontSize || "1.875rem",
               color: "#303337",
@@ -132,7 +132,9 @@ export default function ConfiguratorLayout({
           >
             {productName}
           </h1>
-          <Stepper currentStepId={currentStepId} steps={finalSteps} productSlug={productSlug} />
+          <div className="overflow-x-auto -mx-3 sm:-mx-4 md:mx-0 px-3 sm:px-4 md:px-0">
+            <Stepper currentStepId={currentStepId} steps={finalSteps} productSlug={productSlug} />
+          </div>
         </div>
       </div>
 
@@ -152,7 +154,7 @@ export default function ConfiguratorLayout({
             </div>
           </div>
           {/* Scrollable options panel below image */}
-          <div className="px-4 py-4">
+          <div className="px-4 py-4 pb-6">
             <div 
               className="rounded-lg shadow-sm"
               style={{
@@ -162,6 +164,15 @@ export default function ConfiguratorLayout({
               }}
             >
               {children}
+              {/* Navigation buttons inside options box on mobile */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <NavigationButtons
+                  currentStepId={currentStepId}
+                  canProceed={canProceed}
+                  steps={finalSteps}
+                  productSlug={productSlug}
+                />
+              </div>
             </div>
           </div>
         </div>

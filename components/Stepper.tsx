@@ -51,8 +51,8 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
   };
 
   return (
-    <nav className="w-full" aria-label="Configurator steps">
-      <ol className="flex items-start w-full relative">
+    <nav className="w-full overflow-x-auto" aria-label="Configurator steps">
+      <ol className="flex items-start w-full relative min-w-max">
         {/* Connector lines between steps only (not before first or after last) */}
         {steps.map((step, index) => {
           // Skip if this is the last step (no connector after it)
@@ -68,7 +68,7 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
           return (
             <div
               key={`connector-${index}`}
-              className="absolute top-5 h-0.5"
+              className="absolute top-4 sm:top-5 h-0.5"
               style={{
                 left: `${leftPercent}%`,
                 width: `${widthPercent}%`,
@@ -84,14 +84,14 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
           const isCompleted = index < currentIndex;
 
           return (
-            <li key={step.id} className="flex flex-col items-center flex-1 relative z-10">
+            <li key={step.id} className="flex flex-col items-center flex-1 relative z-10 min-w-[60px] sm:min-w-[80px]">
               {/* Circle - fixed position, always aligned */}
               <button
                 onClick={() => handleStepClick(step)}
-                className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity w-full"
+                className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity w-full px-1"
               >
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors flex-shrink-0 relative z-10 ${
+                  className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-colors flex-shrink-0 relative z-10 ${
                     isActive
                       ? "bg-[#303337] border-[#303337] text-white"
                       : isCompleted
@@ -99,17 +99,21 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
                       : "bg-gray-300 border-gray-300 text-white"
                   }`}
                 >
-                  <span className="text-sm font-medium">{index + 1}</span>
+                  <span className="text-xs sm:text-sm font-medium">{index + 1}</span>
                 </div>
                     {/* Text below - fixed height container to keep circles aligned */}
-                    <div className="mt-2 h-10 md:h-12 flex items-start justify-center w-full">
+                    <div className="mt-1.5 sm:mt-2 h-8 sm:h-10 md:h-12 flex items-start justify-center w-full">
                       <span
-                        className={`text-xs md:text-sm font-medium text-center leading-tight px-1 ${
+                        className={`text-[10px] xs:text-xs sm:text-xs md:text-sm font-medium text-center leading-tight px-0.5 sm:px-1 ${
                           isActive
                             ? "text-[#303337]"
                             : "text-[#908F8D]"
                         }`}
-                        style={{ maxWidth: "80px" }}
+                        style={{ 
+                          maxWidth: "100%",
+                          wordBreak: "break-word",
+                          hyphens: "auto"
+                        }}
                       >
                         {step.name}
                       </span>
