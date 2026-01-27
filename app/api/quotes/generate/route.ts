@@ -208,8 +208,12 @@ export async function POST(request: NextRequest) {
         
         // Update quote ID to use Pipedrive deal ID BEFORE saving
         if (pipedriveDealId) {
+          const oldQuoteId = quote.id;
           quote.id = pipedriveDealId.toString();
-          console.log(`[Quote API] Updated quote ID to Pipedrive deal ID: ${quote.id}`);
+          console.log(`[Quote API] Updated quote ID from ${oldQuoteId} to Pipedrive deal ID: ${quote.id}`);
+          console.log(`[Quote API] Quote will be saved to Pipedrive deal ${pipedriveDealId}`);
+        } else {
+          console.warn(`⚠️ [Quote API] No Pipedrive deal ID - quote ${quote.id} will not be saved on Netlify`);
         }
       } catch (error: any) {
         console.error("⚠️ Failed to create Pipedrive deal (non-critical):", error?.message || error);
