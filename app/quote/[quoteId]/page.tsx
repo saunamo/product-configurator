@@ -270,17 +270,20 @@ export default function QuotePortalPage() {
                 <span className="font-medium text-gray-900">{formatCurrency(quote.tax)}</span>
               </div>
             )}
-            {quote.discount && quote.discount > 0 && (
-              <div className="flex justify-between text-red-600">
-                <span>Discount{quote.discountDescription ? ` (${quote.discountDescription})` : ""}:</span>
-                <span className="font-medium">-{formatCurrency(quote.discount)}</span>
-              </div>
-            )}
             <div className="border-t border-gray-200 pt-2 mt-2">
               <div className="flex justify-between">
-                <span className="text-lg font-bold text-[#303337]">Total:</span>
+                <span className="text-lg font-bold text-[#303337]">
+                  {quote.discount && quote.discount > 0 
+                    ? `Total${quote.discountDescription ? ` (${quote.discountDescription} applied)` : " (discount applied)"}:`
+                    : "Total:"}
+                </span>
                 <span className="text-lg font-bold text-[#303337]">{formatCurrency(quote.total)}</span>
               </div>
+              {quote.discount && quote.discount > 0 && (
+                <div className="text-sm text-gray-500 mt-1 text-right">
+                  (Includes discount of {formatCurrency(quote.discount)})
+                </div>
+              )}
             </div>
           </div>
         </div>
