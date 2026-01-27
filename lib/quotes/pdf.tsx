@@ -7,79 +7,69 @@ import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { Quote } from "@/types/quote";
 
-// Define styles for the PDF - using configurator color palette
+// Define styles for the PDF - matching portal quote page exactly
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 32,
     fontSize: 12,
     fontFamily: "Helvetica",
-    backgroundColor: "#F3F0ED", // Configurator background color
+    backgroundColor: "#F3F0ED", // Portal background color
   },
-  header: {
-    marginBottom: 30,
-    borderBottom: "2 solid #303337", // Configurator accent color
-    paddingBottom: 15,
+  sectionBox: {
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    padding: 24,
+    marginBottom: 24,
+    // Shadow effect (simulated with border)
+    border: "1 solid #e5e7eb",
   },
-  companyName: {
-    fontSize: 24,
+  quoteTitle: {
+    fontSize: 30,
     fontWeight: "bold",
-    color: "#303337", // Configurator accent color
-    marginBottom: 5,
+    color: "#303337",
+    marginBottom: 8,
   },
-  companyInfo: {
-    fontSize: 10,
-    color: "#908F8D", // Configurator text color
-    marginTop: 5,
+  quoteIdText: {
+    fontSize: 14,
+    color: "#6b7280",
   },
-  title: {
+  sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#303337", // Configurator accent color
-    marginTop: 20,
-    marginBottom: 10,
+    color: "#303337",
+    marginBottom: 16,
   },
-  section: {
-    marginBottom: 20,
+  fieldLabel: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 4,
   },
-  customerInfo: {
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 5,
+  fieldValue: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#111827",
   },
-  label: {
-    fontSize: 10,
-    color: "#666666",
-    marginBottom: 3,
+  detailLabel: {
+    fontSize: 14,
+    color: "#6b7280",
   },
-  value: {
-    fontSize: 12,
-    color: "#303337", // Configurator accent color
-    marginBottom: 8,
+  detailValue: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#111827",
   },
   table: {
     marginTop: 20,
     marginBottom: 20,
   },
-  tableHeader: {
-    flexDirection: "row",
-    backgroundColor: "#303337", // Configurator accent color
-    padding: 10,
-    borderRadius: 3,
-  },
   tableHeaderText: {
-    color: "#ffffff",
-    fontSize: 11,
-    fontWeight: "bold",
-  },
-  tableRow: {
-    flexDirection: "row",
-    padding: 10,
-    borderBottom: "1 solid #e5e5e5",
+    color: "#374151",
+    fontSize: 14,
+    fontWeight: "600",
   },
   tableCell: {
-    fontSize: 10,
-    color: "#333333",
+    fontSize: 14,
+    color: "#111827",
   },
   colDescription: {
     width: "35%",
@@ -100,63 +90,15 @@ const styles = StyleSheet.create({
     width: "25%",
     textAlign: "right",
   },
-  totals: {
-    marginTop: 20,
-    paddingTop: 15,
-    borderTop: "2 solid #303337", // Configurator accent color
-  },
-  totalRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-    paddingHorizontal: 10,
-  },
-  totalLabel: {
-    fontSize: 12,
-    color: "#666666",
-  },
-  totalValue: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#303337", // Configurator accent color
-  },
   grandTotal: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#303337", // Configurator accent color
-  },
-  notes: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 5,
-  },
-  notesTitle: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#303337", // Configurator accent color
-    marginBottom: 8,
+    color: "#303337",
   },
   notesText: {
-    fontSize: 10,
-    color: "#666666",
-    lineHeight: 1.5,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    left: 40,
-    right: 40,
-    textAlign: "center",
-    fontSize: 9,
-    color: "#999999",
-    borderTop: "1 solid #e5e5e5",
-    paddingTop: 10,
-  },
-  quoteId: {
-    fontSize: 9,
-    color: "#999999",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#374151",
+    lineHeight: 1.6,
   },
 });
 
@@ -198,7 +140,7 @@ export function QuotePDFDocument({
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === "string" ? new Date(date) : date;
-    return d.toLocaleDateString("en-US", {
+    return d.toLocaleDateString("en-GB", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -208,188 +150,189 @@ export function QuotePDFDocument({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          {logoUrl && (
-            <Image
-              src={logoUrl}
-              style={{ width: 100, height: 50, marginBottom: 10 }}
-            />
-          )}
-          <Text style={styles.companyName}>{companyName}</Text>
-          {companyAddress && (
-            <Text style={styles.companyInfo}>{companyAddress}</Text>
-          )}
-          {companyPhone && (
-            <Text style={styles.companyInfo}>Phone: {companyPhone}</Text>
-          )}
-          {companyEmail && (
-            <Text style={styles.companyInfo}>Email: {companyEmail}</Text>
-          )}
-          {companyWebsite && (
-            <Text style={styles.companyInfo}>Website: {companyWebsite}</Text>
-          )}
+        {/* Quote Header - matching portal layout */}
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.quoteTitle}>Quote</Text>
+              <Text style={styles.quoteIdText}>Quote ID: {quote.id}</Text>
+            </View>
+            <View style={{ marginLeft: 16 }}>
+              <Image
+                src="/Saunamo-Logo text only Bold-2.png"
+                style={{ width: 80, height: 48 }}
+              />
+            </View>
+          </View>
         </View>
 
-        {/* Title */}
-        <Text style={styles.title}>Quote</Text>
-
         {/* Customer Information */}
-        <View style={styles.customerInfo}>
-          <Text style={styles.label}>Customer:</Text>
-          <Text style={styles.value}>
-            {quote.customerName || quote.customerEmail}
-          </Text>
-          {quote.customerEmail && (
-            <>
-              <Text style={styles.label}>Email:</Text>
-              <Text style={styles.value}>{quote.customerEmail}</Text>
-            </>
-          )}
-          {quote.customerPhone && (
-            <>
-              <Text style={styles.label}>Phone:</Text>
-              <Text style={styles.value}>{quote.customerPhone}</Text>
-            </>
-          )}
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <Text style={styles.sectionTitle}>Customer Information</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 12 }}>
+            <View style={{ width: "50%", marginBottom: 12 }}>
+              <Text style={styles.fieldLabel}>Name</Text>
+              <Text style={styles.fieldValue}>{quote.customerName || "N/A"}</Text>
+            </View>
+            <View style={{ width: "50%", marginBottom: 12 }}>
+              <Text style={styles.fieldLabel}>Email</Text>
+              <Text style={styles.fieldValue}>{quote.customerEmail}</Text>
+            </View>
+            {quote.customerPhone && (
+              <View style={{ width: "50%", marginBottom: 12 }}>
+                <Text style={styles.fieldLabel}>Phone</Text>
+                <Text style={styles.fieldValue}>{quote.customerPhone}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Quote Details */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Quote Date:</Text>
-          <Text style={styles.value}>{formatDate(quote.createdAt)}</Text>
-          {quote.expiresAt && (
-            <>
-              <Text style={styles.label}>Valid Until:</Text>
-              <Text style={styles.value}>{formatDate(quote.expiresAt)}</Text>
-            </>
-          )}
-        </View>
-
-        {/* Items Table */}
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderText, styles.colDescription]}>
-              Description
-            </Text>
-            <Text style={[styles.tableHeaderText, styles.colPriceVat0]}>
-              Price (VAT 0%)
-            </Text>
-            <Text style={[styles.tableHeaderText, styles.colVat]}>
-              VAT %
-            </Text>
-            <Text style={[styles.tableHeaderText, styles.colQuantity]}>
-              Qty
-            </Text>
-            <Text style={[styles.tableHeaderText, styles.colTotal]}>
-              Total Including VAT
-            </Text>
-          </View>
-          {quote.items.map((item, index) => {
-            const itemVatRate = item.vatRate || 0;
-            const quantity = item.quantity || 1;
-            const itemVat = item.price * quantity * itemVatRate;
-            const itemTotal = (item.price * quantity) + itemVat;
-            
-            // For heater stones, show quantity in description if not already in title
-            const showQuantityInDescription = item.heaterStonesQuantity !== undefined && 
-                                             item.heaterStonesQuantity > 0 &&
-                                             !item.optionTitle.includes(`${item.heaterStonesQuantity}`);
-            
-            return (
-              <View key={index} style={styles.tableRow}>
-                <View style={styles.colDescription}>
-                  <Text style={[styles.tableCell, { fontWeight: "bold" }]}>
-                    {item.optionTitle}
-                  </Text>
-                  <Text style={[styles.tableCell, { fontSize: 9, color: "#666666" }]}>
-                    {item.stepName}
-                  </Text>
-                  {showQuantityInDescription && (
-                    <Text style={[styles.tableCell, { fontSize: 9, color: "#666666", marginTop: 2 }]}>
-                      {item.heaterStonesQuantity} {item.heaterStonesQuantity === 1 ? 'package' : 'packages'} (20kg each)
-                    </Text>
-                  )}
-                  {item.optionDescription && (
-                    <Text style={[styles.tableCell, { fontSize: 9, color: "#999999", marginTop: 2 }]}>
-                      {item.optionDescription}
-                    </Text>
-                  )}
-                </View>
-                <Text style={[styles.tableCell, styles.colPriceVat0]}>
-                  {formatCurrency(item.price)}
-                </Text>
-                <Text style={[styles.tableCell, styles.colVat]}>
-                  {itemVatRate > 0 ? `${(itemVatRate * 100).toFixed(0)}%` : "0%"}
-                </Text>
-                <Text style={[styles.tableCell, styles.colQuantity]}>
-                  {quantity}
-                </Text>
-                <Text style={[styles.tableCell, styles.colTotal]}>
-                  {formatCurrency(itemTotal)}
-                </Text>
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <Text style={styles.sectionTitle}>Quote Details</Text>
+          <View style={{ marginTop: 12 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={styles.detailLabel}>Product:</Text>
+              <Text style={styles.detailValue}>{quote.productName}</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={styles.detailLabel}>Quote Date:</Text>
+              <Text style={styles.detailValue}>{formatDate(quote.createdAt)}</Text>
+            </View>
+            {quote.expiresAt && (
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={styles.detailLabel}>Valid Until:</Text>
+                <Text style={styles.detailValue}>{formatDate(quote.expiresAt)}</Text>
               </View>
-            );
-          })}
+            )}
+          </View>
         </View>
 
-        {/* Totals */}
-        <View style={styles.totals}>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Subtotal:</Text>
-            <Text style={styles.totalValue}>{formatCurrency(quote.subtotal)}</Text>
-          </View>
-          {quote.tax && quote.tax > 0 && (
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>
-                Tax ({quote.taxRate ? `${(quote.taxRate * 100).toFixed(2)}%` : ""}):
-              </Text>
-              <Text style={styles.totalValue}>{formatCurrency(quote.tax)}</Text>
+        {/* Items */}
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <Text style={styles.sectionTitle}>Items</Text>
+          <View style={{ marginTop: 12 }}>
+            {/* Table Header */}
+            <View style={{ flexDirection: "row", borderBottom: "2 solid #d1d5db", paddingBottom: 12, marginBottom: 12 }}>
+              <Text style={[styles.tableHeaderText, styles.colDescription]}>Description</Text>
+              <Text style={[styles.tableHeaderText, styles.colPriceVat0]}>Price (VAT 0%)</Text>
+              <Text style={[styles.tableHeaderText, styles.colVat]}>VAT %</Text>
+              <Text style={[styles.tableHeaderText, styles.colQuantity]}>QTY</Text>
+              <Text style={[styles.tableHeaderText, styles.colTotal]}>Total (incl. VAT)</Text>
             </View>
-          )}
-          <View style={[styles.totalRow, { marginTop: 10 }]}>
-            <Text style={styles.grandTotal}>
-              {quote.discount && quote.discount > 0 
-                ? `Total${quote.discountDescription ? ` (${quote.discountDescription} applied)` : " (discount applied)"}:`
-                : "Total:"}
-            </Text>
-            <Text style={styles.grandTotal}>{formatCurrency(quote.total)}</Text>
+            {quote.items.map((item, index) => {
+              // Calculate VAT rate (default to 20% for UK)
+              const vatRate = item.vatRate !== undefined ? item.vatRate : (quote.taxRate !== undefined ? quote.taxRate : 0.20);
+              const quantity = item.quantity || 1;
+              // Price without VAT
+              const priceExclVat = item.price;
+              // VAT amount per unit
+              const vatAmount = priceExclVat * vatRate;
+              // Price including VAT per unit
+              const priceInclVat = priceExclVat + vatAmount;
+              // Total including VAT for the line
+              const totalInclVat = priceInclVat * quantity;
+              
+              return (
+                <View key={index} style={{ flexDirection: "row", borderBottom: "1 solid #e5e7eb", paddingVertical: 16 }}>
+                  <View style={styles.colDescription}>
+                    <Text style={[styles.tableCell, { fontWeight: "bold", marginBottom: 4 }]}>
+                      {item.optionTitle}
+                    </Text>
+                    <Text style={[styles.tableCell, { fontSize: 10, color: "#6b7280", marginBottom: 4 }]}>
+                      {item.stepName}
+                    </Text>
+                    {item.optionDescription && (
+                      <Text style={[styles.tableCell, { fontSize: 10, color: "#9ca3af", marginTop: 4 }]}>
+                        {item.optionDescription}
+                      </Text>
+                    )}
+                  </View>
+                  <Text style={[styles.tableCell, styles.colPriceVat0, { fontWeight: "bold" }]}>
+                    {formatCurrency(priceExclVat)}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colVat]}>
+                    {(vatRate * 100).toFixed(0)}%
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colQuantity]}>
+                    {quantity}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.colTotal, { fontWeight: "bold" }]}>
+                    {formatCurrency(totalInclVat)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
-          {quote.discount && quote.discount > 0 && (
-            <View style={[styles.totalRow, { marginTop: 5 }]}>
-              <Text style={[styles.totalLabel, { fontSize: 10, color: "#666666" }]}>
-                (Includes discount of {formatCurrency(quote.discount)})
-              </Text>
+        </View>
+
+        {/* Summary */}
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <View style={{ marginTop: 12 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+              <Text style={styles.detailLabel}>Subtotal:</Text>
+              <Text style={styles.detailValue}>{formatCurrency(quote.subtotal)}</Text>
             </View>
-          )}
+            {quote.tax && quote.tax > 0 && (
+              <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
+                <Text style={styles.detailLabel}>Tax:</Text>
+                <Text style={styles.detailValue}>{formatCurrency(quote.tax)}</Text>
+              </View>
+            )}
+            <View style={{ borderTop: "1 solid #e5e7eb", paddingTop: 8, marginTop: 8 }}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={styles.grandTotal}>
+                  {quote.discount && quote.discount > 0 
+                    ? `Total${quote.discountDescription ? ` (${quote.discountDescription} applied)` : " (discount applied)"}:`
+                    : "Total:"}
+                </Text>
+                <Text style={styles.grandTotal}>{formatCurrency(quote.total)}</Text>
+              </View>
+              {quote.discount && quote.discount > 0 && (
+                <Text style={{ fontSize: 10, color: "#6b7280", textAlign: "right", marginTop: 4 }}>
+                  (Includes discount of {formatCurrency(quote.discount)})
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
 
         {/* Bank Transfer Information */}
-        <View style={[styles.notes, { marginTop: 20 }]}>
-          <Text style={styles.notesTitle}>Bank transfer information:</Text>
-          <Text style={[styles.notesText, { marginTop: 5 }]}>
-            <Text style={{ fontWeight: "bold" }}>Iban:</Text> PT50 0010 0000 6297 8400 0010 5{"\n"}
-            <Text style={{ fontWeight: "bold" }}>Swift/BIC:</Text> BBPIPTPL
-          </Text>
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <Text style={styles.sectionTitle}>Bank transfer information:</Text>
+          <View style={{ marginTop: 12 }}>
+            <Text style={styles.notesText}>
+              <Text style={{ fontWeight: "bold" }}>Iban:</Text> PT50 0010 0000 6297 8400 0010 5
+            </Text>
+            <Text style={[styles.notesText, { marginTop: 8 }]}>
+              <Text style={{ fontWeight: "bold" }}>Swift/BIC:</Text> BBPIPTPL
+            </Text>
+          </View>
         </View>
 
         {/* Terms */}
-        <View style={[styles.notes, { marginTop: 20 }]}>
-          <Text style={styles.notesTitle}>Terms:</Text>
-          <Text style={[styles.notesText, { marginTop: 5 }]}>
-            • A 50% deposit is required to confirm production.{"\n"}
-            • The remaining balance must be paid before the product is delivered.{"\n"}
-            • The deposit is non-refundable if the customer cancels the order.{"\n"}
-            • Transportation costs are subject to change.{"\n"}
-            • If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.{"\n"}
-            • Electrical installations are not included.
-          </Text>
+        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
+          <Text style={styles.sectionTitle}>Terms:</Text>
+          <View style={{ marginTop: 12 }}>
+            <Text style={[styles.notesText, { marginBottom: 6 }]}>• A 50% deposit is required to confirm production.</Text>
+            <Text style={[styles.notesText, { marginBottom: 6 }]}>• The remaining balance must be paid before the product is delivered.</Text>
+            <Text style={[styles.notesText, { marginBottom: 6 }]}>• The deposit is non-refundable if the customer cancels the order.</Text>
+            <Text style={[styles.notesText, { marginBottom: 6 }]}>• Transportation costs are subject to change.</Text>
+            <Text style={[styles.notesText, { marginBottom: 6 }]}>• If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.</Text>
+            <Text style={styles.notesText}>• Electrical installations are not included.</Text>
+          </View>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>{footerText || `Thank you for your interest in ${quote.productName}!`}</Text>
-          <Text style={styles.quoteId}>Quote ID: {quote.id}</Text>
+        {/* Company Information Footer */}
+        <View style={[styles.sectionBox, { marginTop: 24 }]}>
+          <Text style={[styles.notesText, { fontSize: 11 }]}>
+            <Text style={{ fontWeight: "bold" }}>Arbor Eco Unipessoal Lda</Text>{"\n"}
+            Rua Bombeiros Voluntários de Ourém{"\n"}
+            2490-755 Vilar dos Prazeres{"\n"}
+            Ourém, Portugal{"\n"}
+            E-mail: info@saunamo.pt{"\n"}
+            NIF: 517939126
+          </Text>
         </View>
       </Page>
     </Document>
