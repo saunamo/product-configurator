@@ -275,13 +275,18 @@ export default function ProductConfiguratorStepPage() {
     
     // Apply step image with priority: product-specific > admin stepData > global settings > default (none)
     // Check admin stepData imageUrl (from Steps tab) if no product-specific image
-    const adminStepData = adminConfig?.stepData?.[step];
-    if (!baseStepData.imageUrl && adminStepData?.imageUrl) {
+    // Note: adminStepData was already retrieved above, but we need to check it again here for imageUrl
+    const adminStepDataForImage = adminConfig?.stepData?.[step];
+    if (!baseStepData.imageUrl && adminStepDataForImage?.imageUrl) {
       baseStepData = {
         ...baseStepData,
-        imageUrl: adminStepData.imageUrl,
+        imageUrl: adminStepDataForImage.imageUrl,
       };
-      console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepData.imageUrl}"`);
+      console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepDataForImage.imageUrl}"`);
+    } else if (baseStepData.imageUrl) {
+      console.log(`🖼️ useMemo: Step ${step} already has imageUrl: "${baseStepData.imageUrl}"`);
+    } else if (adminStepDataForImage?.imageUrl) {
+      console.log(`🖼️ useMemo: Step ${step} has admin stepData imageUrl but baseStepData also has one (shouldn't happen): "${adminStepDataForImage.imageUrl}"`);
     }
     
     // Apply global step image if available (from admin config global settings)
