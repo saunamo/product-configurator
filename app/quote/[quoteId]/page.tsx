@@ -126,7 +126,7 @@ export default function QuotePortalPage() {
               <img 
                 src="/Saunamo-Logo text only Bold-2.png" 
                 alt="Saunamo Logo" 
-                className="h-16 w-auto object-contain"
+                className="h-12 w-auto object-contain"
                 onError={(e) => {
                   // Try other image formats if PNG doesn't work
                   const img = e.target as HTMLImageElement;
@@ -315,6 +315,18 @@ export default function QuotePortalPage() {
           >
             Download PDF
           </button>
+        </div>
+
+        {/* Company Information Footer */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+          <div className="text-sm text-gray-700 space-y-1">
+            <p className="font-semibold text-gray-900">Arbor Eco Unipessoal Lda</p>
+            <p>Rua Bombeiros Voluntários de Ourém</p>
+            <p>2490-755 Vilar dos Prazeres</p>
+            <p>Ourém, Portugal</p>
+            <p className="mt-2">E-mail: <a href="mailto:info@saunamo.pt" className="text-[#303337] hover:underline">info@saunamo.pt</a></p>
+            <p>NIF: 517939126</p>
+          </div>
         </div>
       </div>
     </div>
