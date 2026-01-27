@@ -423,28 +423,24 @@ export async function POST(request: NextRequest) {
         isNetlify: !!process.env.NETLIFY,
       });
       
-      // On Netlify, if Pipedrive save fails, try to continue anyway
-      // The quote might still be accessible via the deal ID
+      // CRITICAL FIX: Don't fail the entire request if save fails
+      // The quote was generated successfully, so we should return it
+      // On Netlify, if Pipedrive is not configured, we can't save, but quote generation still succeeded
       if (process.env.NETLIFY && pipedriveDealId) {
         console.warn("⚠️ On Netlify: Pipedrive save failed but deal was created, continuing...");
         quoteSaved = true; // Mark as saved since deal exists
         // Continue - quote ID is the deal ID, so it might still work
+      } else if (process.env.NETLIFY && !pipedriveDealId) {
+        // On Netlify without Pipedrive: quote can't be saved, but generation succeeded
+        console.warn("⚠️ On Netlify: Quote generated but cannot be saved (Pipedrive not configured). Quote will not be retrievable.");
+        quoteSaved = false; // Mark as not saved
+        // Continue anyway - don't fail the request, but skip webhook
       } else {
-        // For localhost or if no deal ID, fail the request with detailed error
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Failed to save quote: ${error.message || 'Unknown error'}`,
-            details: process.env.NODE_ENV === 'development' ? {
-              message: error.message,
-              code: error.code,
-              stack: error.stack?.substring(0, 500),
-              quoteId: quote?.id,
-            } : undefined,
-          },
-          { status: 500 }
-        );
+        // For localhost: file system save failed, but try to continue
+        console.warn("⚠️ File system save failed on localhost, but quote generation succeeded. Continuing...");
+        quoteSaved = false; // Mark as not saved, but don't fail
       }
+      // Don't return error - continue and return the quote anyway
     }
 
     // Final validation before returning
@@ -464,17 +460,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Return success even if save failed - quote was generated successfully
     return NextResponse.json({
       success: true,
       quoteId: quote.id,
       quote,
       pipedriveDealId,
+      quoteSaved, // Indicate if quote was actually saved
       // Email is handled by Zapier webhook
       emailSent: webhookResult?.success || false,
       emailError: webhookResult?.error,
       webhookSent: webhookResult?.success || false,
       webhookError: webhookResult?.error,
-      message: "Quote generated successfully. Email will be sent via Zapier.",
+      message: quoteSaved 
+        ? "Quote generated successfully. Email will be sent via Zapier."
+        : "Quote generated successfully, but could not be saved permanently. Email will not be sent.",
+      warning: !quoteSaved ? "Quote cannot be retrieved later. Please configure Pipedrive for permanent storage." : undefined,
     });
   } catch (error: any) {
     console.error("❌ Quote generation error:", error);
