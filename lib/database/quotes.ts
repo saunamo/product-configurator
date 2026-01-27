@@ -78,18 +78,42 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
 async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quote | null> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      // Search for deal by quote ID in title
-      // Deal title format: "Quote {quoteId}: ..."
-      const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
-        `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
-      );
-
-      const deals = searchResponse.data?.items || [];
+      // Quote ID is now the Pipedrive deal ID, so try to get deal directly first
+      let dealId: number | null = null;
       
-      // Find deal that has quote ID in title
-      const matchingDeal = deals.find((item: any) => 
-        item.item?.title?.includes(quoteId)
-      );
+      // Try parsing as number (deal ID)
+      const parsedDealId = parseInt(quoteId, 10);
+      if (!isNaN(parsedDealId)) {
+        try {
+          const deal = await getDeal(parsedDealId);
+          if (deal && deal.data) {
+            dealId = parsedDealId;
+            console.log(`[Quote Retrieval] Found deal directly by ID: ${dealId}`);
+          }
+        } catch (error) {
+          console.log(`[Quote Retrieval] Deal ID ${parsedDealId} not found, trying search...`);
+        }
+      }
+      
+      // If direct lookup failed, try search
+      if (!dealId) {
+        const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
+          `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
+        );
+
+        const deals = searchResponse.data?.items || [];
+        
+        // Find deal that has quote ID in title or matches deal ID
+        const matchingDeal = deals.find((item: any) => 
+          item.item?.title?.includes(quoteId) || item.item?.id?.toString() === quoteId
+        );
+        
+        if (matchingDeal) {
+          dealId = matchingDeal.item.id;
+        }
+      }
+      
+      if (!dealId) {
 
       if (!matchingDeal) {
         if (attempt < retries) {

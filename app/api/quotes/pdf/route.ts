@@ -22,11 +22,17 @@ export async function POST(request: NextRequest) {
     // Generate PDF
     const pdfBuffer = await generateQuotePDF(quote, quoteSettings);
 
+    // PDF filename: "Product name Quote + Name"
+    const customerName = quote.customerName || quote.customerEmail.split('@')[0];
+    const sanitizedName = customerName.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ' ');
+    const sanitizedProductName = quote.productName.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ' ');
+    const filename = `${sanitizedProductName} Quote ${sanitizedName}.pdf`;
+    
     // Return PDF as response
     return new NextResponse(pdfBuffer, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="quote-${quote.id}.pdf"`,
+        "Content-Disposition": `attachment; filename="${filename}"`,
       },
     });
   } catch (error: any) {

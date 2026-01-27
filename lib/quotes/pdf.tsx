@@ -339,16 +339,6 @@ export function QuotePDFDocument({
             <Text style={styles.totalLabel}>Subtotal:</Text>
             <Text style={styles.totalValue}>{formatCurrency(quote.subtotal)}</Text>
           </View>
-          {quote.discount && quote.discount > 0 && (
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>
-                Discount{quote.discountDescription ? ` (${quote.discountDescription})` : ""}:
-              </Text>
-              <Text style={[styles.totalValue, { color: "#d32f2f" }]}>
-                -{formatCurrency(quote.discount)}
-              </Text>
-            </View>
-          )}
           {quote.tax && quote.tax > 0 && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>
@@ -358,28 +348,43 @@ export function QuotePDFDocument({
             </View>
           )}
           <View style={[styles.totalRow, { marginTop: 10 }]}>
-            <Text style={styles.grandTotal}>Total:</Text>
+            <Text style={styles.grandTotal}>
+              {quote.discount && quote.discount > 0 
+                ? `Total${quote.discountDescription ? ` (${quote.discountDescription} applied)` : " (discount applied)"}:`
+                : "Total:"}
+            </Text>
             <Text style={styles.grandTotal}>{formatCurrency(quote.total)}</Text>
           </View>
+          {quote.discount && quote.discount > 0 && (
+            <View style={[styles.totalRow, { marginTop: 5 }]}>
+              <Text style={[styles.totalLabel, { fontSize: 10, color: "#666666" }]}>
+                (Includes discount of {formatCurrency(quote.discount)})
+              </Text>
+            </View>
+          )}
         </View>
 
-        {/* Notes - Removed from PDF, but included in Pipedrive deal */}
+        {/* Bank Transfer Information */}
+        <View style={[styles.notes, { marginTop: 20 }]}>
+          <Text style={styles.notesTitle}>Bank transfer information:</Text>
+          <Text style={[styles.notesText, { marginTop: 5 }]}>
+            <Text style={{ fontWeight: "bold" }}>Iban:</Text> PT50 0010 0000 6297 8400 0010 5{"\n"}
+            <Text style={{ fontWeight: "bold" }}>Swift/BIC:</Text> BBPIPTPL
+          </Text>
+        </View>
 
-        {/* Terms & Conditions */}
-        {termsAndConditions && (
-          <View style={[styles.notes, { marginTop: 20 }]}>
-            <Text style={styles.notesTitle}>Terms and Conditions:</Text>
-            <Text style={styles.notesText}>{termsAndConditions}</Text>
-          </View>
-        )}
-
-        {/* Payment Terms */}
-        {paymentTerms && (
-          <View style={[styles.notes, { marginTop: 20 }]}>
-            <Text style={styles.notesTitle}>Payment Terms:</Text>
-            <Text style={styles.notesText}>{paymentTerms}</Text>
-          </View>
-        )}
+        {/* Terms */}
+        <View style={[styles.notes, { marginTop: 20 }]}>
+          <Text style={styles.notesTitle}>Terms:</Text>
+          <Text style={[styles.notesText, { marginTop: 5 }]}>
+            • A 50% deposit is required to confirm production.{"\n"}
+            • The remaining balance must be paid before the product is delivered.{"\n"}
+            • The deposit is non-refundable if the customer cancels the order.{"\n"}
+            • Transportation costs are subject to change.{"\n"}
+            • If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.{"\n"}
+            • Electrical installations are not included.
+          </Text>
+        </View>
 
         {/* Footer */}
         <View style={styles.footer}>

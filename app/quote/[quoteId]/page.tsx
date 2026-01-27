@@ -288,6 +288,32 @@ export default function QuotePortalPage() {
           </div>
         </div>
 
+        {/* Bank Transfer Information */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h2 className="text-xl font-bold text-[#303337] mb-4">Bank transfer information:</h2>
+          <div className="space-y-2 text-gray-700">
+            <div>
+              <span className="font-semibold">Iban:</span> PT50 0010 0000 6297 8400 0010 5
+            </div>
+            <div>
+              <span className="font-semibold">Swift/BIC:</span> BBPIPTPL
+            </div>
+          </div>
+        </div>
+
+        {/* Terms */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h2 className="text-xl font-bold text-[#303337] mb-4">Terms:</h2>
+          <ul className="space-y-2 text-gray-700 list-disc list-inside">
+            <li>A 50% deposit is required to confirm production.</li>
+            <li>The remaining balance must be paid before the product is delivered.</li>
+            <li>The deposit is non-refundable if the customer cancels the order.</li>
+            <li>Transportation costs are subject to change.</li>
+            <li>If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.</li>
+            <li>Electrical installations are not included.</li>
+          </ul>
+        </div>
+
         {/* Download PDF Button */}
         <div className="mt-6 text-center">
           <button
@@ -306,7 +332,11 @@ export default function QuotePortalPage() {
                   const pdfUrl = URL.createObjectURL(pdfBlob);
                   const a = document.createElement("a");
                   a.href = pdfUrl;
-                  a.download = `quote-${quote.id}.pdf`;
+                  // PDF filename: "Product name Quote + Name"
+                  const customerName = quote.customerName || quote.customerEmail.split('@')[0];
+                  const sanitizedName = customerName.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ' ');
+                  const sanitizedProductName = quote.productName.replace(/[^a-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, ' ');
+                  a.download = `${sanitizedProductName} Quote ${sanitizedName}.pdf`;
                   a.click();
                   URL.revokeObjectURL(pdfUrl);
                 }

@@ -48,11 +48,6 @@
       "route": "/products/barrel-220/configurator/quote"
     },
     {
-      "id": "stones",
-      "name": "Stones",
-      "route": "stones"
-    },
-    {
       "id": "woodburning-heaters",
       "name": "Woodburning Heaters",
       "route": "woodburning-heaters"
@@ -117,22 +112,6 @@
           "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
           "price": 0,
           "pipedriveProductId": 18140
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
-    "stones": {
-      "stepId": "stones",
-      "title": "Stones",
-      "description": "",
-      "options": [
-        {
-          "id": "stones-according-to-selected-heater",
-          "title": "According to selected heater",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
         }
       ],
       "selectionType": "multi",
@@ -215,7 +194,8 @@
         }
       ],
       "selectionType": "multi",
-      "required": false
+      "required": false,
+      "imageUrl": "/images/1769169330318-e9etacwqp0e.webp"
     },
     "electrical-assembly": {
       "stepId": "electrical-assembly",
@@ -360,24 +340,11 @@
       "options": [
         {
           "id": "delivery-standard",
-          "title": "Standard Delivery",
+          "title": "Standard Delivery UK",
           "description": "Curbside delivery within 2-3 weeks",
           "imageUrl": "",
-          "price": 200
-        },
-        {
-          "id": "delivery-express",
-          "title": "Express Delivery",
-          "description": "Priority delivery within 1 week",
-          "imageUrl": "",
-          "price": 400
-        },
-        {
-          "id": "delivery-white-glove",
-          "title": "White Glove Delivery",
-          "description": "Premium delivery with placement and setup assistance",
-          "imageUrl": "",
-          "price": 600
+          "price": 200,
+          "pipedriveProductId": 18212
         }
       ],
       "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
