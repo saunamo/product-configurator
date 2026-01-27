@@ -172,20 +172,7 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
   console.log(`[saveQuote] Quote items:`, JSON.stringify(quote.items, null, 2));
   console.log(`[saveQuote] isServerless: ${isServerless}, pipedriveDealId: ${pipedriveDealId}`);
   
-  // In serverless (Netlify), use Pipedrive if deal ID is available
-  if (isServerless && pipedriveDealId) {
-    try {
-      await saveQuoteToPipedrive(quote, pipedriveDealId);
-      console.log(`✅ Quote saved to Pipedrive deal ${pipedriveDealId}`);
-      return;
-    } catch (error) {
-      console.error(`❌ Failed to save quote to Pipedrive:`, error);
-      // Fall through to file system fallback even in serverless if Pipedrive fails
-      console.log(`[saveQuote] Falling back to file system storage`);
-    }
-  }
-
-  // Fallback to file system for local development or if Pipedrive save failed
+  // Always save to file system (for local dev and as backup for serverless)
   await ensureQuotesDir();
   
   const quoteFile = join(QUOTES_DIR, `${quote.id}.json`);
@@ -195,8 +182,24 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
     expiresAt: quote.expiresAt instanceof Date ? quote.expiresAt.toISOString() : quote.expiresAt,
   };
   
-  await writeFile(quoteFile, JSON.stringify(quoteToSave, null, 2), "utf-8");
-  console.log(`✅ Quote saved to file: ${quote.id}`);
+  try {
+    await writeFile(quoteFile, JSON.stringify(quoteToSave, null, 2), "utf-8");
+    console.log(`✅ Quote saved to file: ${quote.id} at ${quoteFile}`);
+  } catch (error) {
+    console.error(`❌ Failed to save quote to file system:`, error);
+    throw error; // Re-throw so caller knows save failed
+  }
+  
+  // Also save to Pipedrive if in serverless and deal ID is available
+  if (isServerless && pipedriveDealId) {
+    try {
+      await saveQuoteToPipedrive(quote, pipedriveDealId);
+      console.log(`✅ Quote also saved to Pipedrive deal ${pipedriveDealId}`);
+    } catch (error) {
+      console.error(`❌ Failed to save quote to Pipedrive (but file system save succeeded):`, error);
+      // Don't throw - file system save succeeded, that's the important one
+    }
+  }
 }
 
 /**
