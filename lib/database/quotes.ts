@@ -113,15 +113,32 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
           noteCreated = true;
           return; // Success - exit function
         } else {
-          // If we got a note ID but can't find it, it might still be indexing
-          // But we should log this as a warning
-          console.warn(`⚠️ Note created (ID: ${createdNoteId}) but not found in verification. This may be an indexing delay.`);
-          console.warn(`⚠️ Available note IDs: ${notes.map((n: any) => n.id).join(', ')}`);
-          // Still return success if we got a note ID - it was created
-          if (createdNoteId) {
-            noteCreated = true;
-            return;
+          // Note was not found - this is a CRITICAL failure
+          // Even if we got a note ID, if we can't find it, it wasn't actually created
+          console.error(`❌ CRITICAL: Note creation reported success (ID: ${createdNoteId}) but note NOT found in deal ${dealId}!`);
+          console.error(`❌ Total notes in deal: ${notes.length}`);
+          console.error(`❌ Available note IDs: ${notes.map((n: any) => n.id).join(', ') || 'none'}`);
+          console.error(`❌ This means the note was NOT actually created, despite getting a note ID`);
+          
+          // Try one more time with longer wait
+          if (attempt < 3) {
+            console.log(`[Quote Save] Retrying verification with longer wait (attempt ${attempt + 1})...`);
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 more seconds
+            const retryNotesResponse = await getDealNotes(dealId);
+            const retryNotes = retryNotesResponse.data || [];
+            const retryFoundNote = retryNotes.find((note: any) => 
+              note.id === createdNoteId || note.content?.startsWith('QUOTE_DATA_JSON:')
+            );
+            
+            if (retryFoundNote) {
+              console.log(`✅ Note found on retry verification! Note ID: ${retryFoundNote.id}`);
+              noteCreated = true;
+              return;
+            }
           }
+          
+          // If we still can't find it, this is a failure
+          throw new Error(`Note creation failed: Got note ID ${createdNoteId} but note not found in deal ${dealId} after verification`);
         }
       } catch (noteError: any) {
         lastError = noteError;
