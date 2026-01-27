@@ -5,56 +5,59 @@
 
 import React from "react";
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import { join } from "path";
 import { Quote } from "@/types/quote";
 
-// Define styles for the PDF - matching portal quote page exactly
+// Define styles for the PDF - matching portal quote page exactly with smaller fonts
 const styles = StyleSheet.create({
   page: {
-    padding: 32,
-    fontSize: 12,
+    padding: 24,
+    fontSize: 10,
     fontFamily: "Helvetica",
     backgroundColor: "#F3F0ED", // Portal background color
   },
   sectionBox: {
     backgroundColor: "#ffffff",
     borderRadius: 8,
-    padding: 24,
-    marginBottom: 24,
+    padding: 16,
+    marginBottom: 16,
     // Shadow effect (simulated with border)
     border: "1 solid #e5e7eb",
+    // Prevent page breaks inside sections
+    break: false,
   },
   quoteTitle: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#303337",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   quoteIdText: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#6b7280",
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#303337",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   fieldLabel: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#6b7280",
-    marginBottom: 4,
+    marginBottom: 3,
   },
   fieldValue: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "500",
     color: "#111827",
   },
   detailLabel: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#6b7280",
   },
   detailValue: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "500",
     color: "#111827",
   },
@@ -64,11 +67,11 @@ const styles = StyleSheet.create({
   },
   tableHeaderText: {
     color: "#374151",
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "600",
   },
   tableCell: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#111827",
   },
   colDescription: {
@@ -91,14 +94,14 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   grandTotal: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#303337",
   },
   notesText: {
-    fontSize: 14,
+    fontSize: 11,
     color: "#374151",
-    lineHeight: 1.6,
+    lineHeight: 1.5,
   },
 });
 
@@ -132,9 +135,10 @@ export function QuotePDFDocument({
   defaultNotes = "",
 }: QuotePDFProps) {
   const formatCurrency = (amount: number) => {
+    // Always use GBP regardless of currency prop
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
-      currency: currency || "GBP",
+      currency: "GBP",
     }).format(amount);
   };
 
@@ -159,8 +163,8 @@ export function QuotePDFDocument({
             </View>
             <View style={{ marginLeft: 16 }}>
               <Image
-                src="/Saunamo-Logo text only Bold-2.png"
-                style={{ width: 80, height: 48 }}
+                src={join(process.cwd(), "public", "Saunamo-Logo text only Bold-2.png")}
+                style={{ width: 64, height: 38 }}
               />
             </View>
           </View>
@@ -239,11 +243,11 @@ export function QuotePDFDocument({
                     <Text style={[styles.tableCell, { fontWeight: "bold", marginBottom: 4 }]}>
                       {item.optionTitle}
                     </Text>
-                    <Text style={[styles.tableCell, { fontSize: 10, color: "#6b7280", marginBottom: 4 }]}>
+                    <Text style={[styles.tableCell, { fontSize: 9, color: "#6b7280", marginBottom: 4 }]}>
                       {item.stepName}
                     </Text>
                     {item.optionDescription && (
-                      <Text style={[styles.tableCell, { fontSize: 10, color: "#9ca3af", marginTop: 4 }]}>
+                      <Text style={[styles.tableCell, { fontSize: 9, color: "#9ca3af", marginTop: 4 }]}>
                         {item.optionDescription}
                       </Text>
                     )}
@@ -289,7 +293,7 @@ export function QuotePDFDocument({
                 <Text style={styles.grandTotal}>{formatCurrency(quote.total)}</Text>
               </View>
               {quote.discount && quote.discount > 0 && (
-                <Text style={{ fontSize: 10, color: "#6b7280", textAlign: "right", marginTop: 4 }}>
+                <Text style={{ fontSize: 9, color: "#6b7280", textAlign: "right", marginTop: 4 }}>
                   (Includes discount of {formatCurrency(quote.discount)})
                 </Text>
               )}
@@ -324,8 +328,8 @@ export function QuotePDFDocument({
         </View>
 
         {/* Company Information Footer */}
-        <View style={[styles.sectionBox, { marginTop: 24 }]}>
-          <Text style={[styles.notesText, { fontSize: 11 }]}>
+        <View style={[styles.sectionBox, { marginTop: 24, break: false }]}>
+          <Text style={styles.notesText}>
             <Text style={{ fontWeight: "bold" }}>Arbor Eco Unipessoal Lda</Text>{"\n"}
             Rua Bombeiros Voluntários de Ourém{"\n"}
             2490-755 Vilar dos Prazeres{"\n"}
