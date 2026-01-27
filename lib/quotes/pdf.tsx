@@ -183,16 +183,16 @@ export function QuotePDFDocument({
   companyEmail = "",
   companyWebsite = "",
   logoUrl,
-  currency = "USD",
+  currency = "GBP",
   termsAndConditions = "",
   paymentTerms = "",
   footerText = "",
   defaultNotes = "",
 }: QuotePDFProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-GB", {
       style: "currency",
-      currency: currency || "USD",
+      currency: currency || "GBP",
     }).format(amount);
   };
 

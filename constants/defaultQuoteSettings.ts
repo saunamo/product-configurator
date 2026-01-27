@@ -19,7 +19,7 @@ export const defaultQuoteSettings: QuoteSettings = {
   quoteValidityDays: 30,
   taxRate: 0,
   taxEnabled: false,
-  currency: "USD",
+  currency: "GBP",
   
   // Discount Campaigns
   discountCampaigns: [],

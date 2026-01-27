@@ -3,11 +3,14 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Quote } from "@/types/quote";
+import { QuoteSettings } from "@/types/admin";
+import { defaultQuoteSettings } from "@/constants/defaultQuoteSettings";
 
 export default function QuotePortalPage() {
   const params = useParams();
   const quoteId = params.quoteId as string;
   const [quote, setQuote] = useState<Quote | null>(null);
+  const [quoteSettings, setQuoteSettings] = useState<QuoteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,6 +33,23 @@ export default function QuotePortalPage() {
         const data = await response.json();
         if (data.success && data.quote) {
           setQuote(data.quote);
+          // Load quote settings for logo
+          try {
+            const settingsResponse = await fetch("/api/admin/config");
+            if (settingsResponse.ok) {
+              const settingsData = await settingsResponse.json();
+              if (settingsData.config?.quoteSettings) {
+                setQuoteSettings(settingsData.config.quoteSettings);
+              } else {
+                setQuoteSettings(defaultQuoteSettings);
+              }
+            } else {
+              setQuoteSettings(defaultQuoteSettings);
+            }
+          } catch (err) {
+            console.error("Error loading quote settings:", err);
+            setQuoteSettings(defaultQuoteSettings);
+          }
         } else {
           setError("Quote not found");
         }
@@ -81,16 +101,27 @@ export default function QuotePortalPage() {
     );
   }
 
+  const logoUrl = quoteSettings?.companyLogoUrl || process.env.NEXT_PUBLIC_COMPANY_LOGO_URL;
+
   return (
     <div className="min-h-screen bg-[#F3F0ED] py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+        {/* Quote Header */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
+          {logoUrl && (
+            <div className="mb-6">
+              <img 
+                src={logoUrl} 
+                alt="Company Logo" 
+                className="h-12 w-auto object-contain"
+              />
+            </div>
+          )}
           <h1 className="text-3xl font-bold text-[#303337] mb-2">Quote</h1>
           <p className="text-gray-600">Quote ID: {quote.id}</p>
         </div>
 
-        {/* Customer Info */}
+        {/* Customer Information */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-bold text-[#303337] mb-4">Customer Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -162,7 +193,7 @@ export default function QuotePortalPage() {
           )}
         </div>
 
-        {/* Totals */}
+        {/* Summary */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -190,14 +221,6 @@ export default function QuotePortalPage() {
           </div>
         </div>
 
-        {/* Notes */}
-        {quote.notes && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-            <p className="font-semibold text-sm mb-2">Notes:</p>
-            <p className="text-sm text-gray-700">{quote.notes}</p>
-          </div>
-        )}
-
         {/* Download PDF Button */}
         <div className="mt-6 text-center">
           <button
@@ -206,7 +229,10 @@ export default function QuotePortalPage() {
                 const response = await fetch("/api/quotes/pdf", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ quote }),
+                  body: JSON.stringify({ 
+                    quote,
+                    quoteSettings: quoteSettings || defaultQuoteSettings,
+                  }),
                 });
                 if (response.ok) {
                   const pdfBlob = await response.blob();

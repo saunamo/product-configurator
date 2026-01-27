@@ -48,7 +48,7 @@ export async function generateQuotePDF(
       companyEmail: settings.companyEmail || process.env.COMPANY_EMAIL || "",
       companyWebsite: settings.companyWebsite || "",
       logoUrl: settings.companyLogoUrl || process.env.COMPANY_LOGO_URL,
-      currency: settings.currency || "USD",
+      currency: settings.currency || "GBP",
       termsAndConditions: settings.termsAndConditions || "",
       paymentTerms: settings.paymentTerms || "",
       footerText: settings.footerText || "",

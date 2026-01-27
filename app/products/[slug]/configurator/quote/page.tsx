@@ -207,37 +207,12 @@ export default function ProductQuotePage() {
 
       const data = await response.json();
       
-      // Generate and open PDF locally
-      try {
-        const pdfResponse = await fetch("/api/quotes/pdf", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            quote: data.quote,
-            quoteSettings: config.quoteSettings, // Pass quote settings
-          }),
-        });
-
-        if (pdfResponse.ok) {
-          const pdfBlob = await pdfResponse.blob();
-          const pdfUrl = URL.createObjectURL(pdfBlob);
-          
-          // Open PDF in new tab
-          window.open(pdfUrl, "_blank");
-          
-          // Clean up the URL after a delay
-          setTimeout(() => URL.revokeObjectURL(pdfUrl), 100);
-          
-          alert(`Quote generated successfully! Quote ID: ${data.quoteId}\n\nThe PDF has been opened in a new tab.`);
-        } else {
-          alert(`Quote generated successfully! Quote ID: ${data.quoteId}\n\nNote: PDF generation failed.`);
-        }
-      } catch (pdfError) {
-        console.error("Failed to generate PDF:", pdfError);
-        alert(`Quote generated successfully! Quote ID: ${data.quoteId}\n\nNote: PDF generation failed.`);
+      // Redirect to quote portal page
+      if (data.quoteId) {
+        router.push(`/quote/${data.quoteId}`);
+      } else {
+        setError("Quote generated but no quote ID returned");
       }
-      
-      // Optionally redirect or reset
     } catch (err: any) {
       setError(err.message || "Failed to generate quote. Please try again.");
     } finally {
