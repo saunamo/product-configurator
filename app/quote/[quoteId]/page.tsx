@@ -150,7 +150,7 @@ export default function QuotePortalPage() {
           </div>
         </div>
 
-        {/* Customer Information */}
+        {/* Customer Information - Combined with Quote Details */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-bold text-[#303337] mb-4">Customer Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,25 +168,18 @@ export default function QuotePortalPage() {
                 <p className="font-medium text-gray-900">{quote.customerPhone}</p>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* Quote Details */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-bold text-[#303337] mb-4">Quote Details</h2>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Product:</span>
-              <span className="font-medium text-gray-900">{quote.productName}</span>
+            <div>
+              <p className="text-sm text-gray-600">Product</p>
+              <p className="font-medium text-gray-900">{quote.productName}</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Quote Date:</span>
-              <span className="font-medium text-gray-900">{formatDate(quote.createdAt)}</span>
+            <div>
+              <p className="text-sm text-gray-600">Quote Date</p>
+              <p className="font-medium text-gray-900">{formatDate(quote.createdAt)}</p>
             </div>
             {quote.expiresAt && (
-              <div className="flex justify-between">
-                <span className="text-gray-600">Valid Until:</span>
-                <span className="font-medium text-gray-900">{formatDate(quote.expiresAt)}</span>
+              <div>
+                <p className="text-sm text-gray-600">Valid Until</p>
+                <p className="font-medium text-gray-900">{formatDate(quote.expiresAt)}</p>
               </div>
             )}
           </div>
