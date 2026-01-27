@@ -322,7 +322,7 @@
     },
     "stepSubheaders": {},
     "stepImages": {
-      "electrical-assembly": "/images/1769073363578-3ap68uegbf2.jpg",
+      "electrical-assembly": "/images/1769500090936-pymhygphmi.jpg",
       "lighting": "/images/1769073539150-w1298ql4wj.jpg",
       "cold-plunge": "/images/1769074673291-vn7r482tj1l.webp",
       "delivery": "/images/1769084980555-i3qjrai1i89.png",
@@ -347,14 +347,14 @@
       "cold-plunge-ice-bath-cube": "/images/1769073043001-mpi3sz4rql7.webp",
       "cold-plunge-ice-bath-ofuro": "/images/1769073046790-0nkedztwc2pj.webp",
       "hot-tubs-hot-tub-cube-200": "/images/1769073486169-3jwfyqrmfh6.webp",
-      "hot-tubs-hot-tub-therma-200": "/images/1769073489412-gvscb8qtxa.webp",
-      "hot-tubs-hot-tub-therma-220": "/images/1769073495023-oqy7hldi4b.webp",
-      "hot-tubs-hot-tub-vellamo-s": "/images/1769073500919-yl8itok6zgc.webp",
-      "hot-tubs-hot-tub-vellamo-m": "/images/1769073506017-bwpva4xkymm.webp",
-      "hot-tubs-hot-tub-vellamo-l": "/images/1769073511819-bpi441in7gp.webp",
+      "hot-tubs-hot-tub-therma-200": "/images/1769501295646-9n9pmvtsiel.jpg",
+      "hot-tubs-hot-tub-therma-220": "/images/1769501307252-snbs06c2a4h.jpg",
+      "hot-tubs-hot-tub-vellamo-s": "/images/1769501411168-psjwepkj5l.webp",
+      "hot-tubs-hot-tub-vellamo-m": "/images/1769501321725-hrm2a46ckzh.jpg",
+      "hot-tubs-hot-tub-vellamo-l": "/images/1769501331353-0iocn4gtcwv.jpg",
       "heater-according-to-selected-heater": "/images/1769073999533-cq05kp070vi.webp",
       "stones-according-to-selected-heater": "/images/1769163278618-j26ztxiz44g.webp",
-      "heater-stone-according-to-heater": "/images/1769163548710-a88kdw7q75d.webp"
+      "heater-stone-according-to-heater": "/images/1769500424211-vydm8fwenok.png"
     },
     "optionTitles": {
       "aromas-accessories-accessory-set": "Accessory set",
@@ -415,8 +415,6 @@
       "barrel_wooden-backwall": true,
       "cube_wooden-backwall": true,
       "cube_glass-half-moon": false
-    },
-    "stepMoreInfoEnabled": {},
-    "stepMoreInfoUrl": {}
+    }
   }
 }

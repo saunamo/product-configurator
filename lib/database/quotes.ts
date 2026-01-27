@@ -72,95 +72,112 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
 /**
  * Get quote from Pipedrive deal
  * Searches for deal by quote ID in deal title or notes
+ * Includes retry logic to handle timing issues with Pipedrive indexing
  */
-async function getQuoteFromPipedrive(quoteId: string): Promise<Quote | null> {
-  try {
-    // Search for deal by quote ID in title
-    // Deal title format: "Quote {quoteId}: ..."
-    const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
-      `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
-    );
+async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quote | null> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      // Search for deal by quote ID in title
+      // Deal title format: "Quote {quoteId}: ..."
+      const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
+        `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
+      );
 
-    const deals = searchResponse.data?.items || [];
-    
-    // Find deal that has quote ID in title
-    const matchingDeal = deals.find((item: any) => 
-      item.item?.title?.includes(quoteId)
-    );
+      const deals = searchResponse.data?.items || [];
+      
+      // Find deal that has quote ID in title
+      const matchingDeal = deals.find((item: any) => 
+        item.item?.title?.includes(quoteId)
+      );
 
-    if (!matchingDeal) {
-      console.warn(`No Pipedrive deal found for quote ${quoteId}`);
+      if (!matchingDeal) {
+        if (attempt < retries) {
+          // Wait before retrying (Pipedrive search might need time to index)
+          console.log(`[Quote Retrieval] Attempt ${attempt}/${retries}: Deal not found yet, retrying in ${attempt * 500}ms...`);
+          await new Promise(resolve => setTimeout(resolve, attempt * 500));
+          continue;
+        }
+        console.warn(`No Pipedrive deal found for quote ${quoteId} after ${retries} attempts`);
+        return null;
+      }
+
+      const dealId = matchingDeal.item.id;
+      
+      // Get deal details
+      const deal = await getDeal(dealId);
+      
+      // Try to get quote data from deal notes
+      // For now, reconstruct quote from deal data
+      // In production, you'd store full quote JSON in a note or custom field
+      
+      // Get notes for this deal
+      try {
+        const notesResponse = await getDealNotes(dealId);
+        const notes = notesResponse.data || [];
+        
+        // Look for note with full quote JSON (starts with QUOTE_DATA_JSON:)
+        const quoteNote = notes.find((note: any) => 
+          note.content?.startsWith('QUOTE_DATA_JSON:')
+        );
+        
+        if (quoteNote) {
+          // Extract JSON from note content
+          const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '');
+          let quoteData;
+          try {
+            quoteData = JSON.parse(jsonContent);
+          } catch (parseError) {
+            console.error(`[Quote Retrieval] Failed to parse quote JSON from Pipedrive note:`, parseError);
+            console.error(`[Quote Retrieval] Note content (first 500 chars):`, quoteNote.content.substring(0, 500));
+            return null;
+          }
+          console.log(`[Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
+          console.log(`[Quote Retrieval] Quote items:`, JSON.stringify(quoteData.items, null, 2));
+          
+          // Ensure items array exists and is properly formatted
+          const items = Array.isArray(quoteData.items) ? quoteData.items : [];
+          if (items.length === 0 && quoteData.items) {
+            console.warn(`[Quote Retrieval] Items array is empty but quoteData.items exists:`, quoteData.items);
+          }
+          
+          return {
+            ...quoteData,
+            createdAt: quoteData.createdAt ? new Date(quoteData.createdAt) : new Date(),
+            expiresAt: quoteData.expiresAt ? new Date(quoteData.expiresAt) : undefined,
+            // Ensure items array exists and is an array
+            items: items,
+          } as Quote;
+        }
+      } catch (noteError) {
+        console.warn("Could not retrieve quote from Pipedrive notes:", noteError);
+      }
+
+      // Fallback: Reconstruct basic quote from deal data
+      // This won't have all items, but it's better than nothing
+      const dealData = deal.data;
+      return {
+        id: quoteId,
+        productName: dealData.title?.replace(`Quote ${quoteId}: `, '').split(' - ')[0] || 'Unknown Product',
+        customerEmail: dealData.title?.split(' - ')[1] || '',
+        total: dealData.value || 0,
+        subtotal: dealData.value || 0,
+        items: [], // Items would need to be retrieved from deal products
+        createdAt: new Date(),
+        customerName: '',
+      } as Quote;
+    } catch (error) {
+      console.error(`[Quote Retrieval] Attempt ${attempt} failed:`, error);
+      if (attempt < retries) {
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, attempt * 500));
+        continue;
+      }
+      console.error("Failed to get quote from Pipedrive after all retries:", error);
       return null;
     }
-
-    const dealId = matchingDeal.item.id;
-    
-    // Get deal details
-    const deal = await getDeal(dealId);
-    
-    // Try to get quote data from deal notes
-    // For now, reconstruct quote from deal data
-    // In production, you'd store full quote JSON in a note or custom field
-    
-    // Get notes for this deal
-    try {
-      const notesResponse = await getDealNotes(dealId);
-      const notes = notesResponse.data || [];
-      
-      // Look for note with full quote JSON (starts with QUOTE_DATA_JSON:)
-      const quoteNote = notes.find((note: any) => 
-        note.content?.startsWith('QUOTE_DATA_JSON:')
-      );
-      
-      if (quoteNote) {
-        // Extract JSON from note content
-        const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '');
-        let quoteData;
-        try {
-          quoteData = JSON.parse(jsonContent);
-        } catch (parseError) {
-          console.error(`[Quote Retrieval] Failed to parse quote JSON from Pipedrive note:`, parseError);
-          console.error(`[Quote Retrieval] Note content (first 500 chars):`, quoteNote.content.substring(0, 500));
-          return null;
-        }
-        console.log(`[Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
-        console.log(`[Quote Retrieval] Quote items:`, JSON.stringify(quoteData.items, null, 2));
-        
-        // Ensure items array exists and is properly formatted
-        const items = Array.isArray(quoteData.items) ? quoteData.items : [];
-        if (items.length === 0 && quoteData.items) {
-          console.warn(`[Quote Retrieval] Items array is empty but quoteData.items exists:`, quoteData.items);
-        }
-        
-        return {
-          ...quoteData,
-          createdAt: quoteData.createdAt ? new Date(quoteData.createdAt) : new Date(),
-          expiresAt: quoteData.expiresAt ? new Date(quoteData.expiresAt) : undefined,
-          // Ensure items array exists and is an array
-          items: items,
-        } as Quote;
-      }
-    } catch (noteError) {
-      console.warn("Could not retrieve quote from Pipedrive notes:", noteError);
-    }
-
-    // Fallback: Reconstruct basic quote from deal data
-    // This won't have all items, but it's better than nothing
-    const dealData = deal.data;
-    return {
-      id: quoteId,
-      productName: dealData.title?.replace(`Quote ${quoteId}: `, '').split(' - ')[0] || 'Unknown Product',
-      customerEmail: dealData.title?.split(' - ')[1] || '',
-      total: dealData.value || 0,
-      subtotal: dealData.value || 0,
-      items: [], // Items would need to be retrieved from deal products
-      createdAt: new Date(),
-      customerName: '',
-    } as Quote;
-  } catch (error) {
-    console.error("Failed to get quote from Pipedrive:", error);
-    return null;
   }
+  
+  return null;
 }
 
 /**
