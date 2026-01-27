@@ -164,7 +164,7 @@ export function QuotePDFDocument({
             <View style={{ marginLeft: 16 }}>
               <Image
                 src={join(process.cwd(), "public", "Saunamo-Logo text only Bold-2.png")}
-                style={{ width: "auto", height: 48, maxWidth: 200 }}
+                style={{ width: 276, height: 48 }} // Aspect ratio: 1716/298 = 5.76, so 48 * 5.76 = 276
               />
             </View>
           </View>
