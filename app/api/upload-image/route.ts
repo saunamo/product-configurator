@@ -7,9 +7,25 @@ import { existsSync } from "fs";
  * POST /api/upload-image
  * Upload an image file to the server's public/images directory
  * Returns the URL path to the saved image
+ * 
+ * Note: On Netlify, the file system is read-only in serverless functions.
+ * Images must be uploaded via Git/deployment, not through this API.
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if we're on Netlify (read-only file system)
+    const isNetlify = !!process.env.NETLIFY;
+    
+    if (isNetlify) {
+      return NextResponse.json(
+        {
+          error: "Image uploads are not available on Netlify. Please upload images via Git and deploy, or use an external image hosting service (e.g., Cloudinary, Imgur). The file system is read-only in Netlify's serverless environment.",
+          netlifyReadOnly: true,
+        },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
@@ -68,6 +84,18 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error("Failed to upload image:", error);
+    
+    // Check if it's a read-only file system error
+    if (error.code === "EROFS" || error.message?.includes("read-only")) {
+      return NextResponse.json(
+        {
+          error: "File system is read-only. On Netlify, images must be uploaded via Git and deployed. Please add the image to the public/images folder and commit it.",
+          netlifyReadOnly: true,
+        },
+        { status: 403 }
+      );
+    }
+    
     return NextResponse.json(
       {
         error: error.message || "Failed to upload image",

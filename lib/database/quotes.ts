@@ -35,7 +35,7 @@ async function ensureQuotesDir() {
 async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void> {
   if (!dealId) {
     console.warn("No Pipedrive deal ID provided, cannot save quote to Pipedrive");
-    return;
+    throw new Error("No Pipedrive deal ID provided. Cannot save quote.");
   }
 
   try {
@@ -49,21 +49,44 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
       expiresAt: quote.expiresAt instanceof Date ? quote.expiresAt.toISOString() : quote.expiresAt,
     };
     
-    console.log(`[Quote Save] Saving quote to Pipedrive with ${quoteData.items?.length || 0} items`);
-    console.log(`[Quote Save] Quote items:`, JSON.stringify(quoteData.items, null, 2));
+    console.log(`[Quote Save] Saving quote to Pipedrive deal ${dealId} with ${quoteData.items?.length || 0} items`);
+    console.log(`[Quote Save] Quote ID: ${quote.id}`);
+    console.log(`[Quote Save] Quote items (first 2):`, JSON.stringify(quoteData.items?.slice(0, 2), null, 2));
 
     // Store full quote JSON as a note in Pipedrive
-    try {
-      await createNote({
-        content: `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData, null, 2)}`,
-        deal_id: dealId,
-        pinned_to_deal_flag: 1, // Pin the note so it's easy to find
-      });
-      console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note with ${quoteData.items?.length || 0} items`);
-    } catch (noteError) {
-      console.error("Could not save quote to Pipedrive note:", noteError);
-      throw noteError;
+    // Retry logic for Pipedrive API calls (sometimes they can be flaky)
+    let lastError: any = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log(`[Quote Save] Attempt ${attempt}/3: Creating note in Pipedrive deal ${dealId}...`);
+        await createNote({
+          content: `QUOTE_DATA_JSON:\n${JSON.stringify(quoteData, null, 2)}`,
+          deal_id: dealId,
+          pinned_to_deal_flag: 1, // Pin the note so it's easy to find
+        });
+        console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note with ${quoteData.items?.length || 0} items (attempt ${attempt})`);
+        return; // Success - exit function
+      } catch (noteError: any) {
+        lastError = noteError;
+        console.error(`[Quote Save] Attempt ${attempt}/3 failed:`, noteError?.message || noteError);
+        
+        // If it's a rate limit error, wait longer
+        if (noteError?.status === 429 || noteError?.message?.includes('rate limit')) {
+          const waitTime = attempt * 2000; // 2s, 4s, 6s
+          console.log(`[Quote Save] Rate limited, waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        } else if (attempt < 3) {
+          // Wait before retrying (exponential backoff)
+          const waitTime = attempt * 500; // 500ms, 1000ms
+          console.log(`[Quote Save] Waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+      }
     }
+    
+    // If we get here, all retries failed
+    console.error(`❌ Failed to save quote to Pipedrive after 3 attempts:`, lastError);
+    throw new Error(`Failed to save quote to Pipedrive: ${lastError?.message || 'Unknown error'}`);
   } catch (error) {
     console.error("Failed to save quote to Pipedrive:", error);
     throw error;
