@@ -431,7 +431,7 @@ export async function POST(request: NextRequest) {
         }
       }
     } catch (error: any) {
-      console.error("❌ Failed to save quote to server:", error);
+      console.error("❌ CRITICAL: Failed to save quote to server:", error);
       console.error("❌ Save error details:", {
         message: error.message,
         code: error.code,
@@ -442,15 +442,27 @@ export async function POST(request: NextRequest) {
         isNetlify: !!process.env.NETLIFY,
       });
       
-      // CRITICAL FIX: Don't fail the entire request if save fails
-      // The quote was generated successfully, so we should return it
-      // On Netlify, if Pipedrive is not configured, we can't save, but quote generation still succeeded
+      // CRITICAL: On Netlify, if note creation fails, quote CANNOT be retrieved
+      // We MUST fail the request so the user knows something is wrong
       if (process.env.NETLIFY && pipedriveDealId) {
-        console.warn("⚠️ On Netlify: Pipedrive save failed but deal was created, continuing...");
-        quoteSaved = true; // Mark as saved since deal exists
-        // Continue - quote ID is the deal ID, so it might still work
+        // Deal was created but note wasn't - this is a critical failure
+        console.error("❌ CRITICAL: Deal created but note not saved. Quote cannot be retrieved.");
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Failed to save quote: ${error.message || 'Note creation failed'}`,
+            details: process.env.NODE_ENV === 'development' ? {
+              message: error.message,
+              code: error.code,
+              dealId: pipedriveDealId,
+            } : {
+              dealId: pipedriveDealId,
+            },
+          },
+          { status: 500 }
+        );
       } else if (process.env.NETLIFY && !pipedriveDealId) {
-        // On Netlify without Pipedrive: quote can't be saved, but generation succeeded
+        // On Netlify without Pipedrive: quote can't be saved
         console.warn("⚠️ On Netlify: Quote generated but cannot be saved (Pipedrive not configured). Quote will not be retrievable.");
         quoteSaved = false; // Mark as not saved
         // Continue anyway - don't fail the request, but skip webhook
@@ -459,7 +471,6 @@ export async function POST(request: NextRequest) {
         console.warn("⚠️ File system save failed on localhost, but quote generation succeeded. Continuing...");
         quoteSaved = false; // Mark as not saved, but don't fail
       }
-      // Don't return error - continue and return the quote anyway
     }
 
     // Final validation before returning

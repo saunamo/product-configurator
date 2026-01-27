@@ -100,12 +100,20 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
         }
       } catch (noteError: any) {
         lastError = noteError;
-        console.error(`[Quote Save] Attempt ${attempt}/3 failed:`, {
-          message: noteError?.message || noteError,
-          status: noteError?.status,
-          statusText: noteError?.statusText,
-          response: noteError?.response ? await noteError.response.text().catch(() => 'N/A') : 'N/A',
-        });
+        // Extract error details - Pipedrive errors come from pipedriveRequest
+        const errorMessage = noteError?.message || String(noteError);
+        const errorStatus = noteError?.status;
+        
+        console.error(`[Quote Save] Attempt ${attempt}/3 FAILED:`);
+        console.error(`[Quote Save] Error message: ${errorMessage}`);
+        console.error(`[Quote Save] Error status: ${errorStatus}`);
+        console.error(`[Quote Save] Full error:`, noteError);
+        console.error(`[Quote Save] Error stack:`, noteError?.stack?.substring(0, 500));
+        
+        // Check if it's a content size issue
+        if (noteContent.length > 100000) {
+          console.error(`[Quote Save] WARNING: Note content is very large (${noteContent.length} chars). Pipedrive may have size limits.`);
+        }
         
         // If it's a rate limit error, wait longer
         if (noteError?.status === 429 || noteError?.message?.includes('rate limit')) {
@@ -333,34 +341,39 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
         await saveQuoteToPipedrive(quote, pipedriveDealId);
         console.log(`✅ Quote ${quote.id} successfully saved to Pipedrive deal ${pipedriveDealId} with ${quote.items?.length || 0} items`);
         
-        // Verify the save by trying to retrieve it immediately (with a short delay for indexing)
-        console.log(`[saveQuote] Verifying quote save by attempting retrieval...`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s for Pipedrive to index
+        // CRITICAL: On Netlify, if note creation fails, the quote CANNOT be retrieved
+        // We MUST verify the note was actually created, otherwise throw an error
+        console.log(`[saveQuote] Verifying note was created...`);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s for Pipedrive to index
         
-        const { getQuoteById } = await import("@/lib/database/quotes");
-        const verifyQuote = await getQuoteById(quote.id);
-        if (verifyQuote) {
-          console.log(`✅ Verification successful: Quote ${quote.id} can be retrieved with ${verifyQuote.items?.length || 0} items`);
+        const { getDealNotes } = await import("@/lib/pipedrive/client");
+        const notesResponse = await getDealNotes(pipedriveDealId);
+        const notes = notesResponse.data || [];
+        const quoteNote = notes.find((note: any) => 
+          note.content?.startsWith('QUOTE_DATA_JSON:')
+        );
+        
+        if (quoteNote) {
+          console.log(`✅ Verification successful: Quote note found in deal ${pipedriveDealId} (Note ID: ${quoteNote.id})`);
+          return; // Success - note exists
         } else {
-          console.warn(`⚠️ Verification failed: Quote ${quote.id} was saved but cannot be retrieved yet (may need more time to index)`);
+          console.error(`❌ CRITICAL: Quote note NOT found in deal ${pipedriveDealId} after save!`);
+          console.error(`❌ Total notes in deal: ${notes.length}`);
+          console.error(`❌ Note contents (first 100 chars):`, notes.map((n: any) => n.content?.substring(0, 100)));
+          // On Netlify, this is a CRITICAL failure - quote cannot be retrieved
+          throw new Error(`Quote note was not created in Pipedrive deal ${pipedriveDealId}. Quote cannot be retrieved.`);
         }
-        
-        return; // Success - return early
       } catch (error: any) {
-        console.error(`❌ Failed to save quote to Pipedrive:`, error?.message || error);
+        console.error(`❌ CRITICAL: Failed to save quote to Pipedrive:`, error?.message || error);
         console.error(`❌ Error details:`, {
           message: error.message,
           code: error.code,
           status: error.status,
-          stack: error.stack?.substring(0, 300),
+          stack: error.stack?.substring(0, 500),
         });
-        // On Netlify, if Pipedrive save fails, we can't use file system
-        // But we should NOT throw - let the quote be generated anyway
-        // The quote ID is already set, so the user can still access it via URL
-        // (though it won't be retrievable from Pipedrive)
-        console.warn(`⚠️ Quote ${quote.id} generated but could not be saved to Pipedrive. Quote ID is: ${quote.id}`);
-        // Don't throw - allow quote generation to succeed
-        return;
+        // On Netlify, if note creation fails, the quote CANNOT be retrieved
+        // We MUST throw the error so quote generation fails and user knows something is wrong
+        throw error; // Re-throw - this is critical on Netlify
       }
     } else {
       // On Netlify but no Pipedrive deal ID - Pipedrive is not configured
