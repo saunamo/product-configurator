@@ -369,7 +369,7 @@ export async function POST(request: NextRequest) {
     // CRITICAL: Save quote to server storage BEFORE constructing URL and sending webhook
     // The quote MUST be saved so it's retrievable at the URL we send in the email
     // Pass Pipedrive deal ID if available (for Netlify/Pipedrive storage)
-    let quoteSaved = false;
+    // Note: quoteSaved is already declared above, just updating it here
     try {
       console.log(`[Quote API] Saving quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items before save:`, JSON.stringify(quote.items?.slice(0, 2), null, 2), quote.items?.length > 2 ? '...' : '');
