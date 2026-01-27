@@ -123,15 +123,14 @@ export default function QuotePortalPage() {
               <p className="text-gray-600">Quote ID: {quote.id}</p>
             </div>
             <div className="ml-4 flex-shrink-0">
-              {/* Try image formats first, fallback to PDF */}
               <img 
-                src="/Saunamo-Logo text only Bold-1.png" 
+                src="/Saunamo-Logo text only Bold-2.png" 
                 alt="Saunamo Logo" 
                 className="h-16 w-auto object-contain"
                 onError={(e) => {
                   // Try other image formats if PNG doesn't work
                   const img = e.target as HTMLImageElement;
-                  const basePath = "/Saunamo-Logo text only Bold-1";
+                  const basePath = "/Saunamo-Logo text only Bold-2";
                   const extensions = [".jpg", ".jpeg", ".svg", ".webp"];
                   let currentIndex = 0;
                   const tryNext = () => {
