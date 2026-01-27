@@ -97,8 +97,9 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
  * Get quote from Pipedrive deal
  * Searches for deal by quote ID in deal title or notes
  * Includes retry logic to handle timing issues with Pipedrive indexing
+ * Increased retries and wait times for better reliability on Netlify
  */
-async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quote | null> {
+async function getQuoteFromPipedrive(quoteId: string, retries = 5): Promise<Quote | null> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       // Quote ID is now the Pipedrive deal ID, so try to get deal directly first
@@ -111,39 +112,49 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
           const deal = await getDeal(parsedDealId);
           if (deal && deal.data) {
             dealId = parsedDealId;
-            console.log(`[Quote Retrieval] Found deal directly by ID: ${dealId}`);
+            console.log(`[Quote Retrieval] Found deal directly by ID: ${dealId} (attempt ${attempt})`);
           }
-        } catch (error) {
-          console.log(`[Quote Retrieval] Deal ID ${parsedDealId} not found, trying search...`);
+        } catch (error: any) {
+          if (error.message?.includes('404') || error.message?.includes('not found')) {
+            console.log(`[Quote Retrieval] Deal ID ${parsedDealId} not found (attempt ${attempt}), trying search...`);
+          } else {
+            console.log(`[Quote Retrieval] Error getting deal ${parsedDealId}:`, error.message);
+          }
         }
       }
       
       // If direct lookup failed, try search
       if (!dealId) {
-        const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
-          `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
-        );
+        try {
+          const searchResponse = await pipedriveRequest<{ data: { items?: Array<{ item: any }> } }>(
+            `/deals/search?term=${encodeURIComponent(quoteId)}&fields=title`
+          );
 
-        const deals = searchResponse.data?.items || [];
-        
-        // Find deal that has quote ID in title or matches deal ID
-        const matchingDeal = deals.find((item: any) => 
-          item.item?.title?.includes(quoteId) || item.item?.id?.toString() === quoteId
-        );
-        
-        if (matchingDeal) {
-          dealId = matchingDeal.item.id;
+          const deals = searchResponse.data?.items || [];
+          
+          // Find deal that has quote ID in title or matches deal ID
+          const matchingDeal = deals.find((item: any) => 
+            item.item?.title?.includes(quoteId) || item.item?.id?.toString() === quoteId
+          );
+          
+          if (matchingDeal) {
+            dealId = matchingDeal.item.id;
+            console.log(`[Quote Retrieval] Found deal via search: ${dealId} (attempt ${attempt})`);
+          }
+        } catch (searchError) {
+          console.log(`[Quote Retrieval] Search failed (attempt ${attempt}):`, searchError);
         }
       }
       
       if (!dealId) {
         if (attempt < retries) {
-          // Wait before retrying (Pipedrive search might need time to index)
-          console.log(`[Quote Retrieval] Attempt ${attempt}/${retries}: Deal not found yet, retrying in ${attempt * 500}ms...`);
-          await new Promise(resolve => setTimeout(resolve, attempt * 500));
+          // Exponential backoff: 1s, 2s, 3s, 4s, 5s
+          const waitTime = attempt * 1000;
+          console.log(`[Quote Retrieval] Attempt ${attempt}/${retries}: Deal not found yet, retrying in ${waitTime}ms...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
           continue;
         }
-        console.warn(`No Pipedrive deal found for quote ${quoteId} after ${retries} attempts`);
+        console.warn(`❌ No Pipedrive deal found for quote ${quoteId} after ${retries} attempts`);
         return null;
       }
       
@@ -151,32 +162,55 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
       const deal = await getDeal(dealId);
       
       // Try to get quote data from deal notes
-      // For now, reconstruct quote from deal data
-      // In production, you'd store full quote JSON in a note or custom field
-      
-      // Get notes for this deal
-      try {
-        const notesResponse = await getDealNotes(dealId);
-        const notes = notesResponse.data || [];
-        
-        // Look for note with full quote JSON (starts with QUOTE_DATA_JSON:)
-        const quoteNote = notes.find((note: any) => 
-          note.content?.startsWith('QUOTE_DATA_JSON:')
-        );
-        
-        if (quoteNote) {
-          // Extract JSON from note content
-          const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '');
-          let quoteData;
-          try {
-            quoteData = JSON.parse(jsonContent);
-          } catch (parseError) {
-            console.error(`[Quote Retrieval] Failed to parse quote JSON from Pipedrive note:`, parseError);
-            console.error(`[Quote Retrieval] Note content (first 500 chars):`, quoteNote.content.substring(0, 500));
-            return null;
+      // Retry note retrieval separately (notes might take longer to index)
+      let quoteNote = null;
+      for (let noteAttempt = 1; noteAttempt <= 3; noteAttempt++) {
+        try {
+          const notesResponse = await getDealNotes(dealId);
+          const notes = notesResponse.data || [];
+          
+          // Look for note with full quote JSON (starts with QUOTE_DATA_JSON:)
+          quoteNote = notes.find((note: any) => 
+            note.content?.startsWith('QUOTE_DATA_JSON:')
+          );
+          
+          if (quoteNote) {
+            console.log(`[Quote Retrieval] Found quote note on attempt ${noteAttempt}`);
+            break;
+          } else {
+            if (noteAttempt < 3) {
+              console.log(`[Quote Retrieval] Quote note not found yet (attempt ${noteAttempt}/3), waiting 1s...`);
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            } else {
+              console.warn(`[Quote Retrieval] Quote note not found after 3 attempts. Total notes: ${notes.length}`);
+              // Log note titles for debugging
+              notes.forEach((note: any, idx: number) => {
+                console.log(`[Quote Retrieval] Note ${idx + 1}: ${note.content?.substring(0, 50)}...`);
+              });
+            }
           }
-          console.log(`[Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
-          console.log(`[Quote Retrieval] Quote items:`, JSON.stringify(quoteData.items, null, 2));
+        } catch (noteError: any) {
+          console.warn(`[Quote Retrieval] Error getting notes (attempt ${noteAttempt}):`, noteError.message);
+          if (noteAttempt < 3) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+      }
+      
+      if (quoteNote) {
+        // Extract JSON from note content
+        const jsonContent = quoteNote.content.replace('QUOTE_DATA_JSON:\n', '').replace('QUOTE_DATA_JSON:', '');
+        let quoteData;
+        try {
+          quoteData = JSON.parse(jsonContent);
+        } catch (parseError: any) {
+          console.error(`[Quote Retrieval] Failed to parse quote JSON from Pipedrive note:`, parseError.message);
+          console.error(`[Quote Retrieval] Note content (first 500 chars):`, quoteNote.content.substring(0, 500));
+          // Don't return null here - try fallback
+        }
+        
+        if (quoteData) {
+          console.log(`✅ [Quote Retrieval] Retrieved quote ${quoteId} from Pipedrive, items count: ${quoteData.items?.length || 0}`);
           
           // Ensure items array exists and is properly formatted
           const items = Array.isArray(quoteData.items) ? quoteData.items : [];
@@ -192,12 +226,11 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
             items: items,
           } as Quote;
         }
-      } catch (noteError) {
-        console.warn("Could not retrieve quote from Pipedrive notes:", noteError);
       }
 
       // Fallback: Reconstruct basic quote from deal data
       // This won't have all items, but it's better than nothing
+      console.warn(`⚠️ [Quote Retrieval] Quote note not found, using fallback reconstruction from deal data`);
       const dealData = deal.data;
       return {
         id: quoteId,
@@ -209,14 +242,15 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
         createdAt: new Date(),
         customerName: '',
       } as Quote;
-    } catch (error) {
-      console.error(`[Quote Retrieval] Attempt ${attempt} failed:`, error);
+    } catch (error: any) {
+      console.error(`[Quote Retrieval] Attempt ${attempt} failed:`, error.message || error);
       if (attempt < retries) {
-        // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, attempt * 500));
+        // Exponential backoff: 1s, 2s, 3s, 4s, 5s
+        const waitTime = attempt * 1000;
+        await new Promise(resolve => setTimeout(resolve, waitTime));
         continue;
       }
-      console.error("Failed to get quote from Pipedrive after all retries:", error);
+      console.error(`❌ Failed to get quote from Pipedrive after all ${retries} retries:`, error);
       return null;
     }
   }
@@ -280,22 +314,28 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
 /**
  * Get a quote by ID
  * Tries Pipedrive first (for Netlify), falls back to file system
+ * Increased retries and better error handling for Netlify reliability
  */
 export async function getQuoteById(quoteId: string): Promise<Quote | null> {
-  console.log(`[getQuoteById] Looking for quote ${quoteId}, isServerless: ${isServerless}`);
+  console.log(`[getQuoteById] Looking for quote ${quoteId}, isServerless: ${isServerless}, NETLIFY: ${process.env.NETLIFY}`);
   
   // Try Pipedrive first (for Netlify)
   if (isServerless) {
     try {
-      const pipedriveQuote = await getQuoteFromPipedrive(quoteId);
+      // Use more retries for Netlify (5 attempts with exponential backoff)
+      const pipedriveQuote = await getQuoteFromPipedrive(quoteId, 5);
       if (pipedriveQuote) {
-        console.log(`✅ Found quote ${quoteId} in Pipedrive with ${pipedriveQuote.items?.length || 0} items`);
+        const itemCount = pipedriveQuote.items?.length || 0;
+        console.log(`✅ Found quote ${quoteId} in Pipedrive with ${itemCount} items`);
+        if (itemCount === 0) {
+          console.warn(`⚠️ Quote ${quoteId} found but has no items - this might indicate a problem`);
+        }
         return pipedriveQuote;
       } else {
-        console.log(`⚠️ Quote ${quoteId} not found in Pipedrive, trying file system fallback`);
+        console.log(`⚠️ Quote ${quoteId} not found in Pipedrive after all retries, trying file system fallback`);
       }
-    } catch (error) {
-      console.error(`❌ Error retrieving quote from Pipedrive:`, error);
+    } catch (error: any) {
+      console.error(`❌ Error retrieving quote from Pipedrive:`, error.message || error);
       // Fall through to file system
     }
   }

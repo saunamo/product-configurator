@@ -305,6 +305,14 @@ export async function POST(request: NextRequest) {
       await saveQuoteServer(quote, pipedriveDealId);
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
       
+      // For Netlify: Wait longer for Pipedrive note to be indexed before responding
+      // This gives Pipedrive time to make the note searchable
+      if (process.env.NETLIFY && pipedriveDealId) {
+        console.log(`[Quote API] Waiting 2 seconds for Pipedrive note to be indexed (Netlify)...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log(`[Quote API] Wait complete, quote should now be retrievable`);
+      }
+      
       // Verify quote was saved by trying to read it back (for file system)
       // Add a small delay to allow file system to flush
       if (!process.env.NETLIFY && !process.env.VERCEL) {
