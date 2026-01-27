@@ -140,42 +140,50 @@ export async function POST(request: NextRequest) {
 
     // Create deal in Pipedrive if configured
     let pipedriveDealId: number | undefined;
-    try {
-      // Collect Pipedrive product IDs from quote items
-      const pipedriveProductIds: Record<string, number> = {};
-      
-      if (adminConfig.priceSource === "pipedrive") {
-        // Get Pipedrive product IDs from globalSettings (preferred) or option.pipedriveProductId (fallback)
-        const globalSettings = (adminConfig as any).globalSettings;
-        if (globalSettings?.optionPipedriveProducts) {
-          Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
-            if (typeof productId === 'number') {
-              pipedriveProductIds[optionId] = productId;
-            }
+    
+    // Check if Pipedrive is configured before attempting to create deal
+    const pipedriveToken = process.env.PIPEDRIVE_API_TOKEN;
+    if (pipedriveToken) {
+      try {
+        // Collect Pipedrive product IDs from quote items
+        const pipedriveProductIds: Record<string, number> = {};
+        
+        if (adminConfig.priceSource === "pipedrive") {
+          // Get Pipedrive product IDs from globalSettings (preferred) or option.pipedriveProductId (fallback)
+          const globalSettings = (adminConfig as any).globalSettings;
+          if (globalSettings?.optionPipedriveProducts) {
+            Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
+              if (typeof productId === 'number') {
+                pipedriveProductIds[optionId] = productId;
+              }
+            });
+          }
+          
+          // Also check option.pipedriveProductId as fallback
+          Object.values(adminConfig.stepData).forEach((stepData) => {
+            stepData.options.forEach((option) => {
+              if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
+                pipedriveProductIds[option.id] = option.pipedriveProductId;
+              }
+            });
           });
         }
-        
-        // Also check option.pipedriveProductId as fallback
-        Object.values(adminConfig.stepData).forEach((stepData) => {
-          stepData.options.forEach((option) => {
-            if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
-              pipedriveProductIds[option.id] = option.pipedriveProductId;
-            }
-          });
-        });
-      }
 
-      const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
-      pipedriveDealId = dealResult.dealId;
-      
-      // Update quote ID to use Pipedrive deal ID BEFORE saving
-      if (pipedriveDealId) {
-        quote.id = pipedriveDealId.toString();
-        console.log(`[Quote API] Updated quote ID to Pipedrive deal ID: ${quote.id}`);
+        const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
+        pipedriveDealId = dealResult.dealId;
+        
+        // Update quote ID to use Pipedrive deal ID BEFORE saving
+        if (pipedriveDealId) {
+          quote.id = pipedriveDealId.toString();
+          console.log(`[Quote API] Updated quote ID to Pipedrive deal ID: ${quote.id}`);
+        }
+      } catch (error: any) {
+        console.error("Failed to create Pipedrive deal:", error?.message || error);
+        // Continue even if Pipedrive deal creation fails - quote will keep original ID
+        // Don't throw - allow quote to be saved without Pipedrive
       }
-    } catch (error) {
-      console.error("Failed to create Pipedrive deal:", error);
-      // Continue even if Pipedrive deal creation fails - quote will keep original ID
+    } else {
+      console.log("[Quote API] PIPEDRIVE_API_TOKEN not configured, skipping deal creation");
     }
 
       // Generate PDF (use updated quote ID)

@@ -69,7 +69,18 @@ export async function createDealFromQuote(
     dealData.stage_id = config.stageId;
   }
 
-  const result = await createDeal(dealData);
+  let result;
+  try {
+    result = await createDeal(dealData);
+  } catch (error: any) {
+    console.error("[createDealFromQuote] Failed to create deal:", error?.message || error);
+    throw error; // Re-throw so caller knows it failed
+  }
+  
+  if (!result || !result.data || !result.data.id) {
+    throw new Error("Pipedrive deal creation returned invalid response");
+  }
+  
   const dealId = result.data.id;
 
   // Quote data will be saved to Pipedrive note by saveQuote function
