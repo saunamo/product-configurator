@@ -51,11 +51,11 @@ export async function createDealFromQuote(
   }
 
   // Create the deal
-  // Include quote ID in title for easy retrieval
+  // Note: quote.id will be updated to the deal ID after creation
   const dealData: any = {
-    title: `Quote ${quote.id}: ${quote.productName} - ${quote.customerEmail}`,
+    title: `Quote: ${quote.productName} - ${quote.customerEmail}`,
     value: quote.total,
-    currency: "USD",
+    currency: "GBP", // Changed from USD to GBP
     person_id: personId,
   };
 

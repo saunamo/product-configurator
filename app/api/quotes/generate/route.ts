@@ -163,17 +163,17 @@ export async function POST(request: NextRequest) {
       const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
       pipedriveDealId = dealResult.dealId;
       
-      // Update quote ID to use Pipedrive deal ID
+      // Update quote ID to use Pipedrive deal ID BEFORE saving
       if (pipedriveDealId) {
         quote.id = pipedriveDealId.toString();
         console.log(`[Quote API] Updated quote ID to Pipedrive deal ID: ${quote.id}`);
       }
     } catch (error) {
       console.error("Failed to create Pipedrive deal:", error);
-      // Continue even if Pipedrive deal creation fails
+      // Continue even if Pipedrive deal creation fails - quote will keep original ID
     }
 
-      // Generate PDF
+      // Generate PDF (use updated quote ID)
       let pdfBuffer: Buffer | undefined;
       try {
         const { generateQuotePDF } = await import("@/lib/quotes/pdfGenerator");
