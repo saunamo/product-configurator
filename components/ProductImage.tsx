@@ -39,7 +39,7 @@ export default function ProductImage({
   return (
     <div className={`${containerClass} ${backgroundClass}`}>
       <img
-        src={imageUrl || defaultImageUrl}
+        src={imageUrl ? `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : defaultImageUrl}
         alt={alt}
         className={`w-full h-full ${objectFitClass} ${isOptionImage ? 'max-w-full max-h-full' : ''}`}
         style={isOptionImage ? {
@@ -48,6 +48,7 @@ export default function ProductImage({
           maxWidth: '100%',
           maxHeight: '100%',
         } : undefined}
+        key={imageUrl} // Force re-render when image URL changes
       />
       {capitalizedLabel && (
         <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm font-medium">

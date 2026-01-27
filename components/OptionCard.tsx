@@ -244,9 +244,10 @@ export default function OptionCard({
         <div className="flex-shrink-0">
           <div className="relative w-24 h-24 bg-gray-100 rounded overflow-hidden border border-gray-200">
             <img
-              src={option.imageUrl}
+              src={option.imageUrl ? `${option.imageUrl}${option.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : undefined}
               alt={option.title}
               className="w-full h-full object-cover"
+              key={option.imageUrl} // Force re-render when image URL changes
               onError={(e) => {
                 console.error(`❌ Image failed to load for option ${option.id}:`, option.imageUrl);
                 // Hide image on error instead of showing placeholder
