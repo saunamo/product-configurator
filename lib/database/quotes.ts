@@ -100,6 +100,12 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
  * Increased retries and wait times for better reliability on Netlify
  */
 async function getQuoteFromPipedrive(quoteId: string, retries = 5): Promise<Quote | null> {
+  // Check if Pipedrive is configured
+  if (!process.env.PIPEDRIVE_API_TOKEN) {
+    console.error(`[Quote Retrieval] PIPEDRIVE_API_TOKEN not configured`);
+    return null;
+  }
+  
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       // Quote ID is now the Pipedrive deal ID, so try to get deal directly first
@@ -115,10 +121,18 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 5): Promise<Quot
             console.log(`[Quote Retrieval] Found deal directly by ID: ${dealId} (attempt ${attempt})`);
           }
         } catch (error: any) {
-          if (error.message?.includes('404') || error.message?.includes('not found')) {
+          // Handle different types of errors gracefully
+          const errorMsg = error.message || String(error);
+          if (errorMsg.includes('404') || errorMsg.includes('not found')) {
             console.log(`[Quote Retrieval] Deal ID ${parsedDealId} not found (attempt ${attempt}), trying search...`);
+          } else if (errorMsg.includes('401') || errorMsg.includes('unauthorized')) {
+            console.error(`[Quote Retrieval] Pipedrive authentication failed - check API token`);
+            return null; // Don't retry auth errors
+          } else if (errorMsg.includes('429') || errorMsg.includes('rate limit')) {
+            console.log(`[Quote Retrieval] Rate limited (attempt ${attempt}), will retry...`);
+            // Will retry with backoff
           } else {
-            console.log(`[Quote Retrieval] Error getting deal ${parsedDealId}:`, error.message);
+            console.log(`[Quote Retrieval] Error getting deal ${parsedDealId}:`, errorMsg.substring(0, 100));
           }
         }
       }
@@ -319,8 +333,14 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
 export async function getQuoteById(quoteId: string): Promise<Quote | null> {
   console.log(`[getQuoteById] Looking for quote ${quoteId}, isServerless: ${isServerless}, NETLIFY: ${process.env.NETLIFY}`);
   
+  // Check if Pipedrive is configured
+  const pipedriveToken = process.env.PIPEDRIVE_API_TOKEN;
+  if (!pipedriveToken) {
+    console.warn(`[getQuoteById] PIPEDRIVE_API_TOKEN not configured, skipping Pipedrive lookup`);
+  }
+  
   // Try Pipedrive first (for Netlify)
-  if (isServerless) {
+  if (isServerless && pipedriveToken) {
     try {
       // Use more retries for Netlify (5 attempts with exponential backoff)
       const pipedriveQuote = await getQuoteFromPipedrive(quoteId, 5);
@@ -335,9 +355,17 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
         console.log(`⚠️ Quote ${quoteId} not found in Pipedrive after all retries, trying file system fallback`);
       }
     } catch (error: any) {
-      console.error(`❌ Error retrieving quote from Pipedrive:`, error.message || error);
-      // Fall through to file system
+      console.error(`❌ Error retrieving quote from Pipedrive:`, {
+        message: error.message,
+        name: error.name,
+        stack: error.stack?.substring(0, 200),
+      });
+      // Don't throw - fall through to file system fallback
+      // This prevents 500 errors if Pipedrive is temporarily unavailable
     }
+  } else if (isServerless && !pipedriveToken) {
+    console.warn(`[getQuoteById] On Netlify but PIPEDRIVE_API_TOKEN not configured - quotes cannot be retrieved`);
+    return null;
   }
 
   // Fallback to file system (for localhost)

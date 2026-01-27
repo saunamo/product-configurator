@@ -42,11 +42,34 @@ export async function GET(
       },
     });
   } catch (error: any) {
-    console.error("Failed to retrieve quote:", error);
+    console.error(`[Quote API GET] Error retrieving quote ${quoteId}:`, error);
+    console.error(`[Quote API GET] Error stack:`, error.stack);
+    console.error(`[Quote API GET] Error details:`, {
+      message: error.message,
+      name: error.name,
+      code: error.code,
+    });
+    
+    // If it's a "not found" type error, return 404 instead of 500
+    if (error.message?.includes('not found') || 
+        error.message?.includes('404') ||
+        error.message?.includes('PIPEDRIVE_API_TOKEN is not configured')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Quote not found",
+        },
+        { status: 404 }
+      );
+    }
+    
+    // For other errors, return 500 with detailed error (only in development)
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to retrieve quote",
+        error: process.env.NODE_ENV === 'development' 
+          ? error.message || "Failed to retrieve quote"
+          : "Failed to retrieve quote. Please try again.",
       },
       { status: 500 }
     );
