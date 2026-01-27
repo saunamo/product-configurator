@@ -222,6 +222,18 @@ export async function POST(request: NextRequest) {
     }
 
       // Generate PDF (use updated quote ID)
+      // Ensure quote is initialized before using it
+      if (!quote || !quote.id) {
+        console.error("❌ CRITICAL: Quote is not initialized before PDF generation");
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Quote generation failed: Quote is not initialized",
+          },
+          { status: 500 }
+        );
+      }
+      
       let pdfBuffer: Buffer | undefined;
       try {
         const { generateQuotePDF } = await import("@/lib/quotes/pdfGenerator");
