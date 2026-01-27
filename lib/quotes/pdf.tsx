@@ -238,7 +238,7 @@ export function QuotePDFDocument({
               const totalInclVat = priceInclVat * quantity;
               
               return (
-                <View key={index} style={{ flexDirection: "row", borderBottom: "1 solid #e5e7eb", paddingVertical: 16 }}>
+                <View key={index} style={{ flexDirection: "row", borderBottom: "1 solid #e5e7eb", paddingVertical: 12, break: false }}>
                   <View style={styles.colDescription}>
                     <Text style={[styles.tableCell, { fontWeight: "bold", marginBottom: 4 }]}>
                       {item.optionTitle}
