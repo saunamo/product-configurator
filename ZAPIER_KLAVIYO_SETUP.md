@@ -44,11 +44,14 @@ ZAPIER_WEBHOOK_URL=https://hooks.zapier.com/hooks/catch/your-webhook-id-here
    - **Attachments**: Use `pdfBase64` field (decode from base64) with filename `pdfFilename`
 3. **Email Template Variables Available**:
    - `customerName`, `customerEmail`, `customerPhone`
-   - `productName`, `productImageUrl`
+   - `productName`, `productImageUrl` (automatically included - product main image)
    - `total`, `subtotal`, `tax`
-   - `quoteId`, `quotePortalUrl`, `companyName`
+   - `quoteId`, `quotePortalUrl` (link to view quote online)
+   - `companyName`
    - `createdAt`, `expiresAt`, `notes`
    - `items` (array of quote items)
+   
+   **Note:** The `productImageUrl` is automatically included in the webhook payload. The email template (`zapier-welvaere-email-template.html`) already includes logic to display the product image if available. Make sure your Zapier email action uses the `productImageUrl` field in the email body.
 
 ## Step 4: Configure Klaviyo Action in Zapier
 
@@ -118,10 +121,12 @@ The webhook sends the following data to Zapier:
 The email template includes:
 - Company logo/name at the top
 - Personalized greeting
-- Product image
-- "View quote" button linking to quote portal
+- **Product image** (automatically included from `productImageUrl` in webhook)
+- "View quote" button linking to quote portal (`quotePortalUrl`)
 - Quote summary with ID, date, and total
 - Professional styling matching your brand colors
+
+**Product Image:** The product's main image is automatically included in the webhook payload as `productImageUrl`. The email template (`zapier-welvaere-email-template.html`) uses `{{#if productImageUrl}}` to conditionally display the image. Make sure your Zapier email action includes this field in the email body HTML.
 
 ## Troubleshooting
 
