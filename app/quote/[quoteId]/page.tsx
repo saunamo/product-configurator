@@ -117,17 +117,38 @@ export default function QuotePortalPage() {
       <div className="max-w-4xl mx-auto">
         {/* Quote Header */}
         <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
-          {logoUrl && (
-            <div className="mb-6">
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-[#303337] mb-2">Quote</h1>
+              <p className="text-gray-600">Quote ID: {quote.id}</p>
+            </div>
+            <div className="ml-4 flex-shrink-0">
+              {/* Try image formats first, fallback to PDF */}
               <img 
-                src={logoUrl} 
-                alt="Company Logo" 
-                className="h-12 w-auto object-contain"
+                src="/Saunamo-Logo text only Bold-1.png" 
+                alt="Saunamo Logo" 
+                className="h-16 w-auto object-contain"
+                onError={(e) => {
+                  // Try other image formats if PNG doesn't work
+                  const img = e.target as HTMLImageElement;
+                  const basePath = "/Saunamo-Logo text only Bold-1";
+                  const extensions = [".jpg", ".jpeg", ".svg", ".webp"];
+                  let currentIndex = 0;
+                  const tryNext = () => {
+                    if (currentIndex < extensions.length) {
+                      img.src = basePath + extensions[currentIndex];
+                      currentIndex++;
+                    } else {
+                      // If all image formats fail, hide the image
+                      img.style.display = "none";
+                    }
+                  };
+                  img.onerror = tryNext;
+                  tryNext();
+                }}
               />
             </div>
-          )}
-          <h1 className="text-3xl font-bold text-[#303337] mb-2">Quote</h1>
-          <p className="text-gray-600">Quote ID: {quote.id}</p>
+          </div>
         </div>
 
         {/* Customer Information */}
@@ -178,26 +199,61 @@ export default function QuotePortalPage() {
           {!quote.items || quote.items.length === 0 ? (
             <p className="text-gray-500">No items in this quote.</p>
           ) : (
-            <div className="space-y-4">
-              {quote.items.map((item, index) => (
-                <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="font-medium text-gray-900">{item.optionTitle}</p>
-                      <p className="text-sm text-gray-600">{item.stepName}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-gray-900">{formatCurrency(item.price)}</p>
-                      {item.quantity && item.quantity > 1 && (
-                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                      )}
-                    </div>
-                  </div>
-                  {item.optionDescription && (
-                    <p className="text-sm text-gray-500 mt-1">{item.optionDescription}</p>
-                  )}
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Description</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Price (VAT 0%)</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">VAT %</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">QTY</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Total (incl. VAT)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {quote.items.map((item, index) => {
+                    // Calculate VAT rate (default to 20% for UK)
+                    // item.vatRate is stored as decimal (e.g., 0.20 for 20%)
+                    // quote.taxRate is also stored as decimal
+                    const vatRate = item.vatRate !== undefined ? item.vatRate : (quote.taxRate !== undefined ? quote.taxRate : 0.20);
+                    const quantity = item.quantity || 1;
+                    // Price without VAT - item.price should be the base price excluding VAT
+                    const priceExclVat = item.price;
+                    // VAT amount per unit
+                    const vatAmount = priceExclVat * vatRate;
+                    // Price including VAT per unit
+                    const priceInclVat = priceExclVat + vatAmount;
+                    // Total including VAT for the line
+                    const totalInclVat = priceInclVat * quantity;
+                    
+                    return (
+                      <tr key={index} className="border-b border-gray-200">
+                        <td className="py-4 px-4">
+                          <div>
+                            <p className="font-medium text-gray-900">{item.optionTitle}</p>
+                            <p className="text-sm text-gray-600">{item.stepName}</p>
+                            {item.optionDescription && (
+                              <p className="text-sm text-gray-500 mt-1">{item.optionDescription}</p>
+                            )}
+                          </div>
+                        </td>
+                        <td className="text-right py-4 px-4 font-medium text-gray-900">
+                          {formatCurrency(priceExclVat)}
+                        </td>
+                        <td className="text-right py-4 px-4 text-gray-700">
+                          {(vatRate * 100).toFixed(0)}%
+                        </td>
+                        <td className="text-right py-4 px-4 text-gray-700">
+                          {quantity}
+                        </td>
+                        <td className="text-right py-4 px-4 font-medium text-gray-900">
+                          {formatCurrency(totalInclVat)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
