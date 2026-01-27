@@ -83,6 +83,9 @@ export async function POST(request: NextRequest) {
 
     // Generate quote
     let quote = generateQuote(body, adminConfig);
+    
+    console.log(`[Quote API] Generated quote with ${quote.items?.length || 0} items`);
+    console.log(`[Quote API] Quote items after generation:`, JSON.stringify(quote.items, null, 2));
 
     // Sync prices from Pipedrive if configured
     if (adminConfig.priceSource === "pipedrive") {
@@ -117,7 +120,13 @@ export async function POST(request: NextRequest) {
 
       if (Object.keys(pipedriveProductIds).length > 0) {
         try {
+          const quoteBeforeSync = { ...quote };
           quote = await syncPricesFromPipedrive(quote, pipedriveProductIds);
+          console.log(`[Quote API] After Pipedrive sync: ${quote.items?.length || 0} items`);
+          console.log(`[Quote API] Items before sync: ${quoteBeforeSync.items?.length || 0}, after sync: ${quote.items?.length || 0}`);
+          if (quote.items?.length !== quoteBeforeSync.items?.length) {
+            console.error(`[Quote API] WARNING: Items count changed during sync! Before: ${quoteBeforeSync.items?.length}, After: ${quote.items?.length}`);
+          }
         } catch (error) {
           console.error("Pipedrive price sync failed, using stored prices:", error);
         }

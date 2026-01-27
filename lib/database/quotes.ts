@@ -47,6 +47,9 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
       createdAt: quote.createdAt instanceof Date ? quote.createdAt.toISOString() : quote.createdAt,
       expiresAt: quote.expiresAt instanceof Date ? quote.expiresAt.toISOString() : quote.expiresAt,
     };
+    
+    console.log(`[Quote Save] Saving quote to Pipedrive with ${quoteData.items?.length || 0} items`);
+    console.log(`[Quote Save] Quote items:`, JSON.stringify(quoteData.items, null, 2));
 
     // Store full quote JSON as a note in Pipedrive
     try {
@@ -55,7 +58,7 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
         deal_id: dealId,
         pinned_to_deal_flag: 1, // Pin the note so it's easy to find
       });
-      console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note`);
+      console.log(`✅ Quote saved to Pipedrive deal ${dealId} as note with ${quoteData.items?.length || 0} items`);
     } catch (noteError) {
       console.error("Could not save quote to Pipedrive note:", noteError);
       throw noteError;
