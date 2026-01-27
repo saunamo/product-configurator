@@ -128,26 +128,60 @@ async function saveQuoteToPipedrive(quote: Quote, dealId?: number): Promise<void
         // Extract error details - Pipedrive errors come from pipedriveRequest
         const errorMessage = noteError?.message || String(noteError);
         const errorStatus = noteError?.status;
+        const errorResponseText = noteError?.responseText || 'N/A';
         
         console.error(`[Quote Save] Attempt ${attempt}/3 FAILED:`);
         console.error(`[Quote Save] Error message: ${errorMessage}`);
         console.error(`[Quote Save] Error status: ${errorStatus}`);
-        console.error(`[Quote Save] Full error:`, noteError);
-        console.error(`[Quote Save] Error stack:`, noteError?.stack?.substring(0, 500));
+        console.error(`[Quote Save] Error response: ${errorResponseText}`);
+        console.error(`[Quote Save] Full error object:`, JSON.stringify(noteError, Object.getOwnPropertyNames(noteError)));
         
         // Check if it's a content size issue
-        if (noteContent.length > 100000) {
-          console.error(`[Quote Save] WARNING: Note content is very large (${noteContent.length} chars). Pipedrive may have size limits.`);
+        if (noteContent.length > 50000) {
+          console.error(`[Quote Save] WARNING: Note content is large (${noteContent.length} chars). Pipedrive may have size limits.`);
+          // Try creating a smaller note with just essential data
+          if (attempt === 1) {
+            console.log(`[Quote Save] Attempting to create smaller note with essential data only...`);
+            try {
+              const essentialData = {
+                id: quoteData.id,
+                productName: quoteData.productName,
+                customerEmail: quoteData.customerEmail,
+                customerName: quoteData.customerName,
+                items: quoteData.items,
+                total: quoteData.total,
+                subtotal: quoteData.subtotal,
+                createdAt: quoteData.createdAt,
+              };
+              const smallerContent = `QUOTE_DATA_JSON:\n${JSON.stringify(essentialData)}`;
+              console.log(`[Quote Save] Smaller note content length: ${smallerContent.length} characters`);
+              
+              const smallerNoteResponse = await createNote({
+                content: smallerContent,
+                deal_id: dealId,
+                pinned_to_deal_flag: 1,
+              });
+              
+              if (smallerNoteResponse?.data?.id) {
+                console.log(`✅ Smaller note created successfully! Note ID: ${smallerNoteResponse.data.id}`);
+                createdNoteId = smallerNoteResponse.data.id;
+                noteCreated = true;
+                return; // Success with smaller note
+              }
+            } catch (smallerError: any) {
+              console.error(`[Quote Save] Smaller note also failed:`, smallerError?.message);
+            }
+          }
         }
         
         // If it's a rate limit error, wait longer
-        if (noteError?.status === 429 || noteError?.message?.includes('rate limit')) {
+        if (noteError?.status === 429 || errorMessage?.includes('rate limit')) {
           const waitTime = attempt * 2000; // 2s, 4s, 6s
           console.log(`[Quote Save] Rate limited, waiting ${waitTime}ms before retry...`);
           await new Promise(resolve => setTimeout(resolve, waitTime));
         } else if (attempt < 3) {
           // Wait before retrying (exponential backoff)
-          const waitTime = attempt * 500; // 500ms, 1000ms
+          const waitTime = attempt * 1000; // 1s, 2s
           console.log(`[Quote Save] Waiting ${waitTime}ms before retry...`);
           await new Promise(resolve => setTimeout(resolve, waitTime));
         }
