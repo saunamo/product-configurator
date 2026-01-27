@@ -170,10 +170,10 @@ export function QuotePDFDocument({
           </View>
         </View>
 
-        {/* Customer Information */}
+        {/* Customer Information & Quote Details - Combined */}
         <View style={[styles.sectionBox, { marginBottom: 24 }]}>
           <Text style={styles.sectionTitle}>Customer Information</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 12 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 12, marginBottom: 16 }}>
             <View style={{ width: "50%", marginBottom: 12 }}>
               <Text style={styles.fieldLabel}>Name</Text>
               <Text style={styles.fieldValue}>{quote.customerName || "N/A"}</Text>
@@ -189,11 +189,8 @@ export function QuotePDFDocument({
               </View>
             )}
           </View>
-        </View>
-
-        {/* Quote Details */}
-        <View style={[styles.sectionBox, { marginBottom: 24 }]}>
-          <Text style={styles.sectionTitle}>Quote Details</Text>
+          
+          <Text style={[styles.sectionTitle, { marginTop: 16, marginBottom: 12 }]}>Quote Details</Text>
           <View style={{ marginTop: 12 }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
               <Text style={styles.detailLabel}>Product:</Text>
