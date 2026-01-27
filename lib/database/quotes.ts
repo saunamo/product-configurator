@@ -204,10 +204,22 @@ export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise
  * Tries Pipedrive first (for Netlify), falls back to file system
  */
 export async function getQuoteById(quoteId: string): Promise<Quote | null> {
+  console.log(`[getQuoteById] Looking for quote ${quoteId}, isServerless: ${isServerless}`);
+  
   // Try Pipedrive first (for Netlify)
   if (isServerless) {
-    const pipedriveQuote = await getQuoteFromPipedrive(quoteId);
-    if (pipedriveQuote) return pipedriveQuote;
+    try {
+      const pipedriveQuote = await getQuoteFromPipedrive(quoteId);
+      if (pipedriveQuote) {
+        console.log(`✅ Found quote ${quoteId} in Pipedrive with ${pipedriveQuote.items?.length || 0} items`);
+        return pipedriveQuote;
+      } else {
+        console.log(`⚠️ Quote ${quoteId} not found in Pipedrive, trying file system fallback`);
+      }
+    } catch (error) {
+      console.error(`❌ Error retrieving quote from Pipedrive:`, error);
+      // Fall through to file system
+    }
   }
 
   // Fallback to file system
@@ -216,13 +228,16 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
     const data = await readFile(quoteFile, "utf-8");
     const quote = JSON.parse(data) as any;
     
+    console.log(`✅ Found quote ${quoteId} in file system with ${quote.items?.length || 0} items`);
     return {
       ...quote,
       createdAt: quote.createdAt ? new Date(quote.createdAt) : new Date(),
       expiresAt: quote.expiresAt ? new Date(quote.expiresAt) : undefined,
+      // Ensure items array exists
+      items: quote.items || [],
     } as Quote;
   } catch (error) {
-    console.error(`Failed to load quote ${quoteId}:`, error);
+    console.error(`❌ Failed to load quote ${quoteId} from file system:`, error);
     return null;
   }
 }
