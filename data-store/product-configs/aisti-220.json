@@ -41,55 +41,9 @@
       "id": "quote",
       "name": "Quote",
       "route": "/products/aisti-220/configurator/quote"
-    },
-    {
-      "id": "stones",
-      "name": "Stones",
-      "route": "stones"
     }
   ],
   "stepData": {
-    "heater": {
-      "stepId": "heater",
-      "title": "Heater",
-      "description": "",
-      "options": [
-        {
-          "id": "heater-aava-47kw-20kg",
-          "title": "Aava 4.7kW (20kg)",
-          "description": "",
-          "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
-          "price": 0,
-          "pipedriveProductId": 18042
-        },
-        {
-          "id": "heater-kajo-66kw-80kg",
-          "title": "Kajo 6.6kW (80kg)",
-          "description": "",
-          "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
-          "price": 0,
-          "pipedriveProductId": 18063
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
-    "stones": {
-      "stepId": "stones",
-      "title": "Stones",
-      "description": "",
-      "options": [
-        {
-          "id": "stones-according-to-selected-heater",
-          "title": "According to selected heater",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
     "lighting": {
       "stepId": "lighting",
       "title": "Lighting",
@@ -145,7 +99,8 @@
         }
       ],
       "selectionType": "multi",
-      "required": false
+      "required": false,
+      "imageUrl": "/images/1769169330318-e9etacwqp0e.webp"
     },
     "electrical-assembly": {
       "stepId": "electrical-assembly",
@@ -179,7 +134,7 @@
       ],
       "selectionType": "multi",
       "required": false,
-      "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+      "imageUrl": "/images/1769500090936-pymhygphmi.jpg"
     },
     "cold-plunge": {
       "stepId": "cold-plunge",
@@ -232,7 +187,7 @@
           "id": "hot-tubs-hot-tub-therma-200",
           "title": "Hot tub Therma 200",
           "description": "",
-          "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+          "imageUrl": "/images/1769501295646-9n9pmvtsiel.jpg",
           "price": 0,
           "pipedriveProductId": 17782
         },
@@ -240,7 +195,7 @@
           "id": "hot-tubs-hot-tub-therma-220",
           "title": "Hot tub Therma 220",
           "description": "",
-          "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+          "imageUrl": "/images/1769501307252-snbs06c2a4h.jpg",
           "price": 0,
           "pipedriveProductId": 17952
         },
@@ -248,7 +203,7 @@
           "id": "hot-tubs-hot-tub-vellamo-s",
           "title": "Hot tub Vellamo S",
           "description": "",
-          "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+          "imageUrl": "/images/1769501411168-psjwepkj5l.webp",
           "price": 0,
           "pipedriveProductId": 16421
         },
@@ -256,7 +211,7 @@
           "id": "hot-tubs-hot-tub-vellamo-m",
           "title": "Hot tub Vellamo M",
           "description": "",
-          "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+          "imageUrl": "/images/1769501321725-hrm2a46ckzh.jpg",
           "price": 0,
           "pipedriveProductId": 16423
         },
@@ -264,7 +219,7 @@
           "id": "hot-tubs-hot-tub-vellamo-l",
           "title": "Hot tub Vellamo L",
           "description": "",
-          "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+          "imageUrl": "/images/1769501331353-0iocn4gtcwv.jpg",
           "price": 0,
           "pipedriveProductId": 16426
         }
@@ -272,6 +227,39 @@
       "selectionType": "multi",
       "required": false,
       "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+    },
+    "heater": {
+      "stepId": "heater",
+      "title": "Heater",
+      "description": "",
+      "options": [
+        {
+          "id": "heater-aava-47kw-20kg",
+          "title": "Aava 4.7kW (20kg)",
+          "description": "",
+          "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+          "price": 0,
+          "pipedriveProductId": 18042
+        },
+        {
+          "id": "heater-kajo-66kw-80kg",
+          "title": "Kajo 6.6kW (80kg)",
+          "description": "",
+          "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
+          "price": 0,
+          "pipedriveProductId": 18063
+        },
+        {
+          "id": "heater-according-to-selected-heater",
+          "title": "Heater stones cccording to selected heaters size",
+          "description": "",
+          "imageUrl": "/images/1769073999533-cq05kp070vi.webp",
+          "price": 0,
+          "pipedriveProductId": 17944
+        }
+      ],
+      "selectionType": "multi",
+      "required": false
     },
     "delivery": {
       "stepId": "delivery",
@@ -282,24 +270,11 @@
       "options": [
         {
           "id": "delivery-standard",
-          "title": "Standard Delivery",
+          "title": "Standard Delivery UK",
           "description": "Curbside delivery within 2-3 weeks",
           "imageUrl": "",
-          "price": 200
-        },
-        {
-          "id": "delivery-express",
-          "title": "Express Delivery",
-          "description": "Priority delivery within 1 week",
-          "imageUrl": "",
-          "price": 400
-        },
-        {
-          "id": "delivery-white-glove",
-          "title": "White Glove Delivery",
-          "description": "Premium delivery with placement and setup assistance",
-          "imageUrl": "",
-          "price": 600
+          "price": 200,
+          "pipedriveProductId": 18212
         }
       ],
       "imageUrl": "/images/1769084980555-i3qjrai1i89.png"
@@ -314,12 +289,12 @@
     }
   },
   "design": {
-    "backgroundColor": "#faf9f7",
-    "textColor": "#1a3a2e",
-    "accentColor": "#1a3a2e",
+    "backgroundColor": "#F3F0ED",
+    "textColor": "#908F8D",
+    "accentColor": "#303337",
     "cardBackgroundColor": "#ffffff",
-    "borderColor": "#e5e7eb",
-    "fontFamily": "Arial, Helvetica, sans-serif",
+    "borderColor": "#E2DEDA",
+    "fontFamily": "Questrial, sans-serif",
     "headingFontSize": "1.875rem",
     "bodyFontSize": "1rem",
     "cardPadding": "1.5rem",
@@ -330,7 +305,7 @@
   },
   "priceSource": "pipedrive",
   "quoteSettings": {
-    "companyName": "SaunaMo",
+    "companyName": "Saunamo, Arbor Eco LDA",
     "companyAddress": "",
     "companyCity": "",
     "companyState": "",
@@ -343,7 +318,7 @@
     "quoteValidityDays": 30,
     "taxRate": 0,
     "taxEnabled": false,
-    "currency": "USD",
+    "currency": "GBP",
     "discountCampaigns": [],
     "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
     "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",

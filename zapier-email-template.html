@@ -13,9 +13,13 @@
           <!-- Logo Section -->
           <tr>
             <td style="padding: 30px 20px; text-align: center; background-color: #F3F0ED;">
+              {{#if logoUrl}}
+              <img src="{{logoUrl}}" alt="{{companyName}}" style="max-width: 200px; height: auto; display: block; margin: 0 auto;" />
+              {{else}}
               <div style="color: #303337; font-size: 32px; font-weight: bold; letter-spacing: 2px;">
                 {{companyName}}
               </div>
+              {{/if}}
             </td>
           </tr>
           

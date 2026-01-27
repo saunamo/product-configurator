@@ -18,9 +18,12 @@ export async function POST(request: NextRequest) {
     const vatlessPrice = Math.round(priceWithoutVAT * 100) / 100; // £8,291.67
 
     try {
+      const SKU_FIELD_KEY = "43a32efde94b5e07af24690d5b8db5dc18f5680a";
+      
       const productData = {
         name: productName,
-        code: "S280D-THE",
+        code: "UK",
+        [SKU_FIELD_KEY]: "S280D-THE",
         prices: [
           {
             price: vatlessPrice,

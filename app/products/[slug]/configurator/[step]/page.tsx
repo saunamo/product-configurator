@@ -428,9 +428,37 @@ export default function ProductConfiguratorStepPage() {
           return 0; // keep original order for others
         });
         
+        // Apply global settings to rear-glass-wall options (after product-specific images)
+        const optionsWithGlobalSettings = sortedOptions.map((opt: any) => {
+          let updatedOpt = { ...opt };
+          
+          // Apply global option title if available
+          if (adminConfig?.globalSettings?.optionTitles?.[opt.id]) {
+            updatedOpt.title = adminConfig.globalSettings.optionTitles[opt.id];
+          }
+          
+          // Apply global option image if available (but don't override product-specific images that were just set)
+          // Only apply if the image wasn't set by product-specific logic above
+          const hasProductSpecificImage = (isCube && (opt.id === "glass-half-moon" || opt.id === "wooden-backwall")) ||
+                                        (isBarrel && (opt.id === "glass-half-moon" || opt.id === "wooden-backwall" || opt.id === "full-glass-backwall" || opt.id === "glass-standard"));
+          if (!hasProductSpecificImage && adminConfig?.globalSettings?.optionImages?.[opt.id]) {
+            updatedOpt.imageUrl = adminConfig.globalSettings.optionImages[opt.id];
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`🖼️ Applied global image to rear-glass-wall option ${opt.id}: "${updatedOpt.imageUrl}"`);
+            }
+          }
+          
+          // Apply global Pipedrive product if available
+          if (adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
+            updatedOpt.pipedriveProductId = adminConfig.globalSettings.optionPipedriveProducts[opt.id];
+          }
+          
+          return updatedOpt;
+        });
+        
         const updatedStepData = {
           ...baseStepData,
-          options: sortedOptions,
+          options: optionsWithGlobalSettings,
         };
         
         console.log(`🖼️ useMemo: Final stepData options (${updatedStepData.options.length} total):`, updatedStepData.options.map(o => ({ id: o.id, title: o.title, imageUrl: o.imageUrl })));
@@ -438,9 +466,38 @@ export default function ProductConfiguratorStepPage() {
       }
     }
     
-    console.log(`🖼️ useMemo: Returning base stepData with ${baseStepData.options.length} options:`, baseStepData.options.map(o => ({ id: o.id, title: o.title, imageUrl: o.imageUrl })));
-    console.log(`🖼️ useMemo: Step imageUrl:`, baseStepData.imageUrl);
-    return baseStepData;
+    // Apply global settings (optionImages, optionTitles) to ALL options, not just heater stones
+    // This ensures that when images are updated in the admin panel, they appear immediately
+    const finalStepData = {
+      ...baseStepData,
+      options: baseStepData.options.map((opt: any) => {
+        let updatedOpt = { ...opt };
+        
+        // Apply global option title if available
+        if (adminConfig?.globalSettings?.optionTitles?.[opt.id]) {
+          updatedOpt.title = adminConfig.globalSettings.optionTitles[opt.id];
+        }
+        
+        // Apply global option image if available (override existing if global is set)
+        if (adminConfig?.globalSettings?.optionImages?.[opt.id]) {
+          updatedOpt.imageUrl = adminConfig.globalSettings.optionImages[opt.id];
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`🖼️ Applied global image to option ${opt.id}: "${updatedOpt.imageUrl}"`);
+          }
+        }
+        
+        // Apply global Pipedrive product if available
+        if (adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
+          updatedOpt.pipedriveProductId = adminConfig.globalSettings.optionPipedriveProducts[opt.id];
+        }
+        
+        return updatedOpt;
+      }),
+    };
+    
+    console.log(`🖼️ useMemo: Returning final stepData with ${finalStepData.options.length} options:`, finalStepData.options.map(o => ({ id: o.id, title: o.title, imageUrl: o.imageUrl })));
+    console.log(`🖼️ useMemo: Step imageUrl:`, finalStepData.imageUrl);
+    return finalStepData;
   }, [step, config, productSlug, adminConfig]);
   
   // Calculate if we can proceed - this will update when selections change

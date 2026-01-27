@@ -225,7 +225,13 @@ export default function QuotePortalPage() {
                             <p className="font-medium text-gray-900">{item.optionTitle}</p>
                             <p className="text-sm text-gray-600">{item.stepName}</p>
                             {item.optionDescription && (
-                              <p className="text-sm text-gray-500 mt-1">{item.optionDescription}</p>
+                              <div className="text-sm text-gray-500 mt-1">
+                                {item.optionDescription.split('\n').map((line, idx) => (
+                                  <p key={idx} className={line === "Included" ? "font-medium text-green-700" : ""}>
+                                    {line}
+                                  </p>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </td>

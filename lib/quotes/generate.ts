@@ -239,12 +239,58 @@ export function generateQuote(
         displayTitle = `${baseTitle} (${heaterStonesQuantity} ${heaterStonesQuantity === 1 ? 'package' : 'packages'})`;
       }
       
+      // Check if option is included
+      let isIncluded = false;
+      if (stepId === "rear-glass-wall") {
+        // For rear-glass-wall, check product-specific included flags (cube_/barrel_)
+        const productConfig = request.productConfig as any;
+        const productName = productConfig?.productName || request.productName || "";
+        const productId = productConfig?.productId || "";
+        const isCube = productName.toLowerCase().includes("cube") || 
+                      productId.toLowerCase().includes("cube");
+        const isBarrel = productName.toLowerCase().includes("barrel") || 
+                        productId.toLowerCase().includes("barrel");
+        
+        if (isCube || isBarrel) {
+          const productType = isCube ? "cube" : "barrel";
+          const baseOptionId = option.id.replace(/^rear-glass-wall-/, '');
+          const normalizedId = baseOptionId
+            .replace(/half-moon-glass-backwall/gi, 'glass-half-moon')
+            .replace(/half-moon/gi, 'glass-half-moon')
+            .replace(/glass-half-moon-glass-backwall/gi, 'glass-half-moon');
+          
+          // Try multiple key formats
+          const key1 = `${productType}_${normalizedId}`;
+          const key2 = `${productType}_${baseOptionId}`;
+          const key3 = `${productType}_${option.id}`;
+          const key4 = `${productType}_glass-half-moon`;
+          const key5 = `${productType}_wooden-backwall`;
+          
+          isIncluded = config.globalSettings?.optionIncluded?.[key1] === true ||
+                      config.globalSettings?.optionIncluded?.[key2] === true ||
+                      config.globalSettings?.optionIncluded?.[key3] === true ||
+                      config.globalSettings?.optionIncluded?.[key4] === true ||
+                      config.globalSettings?.optionIncluded?.[key5] === true;
+        }
+      } else {
+        // For other steps, check general option ID
+        isIncluded = config.globalSettings?.optionIncluded?.[option.id] === true;
+      }
+      
+      // Build description with "Included" if applicable
+      let displayDescription = option.description || "";
+      if (isIncluded) {
+        displayDescription = displayDescription 
+          ? `${displayDescription}\nIncluded`
+          : "Included";
+      }
+      
       items.push({
         stepId: stepId as StepId,
         stepName,
         optionId: option.id,
         optionTitle: displayTitle,
-        optionDescription: option.description,
+        optionDescription: displayDescription,
         price: finalPrice,
         quantity: finalQuantity,
         vatRate: undefined, // Will be set from Pipedrive if available

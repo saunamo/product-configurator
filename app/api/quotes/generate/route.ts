@@ -188,6 +188,19 @@ export async function POST(request: NextRequest) {
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
     if (zapierWebhookUrl) {
       try {
+        // Get production base URL - prioritize environment variables (set in Netlify)
+        // This ensures emails always use the public-facing URL, not localhost or internal URLs
+        let productionBaseUrl = "https://saunamo.co.uk"; // Default fallback
+        
+        if (process.env.QUOTE_PORTAL_URL) {
+          // Extract base URL from QUOTE_PORTAL_URL (e.g., "https://saunamo.co.uk/quote" -> "https://saunamo.co.uk")
+          productionBaseUrl = process.env.QUOTE_PORTAL_URL.replace(/\/quote.*$/, '').replace(/\/$/, '');
+        } else if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) {
+          productionBaseUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+        }
+        
+        console.log(`[Quote API] Using production base URL: ${productionBaseUrl}`);
+        
         // Get product image URL - check multiple sources
         const productConfig = body.productConfig as any;
         let productImageUrl = productConfig?.mainProductImageUrl || "";
@@ -197,16 +210,26 @@ export async function POST(request: NextRequest) {
           productImageUrl = (adminConfig as any)?.mainProductImageUrl || "";
         }
         
-        // If it's a relative URL, make it absolute
+        // If it's a relative URL, make it absolute using production URL
         if (productImageUrl && !productImageUrl.startsWith('http')) {
-          const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://saunamo.co.uk";
-          productImageUrl = `${baseUrl}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`;
+          productImageUrl = `${productionBaseUrl}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`;
         }
         
-        // Always append quote ID to portal URL, even if base URL is set in env
-        const basePortalUrl = process.env.QUOTE_PORTAL_URL || `${process.env.NEXT_PUBLIC_APP_URL || "https://saunamo.co.uk"}/quote`;
-        const quotePortalUrl = `${basePortalUrl}/${quote.id}`;
+        // Construct quote portal URL - use production URL from env or request
+        // Use QUOTE_PORTAL_URL if set, otherwise construct from production base URL
+        const quotePortalBase = process.env.QUOTE_PORTAL_URL 
+          ? process.env.QUOTE_PORTAL_URL.replace(/\/$/, '')
+          : `${productionBaseUrl}/quote`;
+        const quotePortalUrl = `${quotePortalBase}/${quote.id}`;
+        
         const companyName = process.env.COMPANY_NAME || "Saunamo, Arbor Eco LDA";
+        
+        // Get logo URL - use absolute production URL for email
+        let logoUrl = "";
+        const logoPath = "/Saunamo-Logo text only Bold-2.png";
+        if (logoPath) {
+          logoUrl = `${productionBaseUrl}${logoPath}`;
+        }
         
         const webhookPayload = {
           quoteId: quote.id,
@@ -216,6 +239,7 @@ export async function POST(request: NextRequest) {
           productName: quote.productName,
           productId: body.productId,
           productImageUrl: productImageUrl, // Product image for email template
+          logoUrl: logoUrl, // Logo URL for email template
           total: quote.total,
           subtotal: quote.subtotal,
           tax: quote.tax || 0,

@@ -41,100 +41,9 @@
       "id": "quote",
       "name": "Quote",
       "route": "/products/hiki-l/configurator/quote"
-    },
-    {
-      "id": "woodburning-heaters",
-      "name": "Woodburning Heaters",
-      "route": "woodburning-heaters"
     }
   ],
   "stepData": {
-    "heater": {
-      "stepId": "heater",
-      "title": "Heater",
-      "description": "",
-      "options": [
-        {
-          "id": "heater-aava-94kw-20kg",
-          "title": "Aava 9.4kW (20kg)",
-          "description": "",
-          "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
-          "price": 0,
-          "pipedriveProductId": 18028
-        },
-        {
-          "id": "heater-kajo-9kw-100kg",
-          "title": "Kajo 9kW (100kg)",
-          "description": "",
-          "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
-          "price": 0,
-          "pipedriveProductId": 18056
-        },
-        {
-          "id": "heater-kajo-105kw-100kg",
-          "title": "Kajo 10.5kW (100kg)",
-          "description": "",
-          "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
-          "price": 0,
-          "pipedriveProductId": 18049
-        },
-        {
-          "id": "heater-taika-9kw-130kg",
-          "title": "Taika 9kW (130kg)",
-          "description": "",
-          "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
-          "price": 0,
-          "pipedriveProductId": 18140
-        },
-        {
-          "id": "heater-taika-105kw-200kg",
-          "title": "Taika 10.5kW (200kg)",
-          "description": "",
-          "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
-          "price": 0,
-          "pipedriveProductId": 18070
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
-    "woodburning-heaters": {
-      "stepId": "woodburning-heaters",
-      "title": "Woodburning Heaters",
-      "description": "",
-      "options": [
-        {
-          "id": "woodburning-heaters-tuli-16-20kg",
-          "title": "Tuli 16 (20kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        },
-        {
-          "id": "woodburning-heaters-tuli-20-20kg",
-          "title": "Tuli 20 (20kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        },
-        {
-          "id": "woodburning-heaters-pyros-16-190kg",
-          "title": "Pyros 16 (190kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        },
-        {
-          "id": "woodburning-heaters-pyros-20-160kg",
-          "title": "Pyros 20 (160kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
     "lighting": {
       "stepId": "lighting",
       "title": "Lighting",
@@ -232,7 +141,7 @@
       ],
       "selectionType": "multi",
       "required": false,
-      "imageUrl": "/images/1769073363578-3ap68uegbf2.jpg"
+      "imageUrl": "/images/1769500090936-pymhygphmi.jpg"
     },
     "cold-plunge": {
       "stepId": "cold-plunge",
@@ -285,7 +194,7 @@
           "id": "hot-tubs-hot-tub-therma-200",
           "title": "Hot tub Therma 200",
           "description": "",
-          "imageUrl": "/images/1769073489412-gvscb8qtxa.webp",
+          "imageUrl": "/images/1769501295646-9n9pmvtsiel.jpg",
           "price": 0,
           "pipedriveProductId": 17782
         },
@@ -293,7 +202,7 @@
           "id": "hot-tubs-hot-tub-therma-220",
           "title": "Hot tub Therma 220",
           "description": "",
-          "imageUrl": "/images/1769073495023-oqy7hldi4b.webp",
+          "imageUrl": "/images/1769501307252-snbs06c2a4h.jpg",
           "price": 0,
           "pipedriveProductId": 17952
         },
@@ -301,7 +210,7 @@
           "id": "hot-tubs-hot-tub-vellamo-s",
           "title": "Hot tub Vellamo S",
           "description": "",
-          "imageUrl": "/images/1769073500919-yl8itok6zgc.webp",
+          "imageUrl": "/images/1769501411168-psjwepkj5l.webp",
           "price": 0,
           "pipedriveProductId": 16421
         },
@@ -309,7 +218,7 @@
           "id": "hot-tubs-hot-tub-vellamo-m",
           "title": "Hot tub Vellamo M",
           "description": "",
-          "imageUrl": "/images/1769073506017-bwpva4xkymm.webp",
+          "imageUrl": "/images/1769501321725-hrm2a46ckzh.jpg",
           "price": 0,
           "pipedriveProductId": 16423
         },
@@ -317,7 +226,7 @@
           "id": "hot-tubs-hot-tub-vellamo-l",
           "title": "Hot tub Vellamo L",
           "description": "",
-          "imageUrl": "/images/1769073511819-bpi441in7gp.webp",
+          "imageUrl": "/images/1769501331353-0iocn4gtcwv.jpg",
           "price": 0,
           "pipedriveProductId": 16426
         }
@@ -325,6 +234,92 @@
       "selectionType": "multi",
       "required": false,
       "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+    },
+    "heater": {
+      "stepId": "heater",
+      "title": "Heater",
+      "description": "",
+      "options": [
+        {
+          "id": "heater-aava-94kw-20kg",
+          "title": "Aava 9.4kW (20kg)",
+          "description": "",
+          "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
+          "price": 0,
+          "pipedriveProductId": 18028
+        },
+        {
+          "id": "heater-kajo-9kw-100kg",
+          "title": "Kajo 9kW (100kg)",
+          "description": "",
+          "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
+          "price": 0,
+          "pipedriveProductId": 18056
+        },
+        {
+          "id": "heater-kajo-105kw-100kg",
+          "title": "Kajo 10.5kW (100kg)",
+          "description": "",
+          "imageUrl": "/images/1769072861496-c4v8vy4g9cn.webp",
+          "price": 0,
+          "pipedriveProductId": 18049
+        },
+        {
+          "id": "heater-taika-9kw-130kg",
+          "title": "Taika 9kW (130kg)",
+          "description": "",
+          "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+          "price": 0,
+          "pipedriveProductId": 18140
+        },
+        {
+          "id": "heater-taika-105kw-200kg",
+          "title": "Taika 10.5kW (200kg)",
+          "description": "",
+          "imageUrl": "/images/1769072850701-sot2uq6kri.webp",
+          "price": 0,
+          "pipedriveProductId": 18070
+        },
+        {
+          "id": "heater-according-to-selected-heater",
+          "title": "Heater stones cccording to selected heaters size",
+          "description": "",
+          "imageUrl": "/images/1769073999533-cq05kp070vi.webp",
+          "price": 0,
+          "pipedriveProductId": 17944
+        },
+        {
+          "id": "heater-tuli-16-20kg",
+          "title": "Tuli 16 (20kg)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0
+        },
+        {
+          "id": "heater-tuli-20-20kg",
+          "title": "Tuli 20 (20kg)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0
+        },
+        {
+          "id": "heater-pyros-16-190kg",
+          "title": "Pyros 16 (190kg)",
+          "description": "",
+          "imageUrl": "/images/1769072781898-8up6kvj6uc6.webp",
+          "price": 0,
+          "pipedriveProductId": 18163
+        },
+        {
+          "id": "heater-pyros-20-160kg",
+          "title": "Pyros 20 (160kg)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0
+        }
+      ],
+      "selectionType": "multi",
+      "required": false
     },
     "delivery": {
       "stepId": "delivery",
@@ -354,12 +349,12 @@
     }
   },
   "design": {
-    "backgroundColor": "#faf9f7",
-    "textColor": "#1a3a2e",
-    "accentColor": "#1a3a2e",
+    "backgroundColor": "#F3F0ED",
+    "textColor": "#908F8D",
+    "accentColor": "#303337",
     "cardBackgroundColor": "#ffffff",
-    "borderColor": "#e5e7eb",
-    "fontFamily": "Arial, Helvetica, sans-serif",
+    "borderColor": "#E2DEDA",
+    "fontFamily": "Questrial, sans-serif",
     "headingFontSize": "1.875rem",
     "bodyFontSize": "1rem",
     "cardPadding": "1.5rem",
@@ -370,7 +365,7 @@
   },
   "priceSource": "pipedrive",
   "quoteSettings": {
-    "companyName": "SaunaMo",
+    "companyName": "Saunamo, Arbor Eco LDA",
     "companyAddress": "",
     "companyCity": "",
     "companyState": "",
@@ -383,7 +378,7 @@
     "quoteValidityDays": 30,
     "taxRate": 0,
     "taxEnabled": false,
-    "currency": "USD",
+    "currency": "GBP",
     "discountCampaigns": [],
     "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
     "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",

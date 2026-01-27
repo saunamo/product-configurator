@@ -4,17 +4,23 @@
  */
 
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 import { join } from "path";
 import { Quote } from "@/types/quote";
 
+// Register Questrial font to match the quote portal
+Font.register({
+  family: "Questrial",
+  src: join(process.cwd(), "public", "fonts", "Questrial-Regular.ttf"),
+});
+
 // Define styles for the PDF - matching portal quote page exactly with smaller fonts
-// Note: Questrial font (used in portal) is not available in react-pdf, using Helvetica (sans-serif) as closest match
+// Using Questrial font to match the quote portal
 const styles = StyleSheet.create({
   page: {
     padding: 24,
     fontSize: 10,
-    fontFamily: "Helvetica", // Closest match to Questrial (sans-serif) available in react-pdf
+    fontFamily: "Questrial", // Matching the quote portal font
     backgroundColor: "#F3F0ED", // Portal background color
   },
   sectionBox: {
@@ -241,9 +247,23 @@ export function QuotePDFDocument({
                       {item.stepName}
                     </Text>
                     {item.optionDescription && (
-                      <Text style={[styles.tableCell, { fontSize: 9, color: "#9ca3af", marginTop: 4 }]}>
-                        {item.optionDescription}
-                      </Text>
+                      <View style={{ marginTop: 4 }}>
+                        {item.optionDescription.split('\n').map((line, idx) => (
+                          <Text 
+                            key={idx} 
+                            style={[
+                              styles.tableCell, 
+                              { 
+                                fontSize: 9, 
+                                color: line === "Included" ? "#059669" : "#9ca3af",
+                                fontWeight: line === "Included" ? "bold" : "normal"
+                              }
+                            ]}
+                          >
+                            {line}
+                          </Text>
+                        ))}
+                      </View>
                     )}
                   </View>
                   <Text style={[styles.tableCell, styles.colPriceVat0, { fontWeight: "bold" }]}>

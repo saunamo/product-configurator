@@ -28,13 +28,6 @@ export const heaterData: StepData = {
       imageUrl: "/images/heater-wood.jpg",
       price: 2500,
     },
-    {
-      id: "heater-stone-according-to-heater",
-      title: "According to selected heater",
-      description: "Heater stones quantity and price calculated based on selected heater model",
-      imageUrl: "/images/heater-stones.jpg",
-      price: 0, // Price will be calculated dynamically
-    },
   ],
 };
 
