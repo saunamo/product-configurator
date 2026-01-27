@@ -89,47 +89,52 @@ export async function POST(request: NextRequest) {
 
     // Sync prices from Pipedrive if configured
     if (adminConfig.priceSource === "pipedrive") {
-      // Sync prices from Pipedrive products if configured
-      const pipedriveProductIds: Record<string, number> = {};
-      
-      // Add main product Pipedrive ID if configured
-      const productConfig = body.productConfig as any;
-      if (productConfig?.mainProductPipedriveId) {
-        pipedriveProductIds["main-product"] = productConfig.mainProductPipedriveId;
-        console.log("[Quote Generation] Added main product Pipedrive ID:", productConfig.mainProductPipedriveId);
-      }
-      
-      // Get Pipedrive product IDs from globalSettings (preferred) or option.pipedriveProductId (fallback)
-      const globalSettings = (adminConfig as any).globalSettings;
-      if (globalSettings?.optionPipedriveProducts) {
-        Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
-          if (typeof productId === 'number') {
-            pipedriveProductIds[optionId] = productId;
-          }
-        });
-      }
-      
-      // Also check option.pipedriveProductId as fallback
-      Object.values(adminConfig.stepData).forEach((stepData) => {
-        stepData.options.forEach((option) => {
-          if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
-            pipedriveProductIds[option.id] = option.pipedriveProductId;
-          }
-        });
-      });
-
-      if (Object.keys(pipedriveProductIds).length > 0) {
-        try {
-          const quoteBeforeSync = { ...quote };
-          quote = await syncPricesFromPipedrive(quote, pipedriveProductIds);
-          console.log(`[Quote API] After Pipedrive sync: ${quote.items?.length || 0} items`);
-          console.log(`[Quote API] Items before sync: ${quoteBeforeSync.items?.length || 0}, after sync: ${quote.items?.length || 0}`);
-          if (quote.items?.length !== quoteBeforeSync.items?.length) {
-            console.error(`[Quote API] WARNING: Items count changed during sync! Before: ${quoteBeforeSync.items?.length}, After: ${quote.items?.length}`);
-          }
-        } catch (error) {
-          console.error("Pipedrive price sync failed, using stored prices:", error);
+      try {
+        // Sync prices from Pipedrive products if configured
+        const pipedriveProductIds: Record<string, number> = {};
+        
+        // Add main product Pipedrive ID if configured
+        const productConfig = body.productConfig as any;
+        if (productConfig?.mainProductPipedriveId) {
+          pipedriveProductIds["main-product"] = productConfig.mainProductPipedriveId;
+          console.log("[Quote Generation] Added main product Pipedrive ID:", productConfig.mainProductPipedriveId);
         }
+      
+        // Get Pipedrive product IDs from globalSettings (preferred) or option.pipedriveProductId (fallback)
+        const globalSettings = (adminConfig as any).globalSettings;
+        if (globalSettings?.optionPipedriveProducts) {
+          Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
+            if (typeof productId === 'number') {
+              pipedriveProductIds[optionId] = productId;
+            }
+          });
+        }
+        
+        // Also check option.pipedriveProductId as fallback
+        Object.values(adminConfig.stepData).forEach((stepData) => {
+          stepData.options.forEach((option) => {
+            if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
+              pipedriveProductIds[option.id] = option.pipedriveProductId;
+            }
+          });
+        });
+
+        if (Object.keys(pipedriveProductIds).length > 0) {
+          try {
+            const quoteBeforeSync = { ...quote };
+            quote = await syncPricesFromPipedrive(quote, pipedriveProductIds);
+            console.log(`[Quote API] After Pipedrive sync: ${quote.items?.length || 0} items`);
+            console.log(`[Quote API] Items before sync: ${quoteBeforeSync.items?.length || 0}, after sync: ${quote.items?.length || 0}`);
+            if (quote.items?.length !== quoteBeforeSync.items?.length) {
+              console.error(`[Quote API] WARNING: Items count changed during sync! Before: ${quoteBeforeSync.items?.length}, After: ${quote.items?.length}`);
+            }
+          } catch (error) {
+            console.error("Pipedrive price sync failed, using stored prices:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Error setting up Pipedrive price sync:", error);
+        // Continue without price sync
       }
     }
 
@@ -369,11 +374,28 @@ export async function POST(request: NextRequest) {
       message: "Quote generated successfully. Email will be sent via Zapier.",
     });
   } catch (error: any) {
-    console.error("Quote generation error:", error);
+    console.error("❌ Quote generation error:", error);
+    console.error("❌ Error stack:", error.stack);
+    console.error("❌ Error details:", {
+      message: error.message,
+      name: error.name,
+      code: error.code,
+      status: error.status,
+    });
+    
+    // Return more detailed error in development, generic in production
+    const errorMessage = process.env.NODE_ENV === 'development' 
+      ? error.message || "Failed to generate quote"
+      : "Failed to generate quote. Please try again.";
+    
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to generate quote",
+        error: errorMessage,
+        ...(process.env.NODE_ENV === 'development' && {
+          details: error.stack,
+          errorType: error.name,
+        }),
       },
       { status: 500 }
     );
