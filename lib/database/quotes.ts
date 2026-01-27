@@ -377,7 +377,9 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
     return null;
   }
 
-  // Fallback to file system (for localhost)
+  // Fallback to file system (for localhost, or Netlify if Pipedrive not configured)
+  // On Netlify, if Pipedrive is not configured, we can't save quotes permanently
+  // But we should still try to retrieve from file system in case it was saved during build
   try {
     // Ensure quotes directory exists
     await ensureQuotesDir();
@@ -399,6 +401,9 @@ export async function getQuoteById(quoteId: string): Promise<Quote | null> {
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       console.error(`❌ Quote file not found: ${quoteId}.json (file does not exist)`);
+      if (isServerless) {
+        console.error(`❌ On Netlify: Quote ${quoteId} not found. This means Pipedrive is not configured or quote was not saved.`);
+      }
     } else {
       console.error(`❌ Failed to load quote ${quoteId} from file system:`, error);
     }

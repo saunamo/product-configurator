@@ -207,10 +207,12 @@ export async function POST(request: NextRequest) {
         pdfBuffer = undefined;
       }
 
-    // Send webhook to Zapier for email sending and Klaviyo integration (non-blocking)
+    // CRITICAL: Only send webhook if quote was saved successfully
+    // The URL in the email must point to a quote that actually exists
     let webhookResult: { success: boolean; error?: string } | undefined;
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
-    if (zapierWebhookUrl) {
+    
+    if (zapierWebhookUrl && quoteSaved) {
       try {
         // Get production base URL - prioritize environment variables (set in Netlify)
         // This ensures emails always use the public-facing URL, not localhost or internal URLs
@@ -224,6 +226,7 @@ export async function POST(request: NextRequest) {
         }
         
         console.log(`[Quote API] Using production base URL: ${productionBaseUrl}`);
+        console.log(`[Quote API] Quote ID for URL: ${quote.id}`);
         
         // Get product image URL - check multiple sources
         const productConfig = body.productConfig as any;
@@ -241,10 +244,13 @@ export async function POST(request: NextRequest) {
         
         // Construct quote portal URL - use production URL from env or request
         // Use QUOTE_PORTAL_URL if set, otherwise construct from production base URL
+        // IMPORTANT: Use the FINAL quote.id (after Pipedrive deal creation if successful)
         const quotePortalBase = process.env.QUOTE_PORTAL_URL 
           ? process.env.QUOTE_PORTAL_URL.replace(/\/$/, '')
           : `${productionBaseUrl}/quote`;
         const quotePortalUrl = `${quotePortalBase}/${quote.id}`;
+        
+        console.log(`[Quote API] Quote portal URL for email: ${quotePortalUrl}`);
         
         const companyName = process.env.COMPANY_NAME || "Saunamo, Arbor Eco LDA";
         
@@ -321,16 +327,17 @@ export async function POST(request: NextRequest) {
       console.log("ℹ️ ZAPIER_WEBHOOK_URL not configured, skipping webhook (email will not be sent)");
     }
 
-    // Save quote to server storage (for quote portal) - MUST happen before response
+    // CRITICAL: Save quote to server storage BEFORE constructing URL and sending webhook
+    // The quote MUST be saved so it's retrievable at the URL we send in the email
     // Pass Pipedrive deal ID if available (for Netlify/Pipedrive storage)
-    // On Netlify: If Pipedrive is not configured, save to file system (even though it's ephemeral)
-    // The quote will still be accessible via the quote ID in the URL
+    let quoteSaved = false;
     try {
       console.log(`[Quote API] Saving quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items before save:`, JSON.stringify(quote.items?.slice(0, 2), null, 2), quote.items?.length > 2 ? '...' : '');
       console.log(`[Quote API] Environment: NETLIFY=${!!process.env.NETLIFY}, pipedriveDealId=${pipedriveDealId}`);
       
       await saveQuoteServer(quote, pipedriveDealId);
+      quoteSaved = true;
       console.log(`✅ Quote saved to server: ${quote.id}${pipedriveDealId ? ` (Pipedrive deal: ${pipedriveDealId})` : ''}`);
       
       // For Netlify: Wait longer for Pipedrive note to be indexed before responding
