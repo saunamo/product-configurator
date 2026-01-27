@@ -114,8 +114,6 @@ async function getQuoteFromPipedrive(quoteId: string, retries = 3): Promise<Quot
       }
       
       if (!dealId) {
-
-      if (!matchingDeal) {
         if (attempt < retries) {
           // Wait before retrying (Pipedrive search might need time to index)
           console.log(`[Quote Retrieval] Attempt ${attempt}/${retries}: Deal not found yet, retrying in ${attempt * 500}ms...`);
