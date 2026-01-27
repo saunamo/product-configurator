@@ -170,14 +170,22 @@ async function getQuoteFromPipedrive(quoteId: string): Promise<Quote | null> {
 export async function saveQuote(quote: Quote, pipedriveDealId?: number): Promise<void> {
   console.log(`[saveQuote] Saving quote ${quote.id}, items count: ${quote.items?.length || 0}`);
   console.log(`[saveQuote] Quote items:`, JSON.stringify(quote.items, null, 2));
+  console.log(`[saveQuote] isServerless: ${isServerless}, pipedriveDealId: ${pipedriveDealId}`);
   
-  // In serverless (Netlify), use Pipedrive
+  // In serverless (Netlify), use Pipedrive if deal ID is available
   if (isServerless && pipedriveDealId) {
-    await saveQuoteToPipedrive(quote, pipedriveDealId);
-    return;
+    try {
+      await saveQuoteToPipedrive(quote, pipedriveDealId);
+      console.log(`✅ Quote saved to Pipedrive deal ${pipedriveDealId}`);
+      return;
+    } catch (error) {
+      console.error(`❌ Failed to save quote to Pipedrive:`, error);
+      // Fall through to file system fallback even in serverless if Pipedrive fails
+      console.log(`[saveQuote] Falling back to file system storage`);
+    }
   }
 
-  // Fallback to file system for local development
+  // Fallback to file system for local development or if Pipedrive save failed
   await ensureQuotesDir();
   
   const quoteFile = join(QUOTES_DIR, `${quote.id}.json`);
