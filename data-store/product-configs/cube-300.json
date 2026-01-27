@@ -79,7 +79,7 @@
       "options": [
         {
           "id": "lighting-2x",
-          "title": "Under Bench (2x 2.5m LED)",
+          "title": "Behind Backrests (2x 2.5m LED)",
           "description": "",
           "imageUrl": "",
           "price": 0
@@ -113,7 +113,7 @@
           "id": "aromas-accessories-sauna-scent-set",
           "title": "Sauna scent set",
           "description": "",
-          "imageUrl": "/images/1769072729343-9d1tu44grn.webp",
+          "imageUrl": "/images/1769517664363-okk859hpy4g.png",
           "price": 0,
           "pipedriveProductId": 17838
         },
@@ -180,7 +180,7 @@
           "id": "cold-plunge-ice-bath-ergo",
           "title": "Ice bath Ergo",
           "description": "",
-          "imageUrl": "/images/1769073038605-2hzpoua13ma.webp",
+          "imageUrl": "/images/1769517708499-r744r1266z.jpg",
           "price": 0,
           "pipedriveProductId": 17881
         },
@@ -196,14 +196,14 @@
           "id": "cold-plunge-ice-bath-ofuro",
           "title": "Ice bath Ofuro",
           "description": "",
-          "imageUrl": "/images/1769073046790-0nkedztwc2pj.webp",
+          "imageUrl": "/images/1769517745067-ol556to70ul.jpg",
           "price": 0,
           "pipedriveProductId": 17873
         }
       ],
       "selectionType": "multi",
       "required": false,
-      "imageUrl": "/images/1769074673291-vn7r482tj1l.webp"
+      "imageUrl": "/images/1769517698929-olj7v730q1c.jpg"
     },
     "hot-tubs": {
       "stepId": "hot-tubs",
@@ -214,7 +214,7 @@
           "id": "hot-tubs-hot-tub-cube-200",
           "title": "Hot tub Cube 200",
           "description": "",
-          "imageUrl": "/images/1769073486169-3jwfyqrmfh6.webp",
+          "imageUrl": "/images/1769518650992-1rce479rk79.jpg",
           "price": 0,
           "pipedriveProductId": 17812
         },
@@ -261,7 +261,7 @@
       ],
       "selectionType": "multi",
       "required": false,
-      "imageUrl": "/images/1769085017872-xx6wut271z.webp"
+      "imageUrl": "/images/1769518705080-jjf2umkp10c.jpg"
     },
     "heater": {
       "stepId": "heater",
@@ -288,7 +288,7 @@
           "id": "heater-according-to-selected-heater",
           "title": "Heater stones cccording to selected heaters size",
           "description": "",
-          "imageUrl": "/images/1769073999533-cq05kp070vi.webp",
+          "imageUrl": "/images/1769518044954-3q1dnchdjpf.png",
           "price": 0,
           "pipedriveProductId": 17944
         },

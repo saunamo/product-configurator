@@ -72,7 +72,7 @@ export async function collectAllStepsAndOptions(): Promise<{
 
   // Now collect from all product configurations
   if (typeof window !== "undefined") {
-    const products = getAllProducts();
+    const products = await getAllProducts();
     
     for (const product of products) {
       try {

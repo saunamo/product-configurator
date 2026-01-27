@@ -22,7 +22,17 @@ export async function GET(
       );
     }
     
-    return NextResponse.json({ config });
+    // Add cache-control headers to prevent caching
+    return NextResponse.json(
+      { config },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Error getting product config:", error);
     return NextResponse.json(
@@ -41,7 +51,17 @@ export async function PUT(
 ) {
   try {
     const body = await request.json();
-    const config = { ...body, productId: params.productId };
+    
+    // CRITICAL: Load existing config first to preserve ALL fields
+    // This prevents data loss when updating a single field
+    const existingConfig = await getProductConfig(params.productId);
+    
+    // Merge: preserve all existing fields, then apply updates
+    const config = {
+      ...(existingConfig || {}), // Preserve all existing fields
+      ...body, // Apply updates
+      productId: params.productId, // Ensure productId is correct
+    };
     
     await saveProductConfig(config);
     return NextResponse.json({ success: true, config });

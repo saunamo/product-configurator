@@ -96,6 +96,7 @@ export type AdminConfig = {
   steps: Step[];
   stepData: Record<string, StepData>;
   mainProductImageUrl?: string;
+  mainProductPipedriveId?: number; // Pipedrive product ID for main product
   design: DesignConfig;
   // Price source configuration
   priceSource?: "pipedrive" | "manual";

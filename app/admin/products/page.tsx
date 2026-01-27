@@ -18,25 +18,15 @@ export default function ProductsManagementPage() {
   useEffect(() => {
     setIsClient(true);
     
-    // Load products
-    const loadProducts = () => {
+    // Load products from server API (automatically loads on startup)
+    const loadProducts = async () => {
       try {
-        const loaded = getAllProducts();
-        console.log("📦 Loaded products from localStorage:", {
+        const loaded = await getAllProducts();
+        console.log("📦 Loaded products:", {
           count: loaded.length,
           productIds: loaded.map(p => p.id),
-          storageKey: "saunamo-products",
+          source: "server API (with localStorage fallback)",
         });
-        
-        // Check if localStorage actually has the data
-        if (typeof window !== "undefined") {
-          const raw = localStorage.getItem("saunamo-products");
-          console.log("📦 Raw localStorage data:", {
-            exists: !!raw,
-            length: raw?.length || 0,
-            preview: raw?.substring(0, 100),
-          });
-        }
         
         setProducts(loaded);
       } catch (error) {
@@ -45,6 +35,7 @@ export default function ProductsManagementPage() {
       }
     };
     
+    // Load products immediately on mount
     loadProducts();
     
     // Listen for storage events (cross-tab sync)
@@ -68,7 +59,7 @@ export default function ProductsManagementPage() {
     
     // Auto-update product names and images on load
     const autoUpdate = async () => {
-      const products = getAllProducts();
+      const products = await getAllProducts();
       if (products.length === 0) return;
 
       const PRODUCT_UPDATES: Record<string, { name: string; imageUrl: string }> = {
@@ -134,7 +125,7 @@ export default function ProductsManagementPage() {
     };
   }, []);
 
-  const setupAllProducts = () => {
+  const setupAllProducts = async () => {
     if (!confirm("This will create 9 products with all their steps and options. Continue?")) {
       return;
     }
@@ -336,11 +327,12 @@ export default function ProductsManagementPage() {
     }
 
     try {
-      productData.forEach((data) => {
+      for (const data of productData) {
         const productId = createSlug(data.model);
         
         // Check if product already exists - if so, we'll update it
-        const existing = getAllProducts().find((p) => p.id === productId);
+        const allProducts = await getAllProducts();
+        const existing = allProducts.find((p) => p.id === productId);
         if (existing) {
           console.log(`Updating existing product: ${data.model}`);
         }
@@ -498,17 +490,18 @@ export default function ProductsManagementPage() {
           quoteSettings: defaultQuoteSettings,
         };
 
-        // Save product (will update if exists)
-        saveProduct(product);
+        // Save product (will update if exists) - async
+        await saveProduct(product);
         
-        // Save product config (will update if exists)
-        saveProductConfig(config);
+        // Save product config (will update if exists) - async
+        await saveProductConfig(config);
         
         console.log(`✅ ${existing ? 'Updated' : 'Created'} product: ${data.model} with ${steps.length} steps and ${Object.values(stepData).reduce((sum, sd) => sum + sd.options.length, 0)} total options`);
-      });
+      }
 
       // Refresh the products list
-      setProducts(getAllProducts());
+      const refreshedProducts = await getAllProducts();
+      setProducts(refreshedProducts);
       alert(`✅ Successfully created ${productData.length} products!`);
     } catch (error: any) {
       console.error("Error setting up products:", error);
@@ -677,16 +670,17 @@ export default function ProductsManagementPage() {
     window.dispatchEvent(new Event("productsUpdated"));
   };
 
-  const handleDelete = (productId: string) => {
+  const handleDelete = async (productId: string) => {
     if (confirm("Are you sure you want to delete this product? This will also delete all its configuration.")) {
-      deleteProduct(productId);
-      setProducts(getAllProducts());
+      await deleteProduct(productId);
+      const refreshedProducts = await getAllProducts();
+      setProducts(refreshedProducts);
     }
   };
 
   const handleExportProducts = async () => {
     try {
-      const allProducts = getAllProducts();
+      const allProducts = await getAllProducts();
       const allConfigs: Record<string, ProductConfig> = {};
       
       // Get all product configs (async)
@@ -730,7 +724,7 @@ export default function ProductsManagementPage() {
       if (!file) return;
       
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         try {
           const json = event.target?.result as string;
           const importData = JSON.parse(json);
@@ -743,20 +737,21 @@ export default function ProductsManagementPage() {
             return;
           }
           
-          // Import products
-          importData.products.forEach((product: Product) => {
-            saveProduct(product);
-          });
+          // Import products (async)
+          for (const product of importData.products) {
+            await saveProduct(product);
+          }
           
-          // Import configs if available
+          // Import configs if available (async)
           if (importData.configs) {
-            Object.entries(importData.configs).forEach(([productId, config]: [string, any]) => {
-              saveProductConfig(config as ProductConfig);
-            });
+            for (const [productId, config] of Object.entries(importData.configs)) {
+              await saveProductConfig(config as ProductConfig);
+            }
           }
           
           // Refresh the list
-          setProducts(getAllProducts());
+          const refreshedProducts = await getAllProducts();
+          setProducts(refreshedProducts);
           alert(`✅ Successfully imported ${importData.products.length} products!`);
         } catch (error: any) {
           console.error("Import error:", error);

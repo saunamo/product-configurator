@@ -97,7 +97,7 @@ export default function AdminPage() {
       setIsLoadingProducts(true);
       const loadProducts = async () => {
         try {
-          const productsList = getAllProducts();
+          const productsList = await getAllProducts();
           setProducts(productsList);
           
           // Load configs for each product to get their main product images and Pipedrive IDs
@@ -276,10 +276,15 @@ export default function AdminPage() {
       }
       
       // Update config
+      // CRITICAL: Preserve ALL existing fields, especially mainProductImageUrl
       const updatedConfig = currentConfig 
         ? {
-            ...currentConfig,
+            ...currentConfig, // Preserve ALL existing fields
             mainProductPipedriveId: pipedriveId,
+            // Explicitly preserve mainProductImageUrl if it exists
+            ...(currentConfig.mainProductImageUrl !== undefined && {
+              mainProductImageUrl: currentConfig.mainProductImageUrl,
+            }),
           }
         : {
             productId: productId,
@@ -361,10 +366,15 @@ export default function AdminPage() {
       });
       
       // If no config exists, create a minimal one. Otherwise, update the existing one.
+      // CRITICAL: Preserve ALL existing fields, especially mainProductPipedriveId
       const updatedConfig = currentConfig 
         ? {
-            ...currentConfig,
+            ...currentConfig, // Preserve ALL existing fields
             mainProductImageUrl: imageUrl || undefined,
+            // Explicitly preserve mainProductPipedriveId if it exists
+            ...(currentConfig.mainProductPipedriveId !== undefined && {
+              mainProductPipedriveId: currentConfig.mainProductPipedriveId,
+            }),
           }
         : {
             productId: productId,
@@ -394,7 +404,18 @@ export default function AdminPage() {
         savedImage: savedImageUrl,
         expectedImage: imageUrl,
         matchesExpected: savedImageUrl === imageUrl,
+        imageUrlLength: imageUrl?.length || 0,
+        savedImageUrlLength: savedImageUrl?.length || 0,
       });
+      
+      // Log if there's a mismatch
+      if (savedImageUrl !== imageUrl) {
+        console.error(`❌ CRITICAL: Image URL mismatch after save!`, {
+          expected: imageUrl,
+          saved: savedImageUrl,
+          productId: productId,
+        });
+      }
 
       // Wait a moment for the file system to flush, then verify the save worked by fetching it back
       await new Promise(resolve => setTimeout(resolve, 100));

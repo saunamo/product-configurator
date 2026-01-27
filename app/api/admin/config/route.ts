@@ -56,9 +56,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const config = body.config as AdminConfig;
+    const incomingConfig = body.config as AdminConfig;
 
-    if (!config) {
+    if (!incomingConfig) {
       return NextResponse.json(
         { success: false, error: "No config provided" },
         { status: 400 }
@@ -71,10 +71,87 @@ export async function POST(request: NextRequest) {
       await mkdir(dataStoreDir, { recursive: true });
     }
 
-    // Save config to file
-    await writeFile(CONFIG_FILE_PATH, JSON.stringify(config, null, 2), "utf-8");
+    // CRITICAL: Load existing config first to preserve ALL fields
+    // This prevents data loss if the client sends a partial update
+    let existingConfig: AdminConfig | null = null;
+    if (existsSync(CONFIG_FILE_PATH)) {
+      try {
+        const fileContent = await readFile(CONFIG_FILE_PATH, "utf-8");
+        existingConfig = JSON.parse(fileContent) as AdminConfig;
+      } catch (error) {
+        console.warn("⚠️ Could not read existing config, will save new config:", error);
+      }
+    }
 
-    console.log("💾 Saved admin config to server");
+    // Merge: preserve all existing fields, then apply updates
+    // The client should send the complete config, but we merge just to be safe
+    const configToSave: AdminConfig = existingConfig
+      ? {
+          ...existingConfig, // Preserve all existing fields
+          ...incomingConfig, // Apply updates
+          // Deep merge nested objects to ensure nothing is lost
+          globalSettings: {
+            ...existingConfig.globalSettings,
+            ...incomingConfig.globalSettings,
+            // Merge nested globalSettings objects
+            stepNames: {
+              ...existingConfig.globalSettings?.stepNames,
+              ...incomingConfig.globalSettings?.stepNames,
+            },
+            stepSubheaders: {
+              ...existingConfig.globalSettings?.stepSubheaders,
+              ...incomingConfig.globalSettings?.stepSubheaders,
+            },
+            stepImages: {
+              ...existingConfig.globalSettings?.stepImages,
+              ...incomingConfig.globalSettings?.stepImages,
+            },
+            optionImages: {
+              ...existingConfig.globalSettings?.optionImages,
+              ...incomingConfig.globalSettings?.optionImages,
+            },
+            optionTitles: {
+              ...existingConfig.globalSettings?.optionTitles,
+              ...incomingConfig.globalSettings?.optionTitles,
+            },
+            optionPipedriveProducts: {
+              ...existingConfig.globalSettings?.optionPipedriveProducts,
+              ...incomingConfig.globalSettings?.optionPipedriveProducts,
+            },
+            optionIncluded: {
+              ...existingConfig.globalSettings?.optionIncluded,
+              ...incomingConfig.globalSettings?.optionIncluded,
+            },
+            stepMoreInfoEnabled: {
+              ...existingConfig.globalSettings?.stepMoreInfoEnabled,
+              ...incomingConfig.globalSettings?.stepMoreInfoEnabled,
+            },
+            stepMoreInfoUrl: {
+              ...existingConfig.globalSettings?.stepMoreInfoUrl,
+              ...incomingConfig.globalSettings?.stepMoreInfoUrl,
+            },
+          },
+          design: {
+            ...existingConfig.design,
+            ...incomingConfig.design,
+          },
+          quoteSettings: incomingConfig.quoteSettings
+            ? {
+                ...existingConfig.quoteSettings,
+                ...incomingConfig.quoteSettings,
+              }
+            : existingConfig.quoteSettings,
+          stepData: {
+            ...existingConfig.stepData,
+            ...incomingConfig.stepData,
+          },
+        }
+      : incomingConfig; // No existing config, save the new one
+
+    // Save config to file
+    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configToSave, null, 2), "utf-8");
+
+    console.log("💾 Saved admin config to server (merged with existing)");
 
     return NextResponse.json({
       success: true,

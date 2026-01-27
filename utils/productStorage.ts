@@ -20,16 +20,50 @@ if (USE_API_STORAGE && typeof window !== "undefined") {
 
 /**
  * Get all products
+ * In production/Netlify, loads from server API
+ * In development, loads from localStorage with server fallback
  */
-export function getAllProducts(): Product[] {
+export async function getAllProducts(): Promise<Product[]> {
   if (typeof window === "undefined") return [];
   
+  // Always try server API first (especially important for Netlify)
+  try {
+    const response = await fetch("/api/products", {
+      cache: "no-store",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const products = data.products || [];
+      console.log("📦 Loaded products from server API:", {
+        count: products.length,
+        productIds: products.map((p: any) => p.id),
+      });
+      
+      // Also sync to localStorage as backup
+      try {
+        localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+      } catch (e) {
+        console.warn("⚠️ Could not sync server products to localStorage:", e);
+      }
+      
+      // Convert date strings back to Date objects
+      return products.map((p: any) => ({
+        ...p,
+        createdAt: p.createdAt ? new Date(p.createdAt) : new Date(),
+        updatedAt: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      }));
+    }
+  } catch (error) {
+    console.warn("⚠️ Failed to load products from server, trying localStorage:", error);
+  }
+  
+  // Fallback to localStorage (for development or if server fails)
   try {
     const stored = localStorage.getItem(PRODUCTS_STORAGE_KEY);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        console.log("📦 Parsed products from localStorage:", {
+        console.log("📦 Parsed products from localStorage (fallback):", {
           count: parsed.length,
           productIds: parsed.map((p: any) => p.id),
         });
@@ -46,17 +80,6 @@ export function getAllProducts(): Product[] {
       }
     } else {
       console.log("📦 No products found in localStorage (key:", PRODUCTS_STORAGE_KEY + ")");
-      // Check if localStorage is accessible
-      try {
-        localStorage.setItem("__test__", "test");
-        localStorage.removeItem("__test__");
-        console.log("✅ localStorage is accessible");
-      } catch (e: any) {
-        console.error("❌ localStorage is not accessible:", e);
-        if (e.name === 'QuotaExceededError') {
-          console.error("💡 localStorage quota exceeded! This might be why products disappeared.");
-        }
-      }
     }
   } catch (e) {
     console.error("❌ Error accessing localStorage:", e);
@@ -66,30 +89,50 @@ export function getAllProducts(): Product[] {
 
 /**
  * Save all products
+ * Saves to server API first, then syncs to localStorage
  */
-export function saveAllProducts(products: Product[]): void {
-  if (typeof window !== "undefined") {
-    try {
-      const json = JSON.stringify(products);
-      console.log("💾 Saving products to localStorage:", {
-        count: products.length,
-        productIds: products.map(p => p.id),
-        size: (json.length / 1024).toFixed(2) + " KB",
-        key: PRODUCTS_STORAGE_KEY,
-      });
-      localStorage.setItem(PRODUCTS_STORAGE_KEY, json);
-      console.log("✅ Products saved successfully");
-      
-      // Dispatch custom event for same-tab updates
-      window.dispatchEvent(new Event("productsUpdated"));
-    } catch (e: any) {
-      console.error("❌ Failed to save products:", e);
-      if (e.name === 'QuotaExceededError' || e.code === 22) {
-        console.error("💡 localStorage quota exceeded!");
-        alert("Cannot save products: localStorage is full. Please clear some data or use a smaller image.");
-      } else {
-        alert("Failed to save products. Please try again.");
-      }
+export async function saveAllProducts(products: Product[]): Promise<void> {
+  if (typeof window === "undefined") return;
+  
+  // Save to server API first (primary storage)
+  try {
+    const response = await fetch("/api/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(products),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to save products to server: ${response.statusText}`);
+    }
+    
+    console.log("✅ Products saved to server:", {
+      count: products.length,
+      productIds: products.map(p => p.id),
+    });
+  } catch (error) {
+    console.error("❌ Failed to save products to server:", error);
+    throw error; // Re-throw so caller knows it failed
+  }
+  
+  // Also save to localStorage as backup
+  try {
+    const json = JSON.stringify(products);
+    console.log("💾 Syncing products to localStorage:", {
+      count: products.length,
+      productIds: products.map(p => p.id),
+      size: (json.length / 1024).toFixed(2) + " KB",
+      key: PRODUCTS_STORAGE_KEY,
+    });
+    localStorage.setItem(PRODUCTS_STORAGE_KEY, json);
+    console.log("✅ Products synced to localStorage");
+    
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("productsUpdated"));
+  } catch (e: any) {
+    console.warn("⚠️ Failed to sync products to localStorage:", e);
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      console.warn("💡 localStorage quota exceeded, but server save succeeded");
     }
   }
 }

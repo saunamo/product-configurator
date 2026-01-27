@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo, useEffect } from "react";
+
 interface ProductImageProps {
   imageUrl?: string;
   alt?: string;
@@ -13,6 +15,16 @@ export default function ProductImage({
   selectedOptionLabel,
   isOptionImage = false,
 }: ProductImageProps) {
+  // Log image URL changes for debugging
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && !isOptionImage) {
+      console.log("🖼️ ProductImage: Main product image URL changed:", {
+        imageUrl: imageUrl || "Not set",
+        imageUrlLength: imageUrl?.length || 0,
+        isOptionImage: false,
+      });
+    }
+  }, [imageUrl, isOptionImage]);
   // Placeholder image if none provided
   const defaultImageUrl =
     "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&h=600&fit=crop";
@@ -36,10 +48,37 @@ export default function ProductImage({
     ? "relative w-full aspect-video sm:aspect-square md:aspect-square lg:aspect-auto lg:h-[600px] rounded-lg overflow-hidden flex items-center justify-center p-4 sm:p-6 md:p-8"
     : "relative w-full aspect-video sm:aspect-square md:aspect-square lg:aspect-auto lg:h-[600px] rounded-lg overflow-hidden";
 
+  // Create cache-busting URL that changes when imageUrl changes
+  // Use a hash of the URL + timestamp to ensure it updates when the URL changes
+  // For main product images, we want to force refresh when URL changes
+  const cachedImageUrl = useMemo(() => {
+    if (!imageUrl) return defaultImageUrl;
+    
+    // Create a cache-busting parameter based on the URL itself
+    // This ensures the image refreshes when the URL changes
+    const separator = imageUrl.includes('?') ? '&' : '?';
+    // Use a combination of URL hash and current time to ensure uniqueness
+    const urlHash = imageUrl.split('').reduce((acc, char) => {
+      return ((acc << 5) - acc) + char.charCodeAt(0);
+    }, 0);
+    const cacheBuster = `t=${Date.now()}&v=${Math.abs(urlHash)}`;
+    const finalUrl = `${imageUrl}${separator}${cacheBuster}`;
+    
+    if (process.env.NODE_ENV === 'development' && !isOptionImage) {
+      console.log("🖼️ ProductImage: Generated cache-busted URL:", {
+        originalUrl: imageUrl.substring(0, 100),
+        cacheBustedUrl: finalUrl.substring(0, 150),
+        urlHash: Math.abs(urlHash),
+      });
+    }
+    
+    return finalUrl;
+  }, [imageUrl, isOptionImage]);
+
   return (
     <div className={`${containerClass} ${backgroundClass}`}>
       <img
-        src={imageUrl ? `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : defaultImageUrl}
+        src={cachedImageUrl}
         alt={alt}
         className={`w-full h-full ${objectFitClass} ${isOptionImage ? 'max-w-full max-h-full' : ''}`}
         style={isOptionImage ? {
@@ -49,6 +88,13 @@ export default function ProductImage({
           maxHeight: '100%',
         } : undefined}
         key={imageUrl} // Force re-render when image URL changes
+        onError={(e) => {
+          // Fallback to default image if the image fails to load
+          if (e.currentTarget.src !== defaultImageUrl) {
+            console.warn(`⚠️ Failed to load image: ${imageUrl}, falling back to default`);
+            e.currentTarget.src = defaultImageUrl;
+          }
+        }}
       />
       {capitalizedLabel && (
         <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm font-medium">

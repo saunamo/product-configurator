@@ -122,7 +122,10 @@ export async function getProductConfig(productId: string): Promise<ProductConfig
     if (!data || data.trim() === "") {
       return null;
     }
-    return JSON.parse(data) as ProductConfig;
+    // Parse and preserve ALL fields from JSON, even if not in type definition
+    // This ensures no data is lost during type casting
+    const parsed = JSON.parse(data);
+    return parsed as ProductConfig;
   } catch (error) {
     // File doesn't exist
     return null;
@@ -150,6 +153,7 @@ export async function saveProductConfig(config: ProductConfig): Promise<void> {
     if (process.env.NODE_ENV === 'development') {
       console.log(`💾 Saved config for ${config.productId}:`, {
         mainProductImageUrl: writtenConfig.mainProductImageUrl,
+        mainProductPipedriveId: writtenConfig.mainProductPipedriveId,
         fileSize: writtenData.length,
       });
     }
@@ -158,6 +162,10 @@ export async function saveProductConfig(config: ProductConfig): Promise<void> {
     if (config.mainProductImageUrl && writtenConfig.mainProductImageUrl !== config.mainProductImageUrl) {
       console.error(`❌ Verification failed: mainProductImageUrl mismatch for ${config.productId}`);
       console.error(`Expected: ${config.mainProductImageUrl}, Got: ${writtenConfig.mainProductImageUrl}`);
+    }
+    if (config.mainProductPipedriveId && writtenConfig.mainProductPipedriveId !== config.mainProductPipedriveId) {
+      console.error(`❌ Verification failed: mainProductPipedriveId mismatch for ${config.productId}`);
+      console.error(`Expected: ${config.mainProductPipedriveId}, Got: ${writtenConfig.mainProductPipedriveId}`);
     }
   } catch (error) {
     console.error(`❌ Failed to verify write for ${config.productId}:`, error);

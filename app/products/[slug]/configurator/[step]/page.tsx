@@ -120,9 +120,14 @@ export default function ProductConfiguratorStepPage() {
     const handleProductConfigUpdate = () => {
       console.log("🔄 Product config update event received, reloading config...");
       console.log("🔄 Current config mainProductImageUrl:", config?.mainProductImageUrl);
-      loadConfig().then(() => {
-        console.log("🔄 Config reloaded after productConfigUpdated event");
-      });
+      // Force a fresh reload with a small delay to ensure server has saved
+      setTimeout(() => {
+        loadConfig().then(() => {
+          console.log("🔄 Config reloaded after productConfigUpdated event");
+          // Force a state update to trigger re-render
+          setConfig((prev) => prev ? { ...prev } : null);
+        });
+      }, 200);
     };
     const handleAdminConfigUpdate = () => {
       console.log("🔄 Admin config update event (global settings changed), reloading...");

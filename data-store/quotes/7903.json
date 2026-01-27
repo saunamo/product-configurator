@@ -1,0 +1,157 @@
+{
+  "id": "7903",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "customerName": "Ville",
+  "customerPhone": "0234",
+  "items": [
+    {
+      "stepId": "rear-glass-wall",
+      "stepName": "Rear Wall Option",
+      "optionId": "rear-glass-wall-wooden-backwall",
+      "optionTitle": "Wooden backwall",
+      "optionDescription": "",
+      "price": 0,
+      "quantity": 1
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-kajo-66kw-80kg",
+      "optionTitle": "Kajo 6.6kW (80kg)",
+      "optionDescription": "",
+      "price": 875,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-according-to-selected-heater",
+      "optionTitle": "Heater stones cccording to selected heaters size (4 packages)",
+      "optionDescription": "",
+      "price": 29.5,
+      "quantity": 4,
+      "heaterStonesCalculatedPrice": 118,
+      "heaterStonesQuantity": 4
+    },
+    {
+      "stepId": "lighting",
+      "stepName": "Lighting",
+      "optionId": "lighting-1x",
+      "optionTitle": "Behind Backrest (1x 2.5m LED)",
+      "optionDescription": "",
+      "price": 175,
+      "quantity": 1,
+      "vatRate": 0.2,
+      "lightingMultiplier": 1,
+      "baseLightingOptionId": "lighting-1x"
+    },
+    {
+      "stepId": "aromas-accessories",
+      "stepName": "Accessories",
+      "optionId": "aromas-accessories-accessory-set",
+      "optionTitle": "Accessory set",
+      "optionDescription": "",
+      "price": 57.91666667,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "electrical-assembly",
+      "stepName": "Installation",
+      "optionId": "electrical-assembly-wood-treament-exterior",
+      "optionTitle": "Wood treament exterior",
+      "optionDescription": "",
+      "price": 416.66,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "cold-plunge",
+      "stepName": "Cold Plunge",
+      "optionId": "cold-plunge-ice-bath-ergo",
+      "optionTitle": "Ice bath Ergo",
+      "optionDescription": "",
+      "price": 4583.333333,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-cube-200",
+      "optionTitle": "Hot tub Cube 200",
+      "optionDescription": "",
+      "price": 5791.67,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-therma-200",
+      "optionTitle": "Hot tub Therma 200",
+      "optionDescription": "",
+      "price": 5791.67,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-therma-220",
+      "optionTitle": "Hot tub Therma 220",
+      "optionDescription": "",
+      "price": 6041.67,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-vellamo-s",
+      "optionTitle": "Hot tub Vellamo S",
+      "optionDescription": "",
+      "price": 6125,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-vellamo-m",
+      "optionTitle": "Hot tub Vellamo M",
+      "optionDescription": "",
+      "price": 6625,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-vellamo-l",
+      "optionTitle": "Hot tub Vellamo L",
+      "optionDescription": "",
+      "price": 6875,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "delivery",
+      "stepName": "Delivery",
+      "optionId": "delivery-standard",
+      "optionTitle": "Standard Delivery UK",
+      "optionDescription": "Curbside delivery within 2-3 weeks",
+      "price": 937.5,
+      "quantity": 1,
+      "vatRate": 0.2
+    }
+  ],
+  "subtotal": 44413.41999967,
+  "tax": 8859.083999933999,
+  "total": 53272.503999604,
+  "createdAt": "2026-01-27T14:29:02.403Z",
+  "expiresAt": "2026-02-26T14:29:02.403Z",
+  "notes": "test"
+}
