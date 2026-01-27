@@ -164,7 +164,7 @@ export function QuotePDFDocument({
             <View style={{ marginLeft: 16 }}>
               <Image
                 src={join(process.cwd(), "public", "Saunamo-Logo text only Bold-2.png")}
-                style={{ width: 64, height: 38 }}
+                style={{ width: "auto", height: 48, maxWidth: 200 }}
               />
             </View>
           </View>
