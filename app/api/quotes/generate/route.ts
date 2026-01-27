@@ -206,6 +206,14 @@ export async function POST(request: NextRequest) {
         const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
         pipedriveDealId = dealResult.dealId;
         
+        // IMPORTANT: Wait for Pipedrive to fully index the new deal before we try to add notes
+        // Without this delay, note creation may silently fail because the deal isn't fully ready
+        if (pipedriveDealId) {
+          console.log(`[Quote API] Deal ${pipedriveDealId} created, waiting 2 seconds for Pipedrive to index...`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          console.log(`[Quote API] Wait complete, proceeding...`);
+        }
+        
         // Update quote ID to use Pipedrive deal ID BEFORE saving
         if (pipedriveDealId) {
           const oldQuoteId = quote.id;
