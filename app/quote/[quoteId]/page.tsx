@@ -124,13 +124,13 @@ export default function QuotePortalPage() {
             </div>
             <div className="ml-4 flex-shrink-0">
               <img 
-                src="/Saunamo-Logo text only Bold-2.png" 
+                src="/saunamo-logo.png" 
                 alt="Saunamo Logo" 
                 className="h-12 w-auto object-contain"
                 onError={(e) => {
                   // Try other image formats if PNG doesn't work
                   const img = e.target as HTMLImageElement;
-                  const basePath = "/Saunamo-Logo text only Bold-2";
+                  const basePath = "/saunamo-logo";
                   const extensions = [".jpg", ".jpeg", ".svg", ".webp"];
                   let currentIndex = 0;
                   const tryNext = () => {
