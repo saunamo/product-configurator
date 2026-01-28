@@ -333,9 +333,13 @@ export default function AdminPage() {
       console.log(`🖼️ Updating main image for ${productId}:`, imageUrl);
       
       // Update local state immediately for UI responsiveness
+      // CRITICAL: Preserve existing fields like mainProductPipedriveId
       setProductConfigs((prev) => ({
         ...prev,
-        [productId]: { mainProductImageUrl: imageUrl || undefined },
+        [productId]: { 
+          ...prev[productId], // Preserve existing fields!
+          mainProductImageUrl: imageUrl || undefined,
+        },
       }));
 
       // Save to server - need to get current config first, then update
@@ -498,7 +502,11 @@ export default function AdminPage() {
           const { config } = await response.json();
           setProductConfigs((prev) => ({
             ...prev,
-            [productId]: { mainProductImageUrl: config.mainProductImageUrl },
+            [productId]: { 
+              ...prev[productId], // Preserve existing fields!
+              mainProductImageUrl: config.mainProductImageUrl,
+              mainProductPipedriveId: config.mainProductPipedriveId,
+            },
           }));
         }
       } catch (revertError) {

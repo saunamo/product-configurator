@@ -287,7 +287,7 @@
         },
         {
           "id": "heater-according-to-selected-heater",
-          "title": "Heater stones cccording to selected heaters size",
+          "title": "Heater stones",
           "description": "",
           "imageUrl": "/images/1769163278618-j26ztxiz44g.webp",
           "price": 0,
@@ -361,6 +361,6 @@
     "notes": "",
     "footerText": "Thank you for your interest. For questions, please contact us at the information above."
   },
-  "mainProductImageUrl": "/outdoor-sauna-cube-125.webp",
+  "mainProductImageUrl": "/images/1769576883361-3z7lmzypk7y.png",
   "mainProductPipedriveId": 17855
 }
