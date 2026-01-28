@@ -1,8 +1,7 @@
 /**
  * Server-side product storage
- * This replaces localStorage for production deployment
- * 
- * For now, uses a JSON file. Can be upgraded to a database later.
+ * For Netlify: Uses Netlify Blobs
+ * For local/dev: Falls back to file system
  */
 
 import { Product, ProductConfig } from "@/types/product";
@@ -13,10 +12,25 @@ const DATA_DIR = join(process.cwd(), "data-store");
 const PRODUCTS_FILE = join(DATA_DIR, "products.json");
 const PRODUCT_CONFIGS_DIR = join(DATA_DIR, "product-configs");
 
+// More robust serverless detection
+function isServerlessEnvironment(): boolean {
+  if (process.env.NETLIFY === "true" || process.env.NETLIFY) return true;
+  if (process.env.VERCEL === "1" || process.env.VERCEL) return true;
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME) return true;
+  if (process.env.CONTEXT) return true; // Netlify sets this
+  if (process.cwd().startsWith("/var/task")) return true;
+  return false;
+}
+
+const isServerless = isServerlessEnvironment();
+
+console.log(`[Product Storage] Environment: isServerless=${isServerless}`);
+
 /**
  * Ensure data directory exists
  */
 async function ensureDataDir() {
+  if (isServerless) return; // Skip in serverless environments
   try {
     await mkdir(DATA_DIR, { recursive: true });
     await mkdir(PRODUCT_CONFIGS_DIR, { recursive: true });
@@ -25,13 +39,127 @@ async function ensureDataDir() {
   }
 }
 
-/**
- * Get all products from server storage
- */
-export async function getAllProducts(): Promise<Product[]> {
-  await ensureDataDir();
-  
+// ============================================
+// NETLIFY BLOBS STORAGE
+// ============================================
+
+async function saveProductConfigToBlobs(config: ProductConfig): Promise<boolean> {
   try {
+    const { getStore } = await import("@netlify/blobs");
+    const store = getStore({ name: "product-configs", consistency: "strong" });
+    
+    console.log(`[Netlify Blobs] Saving product config: ${config.productId}`);
+    await store.setJSON(`config-${config.productId}`, config);
+    
+    // Verify
+    const verify = await store.get(`config-${config.productId}`, { type: "json" });
+    if (verify) {
+      console.log(`✅ [Netlify Blobs] Product config saved: ${config.productId}`);
+      return true;
+    }
+    return false;
+  } catch (error: any) {
+    console.error(`❌ [Netlify Blobs] Error saving product config:`, error?.message);
+    return false;
+  }
+}
+
+async function getProductConfigFromBlobs(productId: string): Promise<ProductConfig | null> {
+  try {
+    const { getStore } = await import("@netlify/blobs");
+    const store = getStore({ name: "product-configs", consistency: "strong" });
+    
+    const config = await store.get(`config-${productId}`, { type: "json" });
+    if (config) {
+      console.log(`✅ [Netlify Blobs] Found product config: ${productId}`);
+      return config as ProductConfig;
+    }
+    return null;
+  } catch (error: any) {
+    console.error(`❌ [Netlify Blobs] Error getting product config:`, error?.message);
+    return null;
+  }
+}
+
+async function saveAllProductsToBlobs(products: Product[]): Promise<boolean> {
+  try {
+    const { getStore } = await import("@netlify/blobs");
+    const store = getStore({ name: "products", consistency: "strong" });
+    
+    const data = products.map((p) => ({
+      ...p,
+      createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
+      updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : new Date().toISOString(),
+    }));
+    
+    console.log(`[Netlify Blobs] Saving ${products.length} products`);
+    await store.setJSON("all-products", data);
+    
+    console.log(`✅ [Netlify Blobs] Products saved`);
+    return true;
+  } catch (error: any) {
+    console.error(`❌ [Netlify Blobs] Error saving products:`, error?.message);
+    return false;
+  }
+}
+
+async function getAllProductsFromBlobs(): Promise<Product[]> {
+  try {
+    const { getStore } = await import("@netlify/blobs");
+    const store = getStore({ name: "products", consistency: "strong" });
+    
+    const data = await store.get("all-products", { type: "json" });
+    if (data && Array.isArray(data)) {
+      console.log(`✅ [Netlify Blobs] Found ${data.length} products`);
+      return data.map((p: any) => ({
+        ...p,
+        createdAt: p.createdAt ? new Date(p.createdAt) : new Date(),
+        updatedAt: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      }));
+    }
+    return [];
+  } catch (error: any) {
+    console.error(`❌ [Netlify Blobs] Error getting products:`, error?.message);
+    return [];
+  }
+}
+
+// ============================================
+// FILE SYSTEM STORAGE (for local dev)
+// ============================================
+
+async function saveProductConfigToFile(config: ProductConfig): Promise<void> {
+  await ensureDataDir();
+  const configFile = join(PRODUCT_CONFIGS_DIR, `${config.productId}.json`);
+  await writeFile(configFile, JSON.stringify(config, null, 2), "utf-8");
+  console.log(`✅ [File] Saved product config: ${config.productId}`);
+}
+
+async function getProductConfigFromFile(productId: string): Promise<ProductConfig | null> {
+  try {
+    await ensureDataDir();
+    const configFile = join(PRODUCT_CONFIGS_DIR, `${productId}.json`);
+    const data = await readFile(configFile, "utf-8");
+    if (!data || data.trim() === "") return null;
+    return JSON.parse(data) as ProductConfig;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function saveAllProductsToFile(products: Product[]): Promise<void> {
+  await ensureDataDir();
+  const data = products.map((p) => ({
+    ...p,
+    createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
+    updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : new Date().toISOString(),
+  }));
+  await writeFile(PRODUCTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+}
+
+async function getAllProductsFromFile(): Promise<Product[]> {
+  try {
+    await ensureDataDir();
     const data = await readFile(PRODUCTS_FILE, "utf-8");
     const products = JSON.parse(data) as Product[];
     return products.map((p) => ({
@@ -40,24 +168,41 @@ export async function getAllProducts(): Promise<Product[]> {
       updatedAt: p.updatedAt ? new Date(p.updatedAt) : new Date(),
     }));
   } catch (error) {
-    // File doesn't exist yet, return empty array
     return [];
   }
+}
+
+// ============================================
+// PUBLIC API (auto-selects storage)
+// ============================================
+
+/**
+ * Get all products from server storage
+ */
+export async function getAllProducts(): Promise<Product[]> {
+  if (isServerless) {
+    // Try Blobs first, fall back to file (for build-time data)
+    const blobProducts = await getAllProductsFromBlobs();
+    if (blobProducts.length > 0) return blobProducts;
+    
+    // Fall back to file system for build-time data
+    return getAllProductsFromFile();
+  }
+  return getAllProductsFromFile();
 }
 
 /**
  * Save all products to server storage
  */
 export async function saveAllProducts(products: Product[]): Promise<void> {
-  await ensureDataDir();
-  
-  const data = products.map((p) => ({
-    ...p,
-    createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
-    updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : new Date().toISOString(),
-  }));
-  
-  await writeFile(PRODUCTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  if (isServerless) {
+    const saved = await saveAllProductsToBlobs(products);
+    if (!saved) {
+      console.error(`❌ Failed to save products to Netlify Blobs`);
+    }
+    return;
+  }
+  await saveAllProductsToFile(products);
 }
 
 /**
@@ -101,12 +246,15 @@ export async function deleteProduct(productId: string): Promise<void> {
   const filtered = products.filter((p) => p.id !== productId);
   await saveAllProducts(filtered);
   
-  // Also delete the product config file
-  try {
-    const configFile = join(PRODUCT_CONFIGS_DIR, `${productId}.json`);
-    await writeFile(configFile, "", "utf-8").catch(() => {}); // Try to delete, ignore if doesn't exist
-  } catch (error) {
-    // Ignore errors
+  // Also delete the product config
+  if (isServerless) {
+    try {
+      const { getStore } = await import("@netlify/blobs");
+      const store = getStore({ name: "product-configs", consistency: "strong" });
+      await store.delete(`config-${productId}`);
+    } catch (error) {
+      // Ignore
+    }
   }
 }
 
@@ -114,76 +262,56 @@ export async function deleteProduct(productId: string): Promise<void> {
  * Get product config from server storage
  */
 export async function getProductConfig(productId: string): Promise<ProductConfig | null> {
-  await ensureDataDir();
+  console.log(`[Product Storage] Getting config for ${productId}, isServerless=${isServerless}`);
   
-  try {
-    const configFile = join(PRODUCT_CONFIGS_DIR, `${productId}.json`);
-    const data = await readFile(configFile, "utf-8");
-    if (!data || data.trim() === "") {
-      return null;
-    }
-    // Parse and preserve ALL fields from JSON, even if not in type definition
-    // This ensures no data is lost during type casting
-    const parsed = JSON.parse(data);
-    return parsed as ProductConfig;
-  } catch (error) {
-    // File doesn't exist
-    return null;
+  if (isServerless) {
+    // Try Blobs first
+    const blobConfig = await getProductConfigFromBlobs(productId);
+    if (blobConfig) return blobConfig;
+    
+    // Fall back to file system (for build-time data)
+    return getProductConfigFromFile(productId);
   }
+  return getProductConfigFromFile(productId);
 }
 
 /**
  * Save product config to server storage
  */
 export async function saveProductConfig(config: ProductConfig): Promise<void> {
-  await ensureDataDir();
+  console.log(`[Product Storage] Saving config for ${config.productId}, isServerless=${isServerless}`);
   
-  const configFile = join(PRODUCT_CONFIGS_DIR, `${config.productId}.json`);
-  const configJson = JSON.stringify(config, null, 2);
-  
-  // Write the file
-  await writeFile(configFile, configJson, "utf-8");
-  
-  // Verify the write by reading it back
-  try {
-    const writtenData = await readFile(configFile, "utf-8");
-    const writtenConfig = JSON.parse(writtenData) as ProductConfig;
-    
-    // Log for debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`💾 Saved config for ${config.productId}:`, {
-        mainProductImageUrl: writtenConfig.mainProductImageUrl,
-        mainProductPipedriveId: writtenConfig.mainProductPipedriveId,
-        fileSize: writtenData.length,
-      });
+  if (isServerless) {
+    const saved = await saveProductConfigToBlobs(config);
+    if (!saved) {
+      console.error(`❌ Failed to save product config to Netlify Blobs`);
+      throw new Error("Failed to save product config");
     }
-    
-    // Verify critical fields were written correctly
-    if (config.mainProductImageUrl && writtenConfig.mainProductImageUrl !== config.mainProductImageUrl) {
-      console.error(`❌ Verification failed: mainProductImageUrl mismatch for ${config.productId}`);
-      console.error(`Expected: ${config.mainProductImageUrl}, Got: ${writtenConfig.mainProductImageUrl}`);
-    }
-    if (config.mainProductPipedriveId && writtenConfig.mainProductPipedriveId !== config.mainProductPipedriveId) {
-      console.error(`❌ Verification failed: mainProductPipedriveId mismatch for ${config.productId}`);
-      console.error(`Expected: ${config.mainProductPipedriveId}, Got: ${writtenConfig.mainProductPipedriveId}`);
-    }
-  } catch (error) {
-    console.error(`❌ Failed to verify write for ${config.productId}:`, error);
+    return;
   }
+  await saveProductConfigToFile(config);
 }
 
 /**
  * Delete product config
  */
 export async function deleteProductConfig(productId: string): Promise<void> {
-  await ensureDataDir();
+  if (isServerless) {
+    try {
+      const { getStore } = await import("@netlify/blobs");
+      const store = getStore({ name: "product-configs", consistency: "strong" });
+      await store.delete(`config-${productId}`);
+      console.log(`✅ [Netlify Blobs] Deleted product config: ${productId}`);
+    } catch (error: any) {
+      console.error(`❌ [Netlify Blobs] Error deleting product config:`, error?.message);
+    }
+    return;
+  }
   
   try {
     const configFile = join(PRODUCT_CONFIGS_DIR, `${productId}.json`);
-    await writeFile(configFile, "", "utf-8").catch(() => {});
+    await writeFile(configFile, "", "utf-8");
   } catch (error) {
-    // Ignore errors
+    // Ignore
   }
 }
-
-
