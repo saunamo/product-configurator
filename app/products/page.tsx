@@ -91,7 +91,7 @@ export default function ProductsPage() {
                 <p className="text-sm text-gray-500 mb-4">ID: {product.id}</p>
                 <div className="flex gap-2">
                   <Link
-                    href={`/products/${product.slug}/configurator/rear-glass-wall`}
+                    href={`/products/${product.slug}`}
                     className="flex-1 px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900 text-center text-sm font-medium"
                   >
                     View Configurator

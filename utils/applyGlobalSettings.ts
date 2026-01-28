@@ -234,11 +234,17 @@ export async function applyGlobalSettingsToProductConfig(
         
         if (isHalfMoon) {
           if (isCube) {
-            console.log(`🖼️ applyGlobalSettings: ✅ Setting cube half-moon image: /cube-back-moon.jpg`);
-            return { ...option, title: customTitle, imageUrl: "/cube-back-moon.jpg" };
+            // Check admin config for cube half-moon image first
+            const adminCubeHalfMoonImage = globalSettings.optionImages?.["cube_glass-half-moon"];
+            const cubeHalfMoonImage = adminCubeHalfMoonImage || "/cube-back-moon.jpg";
+            console.log(`🖼️ applyGlobalSettings: ✅ Setting cube half-moon image: ${cubeHalfMoonImage} (admin: ${adminCubeHalfMoonImage || 'none'})`);
+            return { ...option, title: customTitle, imageUrl: cubeHalfMoonImage };
           } else if (isBarrel) {
-            console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel half-moon image: /barrel-half-moon.png`);
-            return { ...option, title: customTitle, imageUrl: "/barrel-half-moon.png" };
+            // Check admin config for barrel half-moon image first
+            const adminBarrelHalfMoonImage = globalSettings.optionImages?.["barrel_glass-half-moon"];
+            const barrelHalfMoonImage = adminBarrelHalfMoonImage || "/barrel-half-moon.png";
+            console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel half-moon image: ${barrelHalfMoonImage} (admin: ${adminBarrelHalfMoonImage || 'none'})`);
+            return { ...option, title: customTitle, imageUrl: barrelHalfMoonImage };
           }
         }
         
@@ -249,11 +255,17 @@ export async function applyGlobalSettingsToProductConfig(
         
         if (isWoodenBackwall) {
           if (isCube) {
-            console.log(`🖼️ applyGlobalSettings: ✅ Setting cube wooden backwall image: /cube-full-back-wall.jpg`);
-            return { ...option, title: customTitle, imageUrl: "/cube-full-back-wall.jpg" };
+            // Check admin config for cube wooden backwall image first
+            const adminCubeWoodenImage = globalSettings.optionImages?.["cube_wooden-backwall"];
+            const cubeWoodenImage = adminCubeWoodenImage || "/cube-full-back-wall.jpg";
+            console.log(`🖼️ applyGlobalSettings: ✅ Setting cube wooden backwall image: ${cubeWoodenImage} (admin: ${adminCubeWoodenImage || 'none'})`);
+            return { ...option, title: customTitle, imageUrl: cubeWoodenImage };
           } else if (isBarrel) {
-            console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel wooden backwall image: /barrel-full-back-wall.png`);
-            return { ...option, title: customTitle, imageUrl: "/barrel-full-back-wall.png" };
+            // Check admin config for barrel wooden backwall image first
+            const adminBarrelWoodenImage = globalSettings.optionImages?.["barrel_wooden-backwall"];
+            const barrelWoodenImage = adminBarrelWoodenImage || "/barrel-full-back-wall.png";
+            console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel wooden backwall image: ${barrelWoodenImage} (admin: ${adminBarrelWoodenImage || 'none'})`);
+            return { ...option, title: customTitle, imageUrl: barrelWoodenImage };
           }
         }
         
@@ -263,14 +275,20 @@ export async function applyGlobalSettingsToProductConfig(
                                      (optionTitleLower.includes("backwall") || optionTitleLower.includes("back wall")));
         
         if (isFullGlassBackwall && isBarrel) {
-          console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel full glass backwall image: /barrel-full-glass-wall.png`);
-          return { ...option, title: customTitle, imageUrl: "/barrel-full-glass-wall.png" };
+          // Check admin config for barrel full glass backwall image first
+          const adminBarrelFullGlassImage = globalSettings.optionImages?.["barrel_full-glass-backwall"];
+          const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+          console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel full glass backwall image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
+          return { ...option, title: customTitle, imageUrl: barrelFullGlassImage };
         }
         
         // Handle standard glass wall for barrel
         if (option.id === "glass-standard" && isBarrel) {
-          console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel standard glass image: /barrel-full-glass-wall.png`);
-          return { ...option, title: customTitle, imageUrl: "/barrel-full-glass-wall.png" };
+          // Check admin config for barrel full glass backwall image first
+          const adminBarrelFullGlassImage = globalSettings.optionImages?.["barrel_full-glass-backwall"];
+          const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+          console.log(`🖼️ applyGlobalSettings: ✅ Setting barrel standard glass image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
+          return { ...option, title: customTitle, imageUrl: barrelFullGlassImage };
         }
         
         return { ...option, title: customTitle };

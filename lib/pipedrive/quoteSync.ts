@@ -93,12 +93,20 @@ export async function createDealFromQuote(
         product_id: number;
         item_price: number;
         quantity: number;
+        tax?: number;
+        comments?: string;
       }> = [];
+
+      console.log(`[quoteSync] Processing ${quote.items.length} items for Pipedrive deal ${dealId}`);
+      console.log(`[quoteSync] Available Pipedrive product IDs:`, Object.keys(pipedriveProductIds));
 
       quote.items.forEach((item) => {
         // For heater stones, use the base stone product ID (not the calculated total)
         // The price should be per-package (£29.50) and quantity should be the number of packages
         const pipedriveProductId = pipedriveProductIds[item.optionId];
+        
+        console.log(`[quoteSync] Item "${item.optionTitle}" (${item.optionId}): pipedriveProductId=${pipedriveProductId}`);
+        
         if (pipedriveProductId) {
           // For heater stones with calculated price, use the per-package price
           // For other items, use the item price
@@ -108,17 +116,31 @@ export async function createDealFromQuote(
           
           const itemQuantity = item.heaterStonesQuantity || item.quantity || 1;
           
+          // Get VAT rate from item and convert to percentage (Pipedrive expects 20 for 20%, not 0.2)
+          // Default to 20% VAT if not specified (UK standard rate)
+          const taxPercentage = item.vatRate !== undefined 
+            ? item.vatRate * 100 // Convert decimal (0.2) to percentage (20)
+            : 20; // Default 20% VAT for UK
+          
           productsToAdd.push({
             product_id: pipedriveProductId,
             item_price: itemPrice,
             quantity: itemQuantity,
+            tax: taxPercentage,
+            comments: item.optionDescription || undefined,
           });
+          
+          console.log(`[quoteSync] Added product: ${item.optionTitle}, price=${itemPrice}, qty=${itemQuantity}, tax=${taxPercentage}%`);
+        } else {
+          console.log(`[quoteSync] Skipping item "${item.optionTitle}" - no Pipedrive product ID mapped`);
         }
       });
 
       if (productsToAdd.length > 0) {
         await addProductsToDeal(dealId, productsToAdd);
-        console.log(`Added ${productsToAdd.length} product(s) to deal ${dealId}`);
+        console.log(`✅ Added ${productsToAdd.length} product(s) to deal ${dealId} with VAT`);
+      } else {
+        console.log(`⚠️ No products to add to deal ${dealId} - no Pipedrive product IDs matched`);
       }
     } catch (error) {
       console.error("Failed to add products to deal:", error);

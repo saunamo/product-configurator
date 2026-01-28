@@ -159,7 +159,7 @@ export default function ProductsManagementPage() {
           "Wall modifications": ["Half moon glass backwall", "wooden backwall", "full glass backwall"],
           "Electric heaters": ["Aava 9.4kW (20kg)", "Kajo 9kW (100kg)", "Kajo 10.5kW (100kg)", "Taika 9kW (130kg)", "Taika 10.5kW (200kg)"],
           "Stones": ["According to selected heater"],
-          "Woodburning heaters": ["Tuli 20 (20kg)", "Tuli 30 (20kg)", "Pyros 20 (160kg)"],
+          "Woodburning heaters": ["Pyros 20 (160kg)"],
           "Lighting": ["2x or 4x 2.5m LED"],
           "Accessories": ["accessory set", "sauna scent set", "sauna hats"],
           "Installation": ["Wood treament exterior", "interior", "assembly", "electrical work"],
@@ -175,7 +175,7 @@ export default function ProductsManagementPage() {
           "Wall modifications": ["Half moon glass backwall", "wooden backwall", "full glass backwall"],
           "Electric heaters": ["Kajo 10.5kW (100kg)", "Taika 10.5kW (200kg)"],
           "Stones": ["According to selected heater"],
-          "Woodburning heaters": ["Tuli 16 (20kg)", "Tuli 20 (20kg)", "Pyros 16 (190kg)", "Pyros 20 (160kg)"],
+          "Woodburning heaters": ["Pyros 16 (190kg)", "Pyros 20 (160kg)"],
           "Lighting": ["2x or 4x 2.5m LED"],
           "Accessories": ["accessory set", "sauna scent set", "sauna hats"],
           "Installation": ["Wood treament exterior", "interior", "assembly", "electrical work"],
@@ -207,7 +207,7 @@ export default function ProductsManagementPage() {
           "Wall modifications": [],
           "Electric heaters": ["Aava 9.4kW (20kg)", "Kajo 9kW (100kg)", "Kajo 10.5kW (100kg)", "Taika 9kW (130kg)", "Taika 10.5kW (200kg)"],
           "Stones": ["According to selected heater"],
-          "Woodburning heaters": ["Tuli 16 (20kg)", "Tuli 20 (20kg)", "Pyros 16 (190kg)", "Pyros 20 (160kg)"],
+          "Woodburning heaters": ["Pyros 16 (190kg)", "Pyros 20 (160kg)"],
           "Lighting": ["2x or 4x 2.5m LED"],
           "Accessories": ["accessory set", "sauna scent set", "sauna hats"],
           "Installation": ["Wood treament exterior", "interior", "assembly", "electrical work"],
@@ -223,7 +223,7 @@ export default function ProductsManagementPage() {
           "Wall modifications": ["Half moon glass backwall", "wooden backwall", "full glass backwall"],
           "Electric heaters": ["Aava 9.4kW (20kg)", "Kajo 9kW (100kg)", "Taika 9kW (130kg)"],
           "Stones": ["According to selected heater"],
-          "Woodburning heaters": ["Noki12 (20kg)", "Tuli 16 (20kg)"],
+          "Woodburning heaters": ["Noki12 (20kg)"],
           "Lighting": ["2x or 4x 2.5m LED"],
           "Accessories": ["accessory set", "sauna scent set", "sauna hats"],
           "Installation": ["Wood treament exterior", "interior", "assembly", "electrical work"],
@@ -239,7 +239,7 @@ export default function ProductsManagementPage() {
           "Wall modifications": ["Half moon glass backwall", "wooden backwall", "full glass backwall"],
           "Electric heaters": ["Aava 9.4kW (20kg)", "Kajo 9kW (100kg)", "Kajo 10.5kW (100kg)", "Taika 9kW (130kg)", "Taika 10.5kW (200kg)"],
           "Stones": ["According to selected heater"],
-          "Woodburning heaters": ["Tuli 16 (20kg)", "Tuli 20 (20kg)", "Pyros 16 (190kg)", "Pyros 20 (160kg)"],
+          "Woodburning heaters": ["Pyros 16 (190kg)", "Pyros 20 (160kg)"],
           "Lighting": ["2x or 4x 2.5m LED"],
           "Accessories": ["accessory set", "sauna scent set", "sauna hats"],
           "Installation": ["Wood treament exterior", "interior", "assembly", "electrical work"],
@@ -859,7 +859,7 @@ export default function ProductsManagementPage() {
                 <p className="text-sm text-gray-500 mb-4">ID: {product.id}</p>
                 <div className="flex gap-2">
                   <Link
-                    href={`/products/${product.slug}/configurator/rear-glass-wall`}
+                    href={`/products/${product.slug}`}
                     className="flex-1 px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900 text-center text-sm font-medium"
                   >
                     View Configurator

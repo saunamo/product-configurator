@@ -7,6 +7,7 @@ interface ProductImageProps {
   alt?: string;
   selectedOptionLabel?: string;
   isOptionImage?: boolean; // Whether this is an option image (vs main product image)
+  useContainScaling?: boolean; // Force object-contain for main images with portrait aspect ratio
 }
 
 export default function ProductImage({
@@ -14,6 +15,7 @@ export default function ProductImage({
   alt = "Sauna product",
   selectedOptionLabel,
   isOptionImage = false,
+  useContainScaling = false,
 }: ProductImageProps) {
   // Log image URL changes for debugging
   useEffect(() => {
@@ -34,17 +36,19 @@ export default function ProductImage({
     ? selectedOptionLabel.charAt(0).toUpperCase() + selectedOptionLabel.slice(1)
     : undefined;
 
-  // For option images, use object-contain to show the full image without cropping
-  // For main product images, use object-cover for a filled look
-  const objectFitClass = isOptionImage ? "object-contain" : "object-cover";
+  // For option images or portrait main images, use object-contain to show the full image without cropping
+  // For main product images (by default), use object-cover for a filled look
+  const shouldUseContain = isOptionImage || useContainScaling;
+  const objectFitClass = shouldUseContain ? "object-contain" : "object-cover";
   
-  // For option images, add a subtle gradient background and padding to make them look better
-  const backgroundClass = isOptionImage 
+  // For option images or portrait main images, add a subtle gradient background
+  const backgroundClass = shouldUseContain 
     ? "bg-gradient-to-br from-gray-50 to-gray-100" 
     : "bg-gray-100";
   
   // Add padding container for option images to give them breathing room
-  const containerClass = isOptionImage 
+  // For portrait main images using contain scaling, also add some padding for a cleaner look
+  const containerClass = shouldUseContain 
     ? "relative w-full aspect-video sm:aspect-square md:aspect-square lg:aspect-auto lg:h-[600px] rounded-lg overflow-hidden flex items-center justify-center p-4 sm:p-6 md:p-8"
     : "relative w-full aspect-video sm:aspect-square md:aspect-square lg:aspect-auto lg:h-[600px] rounded-lg overflow-hidden";
 
@@ -80,9 +84,9 @@ export default function ProductImage({
       <img
         src={cachedImageUrl}
         alt={alt}
-        className={`w-full h-full ${objectFitClass} ${isOptionImage ? 'max-w-full max-h-full' : ''}`}
-        style={isOptionImage ? {
-          // Ensure option images are centered and don't stretch
+        className={`w-full h-full ${objectFitClass} ${shouldUseContain ? 'max-w-full max-h-full' : ''}`}
+        style={shouldUseContain ? {
+          // Ensure images using contain scaling are centered and don't stretch
           objectPosition: 'center',
           maxWidth: '100%',
           maxHeight: '100%',

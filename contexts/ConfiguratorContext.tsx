@@ -30,6 +30,11 @@ export function ConfiguratorProvider({
     }));
   }, []);
 
+  // Clear all selections (used when switching products)
+  const clearAllSelections = useCallback(() => {
+    setState({ selections: {} });
+  }, []);
+
   const getSelection = useCallback(
     (stepId: StepId): string[] => {
       return state.selections[stepId] || [];
@@ -63,6 +68,7 @@ export function ConfiguratorProvider({
         updateSelection,
         getSelection,
         isStepComplete,
+        clearAllSelections,
       }}
     >
       {children}

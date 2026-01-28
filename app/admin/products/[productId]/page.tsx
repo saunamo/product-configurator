@@ -348,7 +348,7 @@ export default function ProductAdminPage() {
                 ← Back to Products
               </Link>
               <Link
-                  href={`/products/${product.slug}/configurator/rear-glass-wall`}
+                  href={`/products/${product.slug}`}
                 className="px-4 py-2 rounded-lg font-medium bg-green-800 text-white hover:bg-green-900 transition-colors"
               >
                 View Configurator

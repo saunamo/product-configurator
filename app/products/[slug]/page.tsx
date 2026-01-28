@@ -20,7 +20,7 @@ export default function ProductPage() {
     // Small delay to ensure localStorage is ready
     const timer = setTimeout(async () => {
       // Find the product by slug
-      const products = getAllProducts();
+      const products = await getAllProducts();
       console.log("🔍 Looking for product with slug:", slug);
       console.log("🔍 Available products:", products.map(p => ({ id: p.id, slug: p.slug, name: p.name })));
       

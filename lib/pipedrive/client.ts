@@ -286,7 +286,7 @@ export async function searchProducts(term: string, limit: number = 100) {
 /**
  * Add products to a deal
  * @param dealId The ID of the deal
- * @param products Array of products to add, each with product_id, item_price, and quantity
+ * @param products Array of products to add, each with product_id, item_price, quantity, and optional tax
  */
 export async function addProductsToDeal(
   dealId: number,
@@ -294,6 +294,8 @@ export async function addProductsToDeal(
     product_id: number;
     item_price: number;
     quantity: number;
+    tax?: number; // Tax percentage (e.g., 20 for 20% VAT)
+    comments?: string;
   }>
 ) {
   // Pipedrive API endpoint for adding products to a deal
@@ -301,12 +303,31 @@ export async function addProductsToDeal(
   // The endpoint format is: POST /deals/{id}/products
   // For bulk add, we can send multiple products in one request
   const results = await Promise.all(
-    products.map((product) =>
-      pipedriveRequest<{ data: any }>(`/deals/${dealId}/products`, {
+    products.map((product) => {
+      // Build the payload, only including fields that have values
+      const payload: Record<string, any> = {
+        product_id: product.product_id,
+        item_price: product.item_price,
+        quantity: product.quantity,
+      };
+      
+      // Add tax if provided (Pipedrive expects percentage, e.g., 20 for 20%)
+      if (product.tax !== undefined && product.tax > 0) {
+        payload.tax = product.tax;
+      }
+      
+      // Add comments if provided
+      if (product.comments) {
+        payload.comments = product.comments;
+      }
+      
+      console.log(`[Pipedrive] Adding product ${product.product_id} to deal ${dealId}:`, payload);
+      
+      return pipedriveRequest<{ data: any }>(`/deals/${dealId}/products`, {
         method: "POST",
-        body: JSON.stringify(product),
-      })
-    )
+        body: JSON.stringify(payload),
+      });
+    })
   );
   
   return { data: results };

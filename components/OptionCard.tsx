@@ -59,46 +59,66 @@ export default function OptionCard({
     // Try multiple key formats to handle different option ID formats
     // Option IDs might be: "glass-half-moon", "rear-glass-wall-glass-half-moon", "rear-glass-wall-half-moon-glass-backwall", etc.
     const baseOptionId = option.id.replace(/^rear-glass-wall-/, ''); // Remove step prefix if present
+    const titleLower = option.title.toLowerCase();
+    const idLower = option.id.toLowerCase();
+    
+    // Determine what type of option this is
+    const isHalfMoon = idLower.includes('half-moon') || titleLower.includes('half moon') || titleLower.includes('half-moon');
+    const isWoodenBackwall = idLower.includes('wooden') || titleLower.includes('wooden');
+    const isFullGlass = idLower.includes('full-glass') || idLower.includes('full glass') || titleLower.includes('full glass');
+    
     // Also try to normalize common variations
     const normalizedId = baseOptionId
       .replace(/half-moon-glass-backwall/gi, 'glass-half-moon')
       .replace(/half-moon/gi, 'glass-half-moon')
       .replace(/glass-half-moon-glass-backwall/gi, 'glass-half-moon');
     
-    // Try multiple key formats
+    // Try multiple key formats - but ONLY use specific fallbacks for matching option types
     const key1 = `${productType}_${normalizedId}`; // Normalized ID
     const key2 = `${productType}_${baseOptionId}`; // ID without step prefix
     const key3 = `${productType}_${option.id}`; // Full ID with step prefix
-    const key4 = `${productType}_glass-half-moon`; // Direct match for half-moon
-    const key5 = `${productType}_wooden-backwall`; // Direct match for wooden
+    // Only use specific fallback keys for matching option types to prevent cross-contamination
+    const key4 = isHalfMoon ? `${productType}_glass-half-moon` : null; // Only for half-moon options
+    const key5 = isWoodenBackwall ? `${productType}_wooden-backwall` : null; // Only for wooden options
+    const key6 = isFullGlass ? `${productType}_full-glass-backwall` : null; // Only for full glass options
     
-    // Try all key formats
-    const includedValue = config?.globalSettings?.optionIncluded?.[key1] ?? 
-                         config?.globalSettings?.optionIncluded?.[key2] ??
-                         config?.globalSettings?.optionIncluded?.[key3] ??
-                         config?.globalSettings?.optionIncluded?.[key4] ??
-                         config?.globalSettings?.optionIncluded?.[key5];
+    // Try all key formats - but only defined keys
+    let includedValue = config?.globalSettings?.optionIncluded?.[key1] ?? 
+                       config?.globalSettings?.optionIncluded?.[key2] ??
+                       config?.globalSettings?.optionIncluded?.[key3];
+    if (includedValue === undefined && key4) {
+      includedValue = config?.globalSettings?.optionIncluded?.[key4];
+    }
+    if (includedValue === undefined && key5) {
+      includedValue = config?.globalSettings?.optionIncluded?.[key5];
+    }
+    if (includedValue === undefined && key6) {
+      includedValue = config?.globalSettings?.optionIncluded?.[key6];
+    }
     // Explicitly check for true - if undefined or false, treat as not included
     isIncluded = includedValue === true;
+    
     pipedriveProductId = config?.globalSettings?.optionPipedriveProducts?.[key1] ??
                         config?.globalSettings?.optionPipedriveProducts?.[key2] ??
-                        config?.globalSettings?.optionPipedriveProducts?.[key3] ??
-                        config?.globalSettings?.optionPipedriveProducts?.[key4] ??
-                        config?.globalSettings?.optionPipedriveProducts?.[key5];
+                        config?.globalSettings?.optionPipedriveProducts?.[key3];
+    if (pipedriveProductId === undefined && key4) {
+      pipedriveProductId = config?.globalSettings?.optionPipedriveProducts?.[key4];
+    }
+    if (pipedriveProductId === undefined && key5) {
+      pipedriveProductId = config?.globalSettings?.optionPipedriveProducts?.[key5];
+    }
+    if (pipedriveProductId === undefined && key6) {
+      pipedriveProductId = config?.globalSettings?.optionPipedriveProducts?.[key6];
+    }
     
     // Debug logging
     if (process.env.NODE_ENV === 'development') {
-      // Also try alternative keys in case option ID format is different
-      const altKey1 = `${productType}_${option.id.replace('rear-glass-wall-', '')}`;
-      const altKey2 = option.id.replace('rear-glass-wall-', '');
-      const altIncluded1 = config?.globalSettings?.optionIncluded?.[altKey1];
-      const altPipedrive1 = config?.globalSettings?.optionPipedriveProducts?.[altKey1];
-      
       console.log(`[OptionCard] Rear Glass Wall - ${productType} - ${option.id}:`, {
         optionId: option.id,
         baseOptionId,
         normalizedId,
-        keysTried: [key1, key2, key3, key4, key5],
+        optionType: { isHalfMoon, isWoodenBackwall, isFullGlass },
+        keysTried: [key1, key2, key3, key4, key5, key6].filter(k => k !== null),
         includedValue,
         isIncluded,
         pipedriveProductId,

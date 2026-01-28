@@ -41,5 +41,6 @@ export type ConfiguratorContextType = {
   updateSelection: (stepId: StepId, optionIds: string[]) => void;
   getSelection: (stepId: StepId) => string[];
   isStepComplete: (stepId: StepId, stepData: StepData) => boolean;
+  clearAllSelections: () => void;
 };
 

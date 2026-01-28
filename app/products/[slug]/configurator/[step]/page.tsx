@@ -146,8 +146,23 @@ export default function ProductConfiguratorStepPage() {
     };
   }, [productSlug]);
   
-  const { getSelection, updateSelection, isStepComplete, state } = useConfigurator();
+  const { getSelection, updateSelection, isStepComplete, state, clearAllSelections } = useConfigurator();
   const { config: adminConfig } = useAdminConfig();
+  
+  // Clear selections when switching products to ensure main product image shows on first step
+  // Also clear on initial load to ensure no stale selections from previous products
+  const previousProductSlug = useRef<string | null>(null);
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    // Clear on first load OR when product actually changes
+    if (!hasInitialized.current || (previousProductSlug.current !== null && previousProductSlug.current !== productSlug)) {
+      console.log(`🔄 Product ${!hasInitialized.current ? 'initial load' : 'changed'} (from ${previousProductSlug.current} to ${productSlug}), clearing selections and selected option image`);
+      clearAllSelections();
+      setSelectedOptionImageUrl(undefined); // Also clear selected option image
+      hasInitialized.current = true;
+    }
+    previousProductSlug.current = productSlug;
+  }, [productSlug, clearAllSelections]);
   
   // Get stepData with product-specific image updates - use useMemo to ensure React tracks changes
   const stepData = useMemo(() => {
@@ -162,6 +177,16 @@ export default function ProductConfiguratorStepPage() {
     let baseStepData = configStepData || adminStepData || defaultStepData;
     
     if (!baseStepData) return null;
+    
+    // Apply admin step title if it exists (admin title should override product-specific title)
+    // This ensures changes in the admin panel's Steps tab are reflected
+    if (adminStepData?.title && adminStepData.title !== baseStepData.title) {
+      console.log(`📝 Applying admin step title for ${step}: "${adminStepData.title}" (was: "${baseStepData.title}")`);
+      baseStepData = {
+        ...baseStepData,
+        title: adminStepData.title,
+      };
+    }
     
     // For Cube 125, ensure rear-glass-wall step is single select
     if (step === "rear-glass-wall" && config) {
@@ -379,11 +404,17 @@ export default function ProductConfiguratorStepPage() {
           
           if (isHalfMoon) {
             if (isCube) {
-              console.log(`🖼️ useMemo: ✅ Setting cube half-moon image for option "${option.title}": /cube-back-moon.jpg`);
-              return { ...option, imageUrl: "/cube-back-moon.jpg" };
+              // Check admin config for cube half-moon image first
+              const adminCubeHalfMoonImage = adminConfig?.globalSettings?.optionImages?.["cube_glass-half-moon"];
+              const cubeHalfMoonImage = adminCubeHalfMoonImage || "/cube-back-moon.jpg";
+              console.log(`🖼️ useMemo: ✅ Setting cube half-moon image for option "${option.title}": ${cubeHalfMoonImage} (admin: ${adminCubeHalfMoonImage || 'none'})`);
+              return { ...option, imageUrl: cubeHalfMoonImage };
             } else if (isBarrel) {
-              console.log(`🖼️ useMemo: ✅ Setting barrel half-moon image for option "${option.title}": /barrel-half-moon.png`);
-              return { ...option, imageUrl: "/barrel-half-moon.png" };
+              // Check admin config for barrel half-moon image first
+              const adminBarrelHalfMoonImage = adminConfig?.globalSettings?.optionImages?.["barrel_glass-half-moon"];
+              const barrelHalfMoonImage = adminBarrelHalfMoonImage || "/barrel-half-moon.png";
+              console.log(`🖼️ useMemo: ✅ Setting barrel half-moon image for option "${option.title}": ${barrelHalfMoonImage} (admin: ${adminBarrelHalfMoonImage || 'none'})`);
+              return { ...option, imageUrl: barrelHalfMoonImage };
             }
           }
           
@@ -394,11 +425,17 @@ export default function ProductConfiguratorStepPage() {
           
           if (isWoodenBackwall) {
             if (isCube) {
-              console.log(`🖼️ useMemo: ✅ Setting cube wooden backwall image: /cube-full-back-wall.jpg`);
-              return { ...option, imageUrl: "/cube-full-back-wall.jpg" };
+              // Check admin config for cube wooden backwall image first
+              const adminCubeWoodenImage = adminConfig?.globalSettings?.optionImages?.["cube_wooden-backwall"];
+              const cubeWoodenImage = adminCubeWoodenImage || "/cube-full-back-wall.jpg";
+              console.log(`🖼️ useMemo: ✅ Setting cube wooden backwall image: ${cubeWoodenImage} (admin: ${adminCubeWoodenImage || 'none'})`);
+              return { ...option, imageUrl: cubeWoodenImage };
             } else if (isBarrel) {
-              console.log(`🖼️ useMemo: ✅ Setting barrel wooden backwall image: /barrel-full-back-wall.png`);
-              return { ...option, imageUrl: "/barrel-full-back-wall.png" };
+              // Check admin config for barrel wooden backwall image first
+              const adminBarrelWoodenImage = adminConfig?.globalSettings?.optionImages?.["barrel_wooden-backwall"];
+              const barrelWoodenImage = adminBarrelWoodenImage || "/barrel-full-back-wall.png";
+              console.log(`🖼️ useMemo: ✅ Setting barrel wooden backwall image: ${barrelWoodenImage} (admin: ${adminBarrelWoodenImage || 'none'})`);
+              return { ...option, imageUrl: barrelWoodenImage };
             }
           }
           
@@ -408,14 +445,20 @@ export default function ProductConfiguratorStepPage() {
                                        (optionTitleLower.includes("backwall") || optionTitleLower.includes("back wall")));
           
           if (isFullGlassBackwall && isBarrel) {
-            console.log(`🖼️ useMemo: ✅ Setting barrel full glass backwall image: /barrel-full-glass-wall.png`);
-            return { ...option, imageUrl: "/barrel-full-glass-wall.png" };
+            // Check admin config for barrel full glass backwall image first
+            const adminBarrelFullGlassImage = adminConfig?.globalSettings?.optionImages?.["barrel_full-glass-backwall"];
+            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+            console.log(`🖼️ useMemo: ✅ Setting barrel full glass backwall image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
+            return { ...option, imageUrl: barrelFullGlassImage };
           }
           
           // Also handle standard glass wall for barrel (might be used as full glass)
           if (option.id === "glass-standard" && isBarrel) {
-            console.log(`🖼️ useMemo: ✅ Setting barrel standard glass image: /barrel-full-glass-wall.png`);
-            return { ...option, imageUrl: "/barrel-full-glass-wall.png" };
+            // Check admin config for barrel full glass backwall image first
+            const adminBarrelFullGlassImage = adminConfig?.globalSettings?.optionImages?.["barrel_full-glass-backwall"];
+            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+            console.log(`🖼️ useMemo: ✅ Setting barrel standard glass image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
+            return { ...option, imageUrl: barrelFullGlassImage };
           }
           
           return option;
@@ -571,20 +614,35 @@ export default function ProductConfiguratorStepPage() {
           setSelectedOptionImageUrl(undefined);
         }
       } else {
-        // For heater step, show first heater option's image if no selection
-        if (step === "heater" && stepData.options.length > 0) {
-          // Filter out stone options to get only heaters
-          const heaterOptions = stepData.options.filter(opt => {
-            const idLower = opt.id.toLowerCase();
-            const titleLower = opt.title.toLowerCase();
-            return !(idLower.includes("heater-stone") || 
-                    idLower.includes("stone") ||
-                    titleLower.includes("according to"));
-          });
-          if (heaterOptions.length > 0 && heaterOptions[0].imageUrl) {
-            setSelectedOptionImageUrl(heaterOptions[0].imageUrl);
-          } else {
+        // For heater step on products that DON'T have rear-glass-wall (Hiki/Aisti),
+        // show the main product image instead of auto-selecting first heater's image
+        // This ensures the product image shows when the configurator first opens
+        if (step === "heater" && config) {
+          const productName = config.productName || "";
+          const slugLower = productSlug.toLowerCase();
+          const nameLower = productName.toLowerCase();
+          const isHikiOrAisti = slugLower.includes("hiki") || 
+                                slugLower.includes("aisti") ||
+                                nameLower.includes("hiki") ||
+                                nameLower.includes("aisti");
+          
+          if (isHikiOrAisti) {
+            // For Hiki/Aisti, show main product image (don't auto-select heater image)
             setSelectedOptionImageUrl(undefined);
+          } else {
+            // For other products (Cube, Barrel), auto-select first heater image
+            const heaterOptions = stepData.options.filter(opt => {
+              const idLower = opt.id.toLowerCase();
+              const titleLower = opt.title.toLowerCase();
+              return !(idLower.includes("heater-stone") || 
+                      idLower.includes("stone") ||
+                      titleLower.includes("according to"));
+            });
+            if (heaterOptions.length > 0 && heaterOptions[0].imageUrl) {
+              setSelectedOptionImageUrl(heaterOptions[0].imageUrl);
+            } else {
+              setSelectedOptionImageUrl(undefined);
+            }
           }
         } else {
           setSelectedOptionImageUrl(undefined);
@@ -871,17 +929,28 @@ export default function ProductConfiguratorStepPage() {
       
       if (isHeaterOption) {
         // Heater selection: single select - only one heater can be selected
-        // Keep existing stone selections, replace heater selection
+        // Keep existing stone selections, replace/toggle heater selection
         const currentStones = selectedIds.filter(id => {
           const opt = heaterStepData.options.find(o => o.id === id);
           return opt && isStoneOption(id, opt.title);
         });
-        updateSelection(stepData.stepId, [optionId, ...currentStones]);
         
-        // Update image
-        const selectedOption = stepData.options.find(opt => opt.id === optionId);
-        if (selectedOption?.imageUrl) {
-          setSelectedOptionImageUrl(selectedOption.imageUrl);
+        // Check if this heater is already selected - if so, deselect it
+        const isCurrentlySelected = selectedIds.includes(optionId);
+        if (isCurrentlySelected) {
+          // Deselect the heater, keep only stones
+          updateSelection(stepData.stepId, [...currentStones]);
+          // Clear the selected option image or show step image
+          setSelectedOptionImageUrl(undefined);
+        } else {
+          // Select this heater (replaces any previously selected heater)
+          updateSelection(stepData.stepId, [optionId, ...currentStones]);
+          
+          // Update image
+          const selectedOption = stepData.options.find(opt => opt.id === optionId);
+          if (selectedOption?.imageUrl) {
+            setSelectedOptionImageUrl(selectedOption.imageUrl);
+          }
         }
       } else if (isStone) {
         // Stone selection: can be toggled independently
@@ -1029,68 +1098,127 @@ export default function ProductConfiguratorStepPage() {
       selectedOptionImageUrl={selectedOptionImageUrl}
       selectedOptionTitle={selectedOptionTitle}
     >
-      {/* For heater step, split into two sections: heaters and heater stones */}
+      {/* For heater step, split into sections: Electric Heaters, Woodburning Heaters, and Heater Stones */}
       {step === "heater" ? (
         <>
-          {/* Heater Options Section */}
-          <OptionSection
-            title={stepData.title}
-            description={stepData.description}
-            subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
-            subtext={stepData.subtext}
-            moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
-              ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
-              : undefined}
-          >
-            {stepData.options
-              .filter(option => {
-                // Check option ID first (most reliable - doesn't change with global settings)
-                const idLower = option.id.toLowerCase();
-                const isStoneById = idLower.includes("heater-stone") || 
-                                   idLower.includes("stone") ||
-                                   idLower.includes("heaterstone");
-                
-                // Also check title as fallback (but this can be overridden by global settings)
-                const titleLower = option.title.toLowerCase();
-                const isStoneByTitle = titleLower.includes("according to") ||
-                                      titleLower.includes("heater stone") ||
-                                      titleLower.includes("heaterstone");
-                
-                // Exclude stone options from heater section
-                return !isStoneById && !isStoneByTitle;
-              })
-              .map((option) => {
-                // Determine product type for rear-glass-wall step
-                const productName = config?.productName || "";
-                const productId = config?.productId || "";
-                const isCube = productSlug.toLowerCase().includes("cube") || 
-                               productName.toLowerCase().includes("cube") ||
-                               productId.toLowerCase().includes("cube");
-                const isBarrel = productSlug.toLowerCase().includes("barrel") || 
-                                productName.toLowerCase().includes("barrel") ||
-                                productId.toLowerCase().includes("barrel");
-                const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
-                
-                return (
-                  <OptionCard
-                    key={option.id}
-                    option={option}
-                    isSelected={selectedIds.includes(option.id)}
-                    selectionType="single"
-                    onToggle={() => handleToggle(option.id)}
-                    stepId={step}
-                    productType={productType}
-                  />
-                );
-              })}
-          </OptionSection>
+          {/* Electric Heaters Section */}
+          {stepData.options.filter(option => {
+            const idLower = option.id.toLowerCase();
+            const titleLower = option.title.toLowerCase();
+            const isStone = idLower.includes("stone") || titleLower.includes("stone") || titleLower.includes("according to");
+            if (isStone) return false;
+            const isElectric = idLower.includes("aava") || 
+                              idLower.includes("saunum") ||
+                              titleLower.includes("aava") ||
+                              titleLower.includes("saunum") ||
+                              titleLower.includes("kw");
+            return isElectric;
+          }).length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-gray-900">Electric Heaters</h3>
+              <div className="space-y-3">
+                {stepData.options
+                  .filter(option => {
+                    const idLower = option.id.toLowerCase();
+                    const titleLower = option.title.toLowerCase();
+                    const isStone = idLower.includes("stone") || titleLower.includes("stone") || titleLower.includes("according to");
+                    if (isStone) return false;
+                    const isElectric = idLower.includes("aava") || 
+                                      idLower.includes("saunum") ||
+                                      titleLower.includes("aava") ||
+                                      titleLower.includes("saunum") ||
+                                      titleLower.includes("kw");
+                    return isElectric;
+                  })
+                  .map((option) => {
+                    const productName = config?.productName || "";
+                    const productId = config?.productId || "";
+                    const isCube = productSlug.toLowerCase().includes("cube") || 
+                                   productName.toLowerCase().includes("cube") ||
+                                   productId.toLowerCase().includes("cube");
+                    const isBarrel = productSlug.toLowerCase().includes("barrel") || 
+                                    productName.toLowerCase().includes("barrel") ||
+                                    productId.toLowerCase().includes("barrel");
+                    const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
+                    
+                    return (
+                      <OptionCard
+                        key={option.id}
+                        option={option}
+                        isSelected={selectedIds.includes(option.id)}
+                        selectionType="single"
+                        onToggle={() => handleToggle(option.id)}
+                        stepId={step}
+                        productType={productType}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+          
+          {/* Woodburning Heaters Section */}
+          {stepData.options.filter(option => {
+            const idLower = option.id.toLowerCase();
+            const titleLower = option.title.toLowerCase();
+            const isStone = idLower.includes("stone") || titleLower.includes("stone") || titleLower.includes("according to");
+            if (isStone) return false;
+            const isWoodburning = idLower.includes("tuli") || 
+                                 idLower.includes("pyros") ||
+                                 idLower.includes("noki") ||
+                                 titleLower.includes("tuli") ||
+                                 titleLower.includes("pyros") ||
+                                 titleLower.includes("noki");
+            return isWoodburning;
+          }).length > 0 && (
+            <div className="space-y-4 mt-8">
+              <h3 className="text-xl font-bold text-gray-900">Woodburning Heaters</h3>
+              <div className="space-y-3">
+                {stepData.options
+                  .filter(option => {
+                    const idLower = option.id.toLowerCase();
+                    const titleLower = option.title.toLowerCase();
+                    const isStone = idLower.includes("stone") || titleLower.includes("stone") || titleLower.includes("according to");
+                    if (isStone) return false;
+                    const isWoodburning = idLower.includes("tuli") || 
+                                         idLower.includes("pyros") ||
+                                         idLower.includes("noki") ||
+                                         titleLower.includes("tuli") ||
+                                         titleLower.includes("pyros") ||
+                                         titleLower.includes("noki");
+                    return isWoodburning;
+                  })
+                  .map((option) => {
+                    const productName = config?.productName || "";
+                    const productId = config?.productId || "";
+                    const isCube = productSlug.toLowerCase().includes("cube") || 
+                                   productName.toLowerCase().includes("cube") ||
+                                   productId.toLowerCase().includes("cube");
+                    const isBarrel = productSlug.toLowerCase().includes("barrel") || 
+                                    productName.toLowerCase().includes("barrel") ||
+                                    productId.toLowerCase().includes("barrel");
+                    const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
+                    
+                    return (
+                      <OptionCard
+                        key={option.id}
+                        option={option}
+                        isSelected={selectedIds.includes(option.id)}
+                        selectionType="single"
+                        onToggle={() => handleToggle(option.id)}
+                        stepId={step}
+                        productType={productType}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
+          )}
           
           {/* Heater Stones Section */}
-          <div className="mt-16">
-            <OptionSection
-              title="Heater Stones"
-              showMoreInfo={false}
-            >
+          <div className="space-y-4 mt-8">
+            <h3 className="text-xl font-bold text-gray-900">Heater Stones</h3>
+            <div className="space-y-3">
             {stepData.options
               .filter(option => {
                 // Check option ID first (most reliable - doesn't change with global settings)
@@ -1185,7 +1313,7 @@ export default function ProductConfiguratorStepPage() {
                   />
                 );
               })}
-            </OptionSection>
+            </div>
           </div>
         </>
       ) : (

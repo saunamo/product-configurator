@@ -314,13 +314,6 @@
           "imageUrl": "/images/1769072768893-pvbso478r5.webp",
           "price": 0,
           "pipedriveProductId": 18161
-        },
-        {
-          "id": "heater-tuli-16-20kg",
-          "title": "Tuli 16 (20kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
         }
       ],
       "selectionType": "multi",

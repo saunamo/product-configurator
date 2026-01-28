@@ -293,20 +293,6 @@
           "pipedriveProductId": 17944
         },
         {
-          "id": "heater-tuli-16-20kg",
-          "title": "Tuli 16 (20kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        },
-        {
-          "id": "heater-tuli-20-20kg",
-          "title": "Tuli 20 (20kg)",
-          "description": "",
-          "imageUrl": "",
-          "price": 0
-        },
-        {
           "id": "heater-pyros-16-190kg",
           "title": "Pyros 16 (190kg)",
           "description": "",
