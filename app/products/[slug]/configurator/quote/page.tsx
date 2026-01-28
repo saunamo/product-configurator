@@ -129,24 +129,13 @@ export default function ProductQuotePage() {
     };
   }, [productSlug]);
 
-  // Check if user has made any selections
+  // Check if user has made any selections (used for display purposes, not for redirecting)
   const hasSelections = Object.values(state.selections).some(
     (selections) => selections && selections.length > 0
   );
 
-  useEffect(() => {
-    if (!hasSelections) {
-      // Get first available step (filter out rear-glass-wall for Hiki/Aisti)
-      const isHikiOrAisti = productSlug.toLowerCase().includes("hiki") || 
-                            productSlug.toLowerCase().includes("aisti");
-      const availableSteps = config?.steps?.filter(s => {
-        if (isHikiOrAisti && s.id === "rear-glass-wall") return false;
-        return true;
-      }) || [];
-      const firstStep = availableSteps[0] || config?.steps?.[0];
-      router.push(`/products/${productSlug}/configurator/${firstStep?.id || "heater"}`);
-    }
-  }, [hasSelections, router, productSlug, config]);
+  // Note: We no longer redirect if there are no selections.
+  // Users should be able to proceed to the quote page without mandatory options.
 
   // Calculate current total from selections
   const calculateTotal = () => {
