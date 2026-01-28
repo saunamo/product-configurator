@@ -5,6 +5,22 @@ import { useAdminConfig } from "@/contexts/AdminConfigContext";
 import { capitalize } from "@/utils/capitalize";
 import { useState, useEffect } from "react";
 
+// Extended descriptions for cold plunge and hot tub products
+const EXTENDED_DESCRIPTIONS: Record<string, string> = {
+  // Cold Plunge
+  "cold-plunge-ice-bath-ergo": `<p>The Ergo Ice Bath is designed for effective cold-water immersion, offering a reliable solution for recovery and contrast therapy. With an external cooling system, it maintains stable water temperatures year-round, making it the ideal cold plunge alongside sauna sessions or on its own.</p><p>Finished in thermally modified pine with a watertight fiberglass interior, Ergo ice bath combines durability with comfort. An integrated seat, insulated cover, and easy access step complete a compact and efficient cold plunge suited for athletes and everyday wellness routines.</p>`,
+  "cold-plunge-ice-bath-cube": `<p>The Cube Ice Bath is a minimalist cold plunge for contrast therapy and cold immersion, designed to integrate seamlessly into homes, spas, and training spaces. An external cooling system in a Thermowood box maintains stable water temperature year-round, while the insulated cover improves efficiency.</p><p>Finished in Thermowood with a durable fiberglass interior, it offers a reliable solution for recovery and daily wellness.</p>`,
+  "cold-plunge-ice-bath-ofuro": `<p>The Ofuro Ice Bath is a two-person cold plunge designed for shared recovery and contrast therapy, allowing simultaneous use while maintaining a stable water temperature. With an 800-liter capacity and a high-performance external chiller, it supports year-round cold immersion.</p><p>The smooth fiberglass interior ensures comfort and easy maintenance, while its clean, modern design integrates seamlessly into gardens, terraces, gyms, and spa environments.</p>`,
+  
+  // Hot Tubs
+  "hot-tubs-hot-tub-vellamo-l": `<p>The Vellamo L outdoor hot tub is a premium Finnish-made whirlpool designed for up to 6 people. Featuring a minimalist Nordic design, scratch-resistant white acrylic, and high-performance insulation, it delivers year-round comfort with low energy consumption.</p><p>Equipped with 28 Balboa hydrotherapy jets, ambient LED lighting, and a Balboa 2 kW heater, the Vellamo L ensures a refined hydrotherapy experience. The Balboa control system with app-based remote control allows easy management of temperature and functions, while the insulated EPS cover enhances efficiency and heat retention.</p>`,
+  "hot-tubs-hot-tub-vellamo-m": `<p>The Vellamo M is a Finnish-made outdoor hot tub designed for up to 5 people, combining minimalist design with durable, high-quality materials. Built with scratch-resistant white acrylic, fiberglass reinforcement, and PIR thermal insulation, it delivers year-round comfort with low energy consumption.</p><p>Fully equipped as standard, it features 29 Balboa hydromassage jets, a 2 HP dual-speed pump, ambient LED lighting, a 2 kW Balboa heater, and an integrated UV-Sanitation system for continuous water hygiene. An insulated EPS cover ensures efficient heat retention and everyday ease of use.</p>`,
+  "hot-tubs-hot-tub-vellamo-s": `<p>The Vellamo S outdoor hot tub is a compact, high-performance whirlpool manufactured in Finland, designed to meet the highest European quality standards. Created for up to 3 people, it combines a minimalist Nordic aesthetic with advanced engineering, making it ideal for balconies, patios, terraces, and gardens.</p><p>The interior is made from scratch-resistant white acrylic, reinforced with fiberglass and supported by a thermoformed ABS base, ensuring durability and long-term structural stability. Thanks to its 30 mm PIR thermal insulation on the sides and base, the Vellamo S maintains stable water temperatures throughout the year while keeping energy consumption low.</p><p>This hot tub is fully equipped as standard, featuring 25 Balboa Venice 2″ directional hydrotherapy jets, a 2 HP dual-speed massage pump, ambient LED lighting along the waterline, and an integrated UV-Sanitation system that keeps the water continuously clean and hygienic. A Balboa 2 kW heater and Balboa BP200 control system with TP500 panel ensure precise temperature regulation, while the insulated EPS cover further enhances heat retention and efficiency.</p>`,
+  "hot-tubs-hot-tub-cube-200": `<p>The Cube 200 outdoor hot tub is a square-format hot tub designed to deliver a complete outdoor hydrotherapy experience with a clean, contemporary aesthetic. Its cubic design integrates seamlessly into modern gardens, terraces, and leisure spaces, combining comfort, efficiency, and sustainability in a refined, architectural form.</p><p>The hot tub includes an integrated hydrotherapy bubble system, ambient LED lighting, and a complete water filtration system, ensuring comfort, hygiene, and ease of use from the very first session.</p><p>The Cube 200 is equipped as standard with a wood-fired stainless steel heater (AISI 304-CE certified) and a 2-meter chimney with protective guard, providing fast, safe, and reliable heating. For added flexibility, the hot tub is also available with an optional electric heater, allowing it to adapt to different installation requirements. Built with a robust thermopine structure and a durable fiberglass tub, it offers long-lasting performance and a smooth, comfortable bathing surface.</p>`,
+  "hot-tubs-hot-tub-therma-200": `<p>The Saunamo Therma 200 outdoor hot tub, with a 200 cm diameter and capacity for up to 4 people, is crafted from durable Thermowood to deliver an authentic hot bathing experience in outdoor environments. Designed for relaxation and longevity, it includes an integrated hydrotherapy bubble system, ambient LED lighting, and a complete water treatment solution with sand filtration and UV disinfection, ensuring comfort, hygiene, and ease of use from the very first soak.</p><p>The Therma 200 is equipped as standard with an efficient wood-fired heater, providing natural and even heating in an eco-conscious way. For added flexibility, the hot tub is also available with an optional 3 kW electric heater, allowing it to adapt to different installation requirements and usage preferences.</p>`,
+  "hot-tubs-hot-tub-therma-220": `<p>The Saunamo Therma 220 outdoor hot tub is crafted from durable Thermowood to deliver a spacious and refined hot bathing experience in outdoor environments. Designed for relaxation and longevity, it includes an integrated hydrotherapy bubble system, ambient LED lighting, and a complete water treatment solution with sand filtration and UV disinfection, ensuring comfort, hygiene, and ease of use from the very first soak.</p><p>The Therma 220 is equipped as standard with an efficient wood-fired heater, providing natural, even heating in an eco-conscious way. For added flexibility, the hot tub is also available with an optional 3 kW electric heater, making it suitable for a wider range of installation requirements and usage preferences. Integrated rectangular steps ensure safe and comfortable access, while the larger internal diameter allows for up to 6 people to bathe at the same time.</p>`,
+};
+
 interface OptionCardProps {
   option: Option;
   isSelected: boolean;
@@ -114,6 +130,10 @@ export default function OptionCard({
   const [pipedrivePrice, setPipedrivePrice] = useState<number | null>(null);
   const [isLoadingPrice, setIsLoadingPrice] = useState(false);
   const [lightingCalculatedPrice, setLightingCalculatedPrice] = useState<number | null>(null);
+  
+  // Expandable description state
+  const [isExpanded, setIsExpanded] = useState(false);
+  const extendedDescription = EXTENDED_DESCRIPTIONS[option.id] || option.extendedDescription;
   
   // Calculate lighting price based on multiplier
   useEffect(() => {
@@ -265,6 +285,47 @@ export default function OptionCard({
           <p className="text-sm text-gray-600 mb-2">
             {option.description}
           </p>
+        )}
+        
+        {/* Expandable Extended Description */}
+        {extendedDescription && (
+          <div className="mb-2">
+            {isExpanded && (
+              <div 
+                className="text-sm text-gray-700 mb-3 space-y-3 bg-gray-50 p-3 rounded-lg border border-gray-200"
+                dangerouslySetInnerHTML={{ __html: extendedDescription }}
+                style={{ 
+                  lineHeight: '1.7',
+                }}
+              />
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              className="text-sm font-medium hover:underline transition-colors inline-flex items-center gap-1"
+              style={{ color: design?.accentColor || "#303337" }}
+            >
+              {isExpanded ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
+                  Show less
+                </>
+              ) : (
+                <>
+                  Read more
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
         )}
         {isIncluded && calculatedPrice === undefined ? (
           <p className="text-sm font-medium text-gray-500">Included</p>

@@ -1,0 +1,44 @@
+{
+  "id": "7916",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "items": [
+    {
+      "stepId": "main-product",
+      "stepName": "Sauna",
+      "optionId": "main-product",
+      "optionTitle": "Outdoor Sauna Cube 125",
+      "optionDescription": "Base product",
+      "price": 6458.33,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-kajo-66kw-80kg",
+      "optionTitle": "Kajo 6.6kW (80kg)",
+      "optionDescription": "",
+      "price": 875,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-according-to-selected-heater",
+      "optionTitle": "Heater stones (4 packages)",
+      "optionDescription": "",
+      "price": 29.5,
+      "quantity": 4,
+      "heaterStonesCalculatedPrice": 118,
+      "heaterStonesQuantity": 4
+    }
+  ],
+  "subtotal": 7451.33,
+  "tax": 1466.6660000000002,
+  "total": 8917.996,
+  "createdAt": "2026-01-27T16:29:46.570Z",
+  "expiresAt": "2026-02-26T16:29:46.570Z",
+  "notes": ""
+}

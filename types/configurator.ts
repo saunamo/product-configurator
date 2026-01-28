@@ -10,6 +10,7 @@ export type Option = {
   id: string;
   title: string;
   description: string;
+  extendedDescription?: string; // Extended description for "Read more" expansion
   imageUrl: string;
   price: number;
   // External price integration

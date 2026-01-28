@@ -1,0 +1,10 @@
+Backup created: Wed Jan 28 09:44:17 EET 2026
+Contents:
+total 48
+drwxr-xr-x@  7 work  staff    224 Jan 28 09:44 .
+drwxr-xr-x@  8 work  staff    256 Jan 28 09:44 ..
+-rw-r--r--@  1 work  staff     55 Jan 28 09:44 MANIFEST.txt
+-rw-r--r--@  1 work  staff  15591 Jan 28 09:44 admin-config.json
+drwxr-xr-x@ 11 work  staff    352 Jan 28 09:44 product-configs
+-rw-r--r--@  1 work  staff   2112 Jan 28 09:44 products.json
+drwxr-xr-x@ 12 work  staff    384 Jan 28 09:44 quotes

@@ -1,6 +1,6 @@
 {
-  "productId": "hiki-s",
-  "productName": "Outdoor Sauna Hiki S",
+  "productId": "aisti-150",
+  "productName": "Indoor Sauna Aisti 150",
   "steps": [
     {
       "id": "heater",
@@ -40,7 +40,7 @@
     {
       "id": "quote",
       "name": "Quote",
-      "route": "/products/hiki-s/configurator/quote"
+      "route": "/products/aisti-150/configurator/quote"
     }
   ],
   "stepData": {
@@ -108,15 +108,7 @@
       "description": "",
       "options": [
         {
-          "id": "electrical-assembly-wood-treament-exterior",
-          "title": "Wood treament exterior",
-          "description": "",
-          "imageUrl": "",
-          "price": 0,
-          "pipedriveProductId": 17839
-        },
-        {
-          "id": "electrical-assembly-interior",
+          "id": "electrical-assembly-wood-treament-interior",
           "title": "Wood treament interior",
           "description": "",
           "imageUrl": "",
@@ -250,28 +242,12 @@
           "pipedriveProductId": 18042
         },
         {
-          "id": "heater-kajo-66kw-80kg",
-          "title": "Kajo 6.6kW (80kg)",
-          "description": "",
-          "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
-          "price": 0,
-          "pipedriveProductId": 18063
-        },
-        {
           "id": "heater-according-to-selected-heater",
           "title": "Heater stones cccording to selected heaters size",
           "description": "",
           "imageUrl": "/images/1769163278618-j26ztxiz44g.webp",
           "price": 0,
           "pipedriveProductId": 17944
-        },
-        {
-          "id": "heater-noki-12-20kg",
-          "title": "Noki 12 (20kg)",
-          "description": "",
-          "imageUrl": "/images/1769072776224-5zan3e6f3x.webp",
-          "price": 0,
-          "pipedriveProductId": 18161
         }
       ],
       "selectionType": "multi",
@@ -341,6 +317,6 @@
     "notes": "",
     "footerText": "Thank you for your interest. For questions, please contact us at the information above."
   },
-  "mainProductImageUrl": "/images/1769585210201-x88qarxa4yl.jpg",
-  "mainProductPipedriveId": 16422
+  "mainProductImageUrl": "/indoor-sauna-aisti-150.webp",
+  "mainProductPipedriveId": 17973
 }

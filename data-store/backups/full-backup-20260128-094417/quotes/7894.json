@@ -1,0 +1,106 @@
+{
+  "id": "7894",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "customerName": "Ville",
+  "customerPhone": "343",
+  "items": [
+    {
+      "stepId": "main-product",
+      "stepName": "Sauna",
+      "optionId": "main-product",
+      "optionTitle": "Outdoor Sauna Cube 125",
+      "optionDescription": "Base product",
+      "price": 6458.33,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "rear-glass-wall",
+      "stepName": "Rear Wall Option",
+      "optionId": "rear-glass-wall-wooden-backwall",
+      "optionTitle": "Wooden backwall",
+      "optionDescription": "",
+      "price": 0,
+      "quantity": 1
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-aava-47kw-20kg",
+      "optionTitle": "Aava 4.7kW (20kg)",
+      "optionDescription": "",
+      "price": 495.83,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "lighting",
+      "stepName": "Lighting",
+      "optionId": "lighting-1x",
+      "optionTitle": "Behind Backrest (1x 2.5m LED)",
+      "optionDescription": "",
+      "price": 175,
+      "quantity": 1,
+      "vatRate": 0.2,
+      "lightingMultiplier": 1,
+      "baseLightingOptionId": "lighting-1x"
+    },
+    {
+      "stepId": "aromas-accessories",
+      "stepName": "Accessories",
+      "optionId": "aromas-accessories-accessory-set",
+      "optionTitle": "Accessory set",
+      "optionDescription": "",
+      "price": 57.91666667,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "electrical-assembly",
+      "stepName": "Installation",
+      "optionId": "electrical-assembly-wood-treament-exterior",
+      "optionTitle": "Wood treament exterior",
+      "optionDescription": "",
+      "price": 416.66,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "cold-plunge",
+      "stepName": "Cold Plunge",
+      "optionId": "cold-plunge-ice-bath-cube",
+      "optionTitle": "Ice bath Cube",
+      "optionDescription": "",
+      "price": 4791.67,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "hot-tubs",
+      "stepName": "Hot Tubs",
+      "optionId": "hot-tubs-hot-tub-cube-200",
+      "optionTitle": "Hot tub Cube 200",
+      "optionDescription": "",
+      "price": 5791.67,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "delivery",
+      "stepName": "Delivery",
+      "optionId": "delivery-standard",
+      "optionTitle": "Standard Delivery UK",
+      "optionDescription": "Curbside delivery within 2-3 weeks",
+      "price": 937.5,
+      "quantity": 1,
+      "vatRate": 0.2
+    }
+  ],
+  "subtotal": 19124.57666667,
+  "tax": 3824.915333334,
+  "total": 22949.492000004,
+  "createdAt": "2026-01-27T13:07:08.191Z",
+  "expiresAt": "2026-02-26T13:07:08.191Z",
+  "notes": "test"
+}
