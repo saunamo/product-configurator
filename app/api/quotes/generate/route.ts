@@ -182,6 +182,13 @@ export async function POST(request: NextRequest) {
         // Collect Pipedrive product IDs from quote items
         const pipedriveProductIds: Record<string, number> = {};
         
+        // IMPORTANT: Add main product Pipedrive ID first (for base product like Cube 125)
+        const productConfig = body.productConfig as any;
+        if (productConfig?.mainProductPipedriveId) {
+          pipedriveProductIds["main-product"] = productConfig.mainProductPipedriveId;
+          console.log("[Quote API] Added main product to deal products:", productConfig.mainProductPipedriveId);
+        }
+        
         if (adminConfig.priceSource === "pipedrive") {
           // Get Pipedrive product IDs from globalSettings (preferred) or option.pipedriveProductId (fallback)
           const globalSettings = (adminConfig as any).globalSettings;
@@ -202,6 +209,8 @@ export async function POST(request: NextRequest) {
             });
           });
         }
+        
+        console.log("[Quote API] Final pipedriveProductIds for deal:", Object.keys(pipedriveProductIds));
 
         const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
         pipedriveDealId = dealResult.dealId;

@@ -320,6 +320,7 @@ export default function ProductQuotePage() {
               imageUrl={productImageUrl}
               alt={`${productName} - Quote`}
               isOptionImage={false}
+              useContainScaling={true}
             />
           </div>
 
@@ -495,6 +496,7 @@ export default function ProductQuotePage() {
             imageUrl={productImageUrl}
             alt={`${productName} - Quote`}
             isOptionImage={false}
+            useContainScaling={true}
           />
         </div>
 
