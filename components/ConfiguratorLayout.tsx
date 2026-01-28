@@ -71,18 +71,14 @@ export default function ConfiguratorLayout({
   const isStepImage = !selectedOptionImageUrl && isValidImageUrl(stepData.imageUrl);
   const shouldUseOptionImageScaling = !!selectedOptionImageUrl || isStepImage;
   
-  // Products with portrait-oriented main images need contain scaling
-  // Aisti 150 has a 896x1200 (portrait) image that doesn't scale well with object-cover
-  const productsWithPortraitImages = ['aisti-150'];
-  const needsContainScalingForMainImage = productSlug ? productsWithPortraitImages.includes(productSlug) : false;
-  
-  // Use contain scaling for main product image if it's a portrait-oriented product
+  // Use contain scaling for main product image to show it fully without cropping
   // Only apply when showing the main product image (not option/step images)
   // The main product image is showing when:
   // 1. No option is selected (selectedOptionImageUrl is empty)
   // 2. No step image is being used (stepData.imageUrl is empty or we're on a step without a step image)
   const isShowingMainProductImage = !selectedOptionImageUrl && !isStepImage;
-  const useContainForMainImage = needsContainScalingForMainImage && isShowingMainProductImage;
+  // Always use contain scaling for main product images so they display fully
+  const useContainForMainImage = isShowingMainProductImage;
   
   // Find the selected option title for the image label
   // Use propSelectedOptionTitle if provided (preserves exact capitalization), otherwise find by imageUrl
