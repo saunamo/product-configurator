@@ -1,12 +1,7 @@
 {
-  "productId": "cube-125",
-  "productName": "Outdoor Sauna Cube 125",
+  "productId": "aisti-150",
+  "productName": "Indoor Sauna Aisti 150",
   "steps": [
-    {
-      "id": "rear-glass-wall",
-      "name": "Rear Wall",
-      "route": "rear-glass-wall"
-    },
     {
       "id": "heater",
       "name": "Heater",
@@ -34,7 +29,7 @@
     },
     {
       "id": "hot-tubs",
-      "name": "Delivery",
+      "name": "Cold Plunge",
       "route": "hot-tubs"
     },
     {
@@ -45,33 +40,10 @@
     {
       "id": "quote",
       "name": "Quote",
-      "route": "/products/cube-125/configurator/quote"
+      "route": "/products/aisti-150/configurator/quote"
     }
   ],
   "stepData": {
-    "rear-glass-wall": {
-      "stepId": "rear-glass-wall",
-      "title": "Rear Glass Wall",
-      "description": "",
-      "options": [
-        {
-          "id": "rear-glass-wall-wooden-backwall",
-          "title": "wooden backwall",
-          "description": "",
-          "imageUrl": "/cube-full-back-wall.jpg",
-          "price": 0
-        },
-        {
-          "id": "rear-glass-wall-half-moon-glass-backwall",
-          "title": "Half moon glass backwall",
-          "description": "",
-          "imageUrl": "/cube-back-moon.jpg",
-          "price": 0
-        }
-      ],
-      "selectionType": "multi",
-      "required": false
-    },
     "lighting": {
       "stepId": "lighting",
       "title": "Lighting",
@@ -136,15 +108,7 @@
       "description": "",
       "options": [
         {
-          "id": "electrical-assembly-wood-treament-exterior",
-          "title": "Wood treament exterior",
-          "description": "",
-          "imageUrl": "",
-          "price": 0,
-          "pipedriveProductId": 17839
-        },
-        {
-          "id": "electrical-assembly-interior",
+          "id": "electrical-assembly-wood-treament-interior",
           "title": "Wood treament interior",
           "description": "",
           "imageUrl": "",
@@ -278,16 +242,8 @@
           "pipedriveProductId": 18042
         },
         {
-          "id": "heater-kajo-66kw-80kg",
-          "title": "Kajo 6.6kW (80kg)",
-          "description": "",
-          "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
-          "price": 0,
-          "pipedriveProductId": 18063
-        },
-        {
           "id": "heater-according-to-selected-heater",
-          "title": "Heater stones",
+          "title": "Heater stones cccording to selected heaters size",
           "description": "",
           "imageUrl": "/images/1769163278618-j26ztxiz44g.webp",
           "price": 0,
@@ -361,6 +317,6 @@
     "notes": "",
     "footerText": "Thank you for your interest. For questions, please contact us at the information above."
   },
-  "mainProductImageUrl": "/images/1769579428390-1uzirxy25c5.png",
-  "mainProductPipedriveId": 17855
+  "mainProductImageUrl": "/indoor-sauna-aisti-150.webp",
+  "mainProductPipedriveId": 17973
 }

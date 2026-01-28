@@ -12,19 +12,28 @@ const DATA_DIR = join(process.cwd(), "data-store");
 const PRODUCTS_FILE = join(DATA_DIR, "products.json");
 const PRODUCT_CONFIGS_DIR = join(DATA_DIR, "product-configs");
 
-// More robust serverless detection
+// More robust serverless detection - MUST return false for localhost
 function isServerlessEnvironment(): boolean {
+  const cwd = process.cwd();
+  
+  // EXPLICITLY check for localhost/development first
+  // If we're NOT in /var/task and NOT on Netlify/Vercel, we're local
+  if (cwd.startsWith("/Users/") || cwd.startsWith("/home/")) {
+    console.log(`[Product Storage] Detected local dev (cwd: ${cwd})`);
+    return false;
+  }
+  
   if (process.env.NETLIFY === "true" || process.env.NETLIFY) return true;
   if (process.env.VERCEL === "1" || process.env.VERCEL) return true;
   if (process.env.AWS_LAMBDA_FUNCTION_NAME) return true;
   if (process.env.CONTEXT) return true; // Netlify sets this
-  if (process.cwd().startsWith("/var/task")) return true;
+  if (cwd.startsWith("/var/task")) return true;
   return false;
 }
 
 const isServerless = isServerlessEnvironment();
 
-console.log(`[Product Storage] Environment: isServerless=${isServerless}`);
+console.log(`[Product Storage] Environment: isServerless=${isServerless}, cwd=${process.cwd()}`);
 
 /**
  * Ensure data directory exists
@@ -131,7 +140,18 @@ async function getAllProductsFromBlobs(): Promise<Product[]> {
 async function saveProductConfigToFile(config: ProductConfig): Promise<void> {
   await ensureDataDir();
   const configFile = join(PRODUCT_CONFIGS_DIR, `${config.productId}.json`);
-  await writeFile(configFile, JSON.stringify(config, null, 2), "utf-8");
+  const jsonContent = JSON.stringify(config, null, 2);
+  
+  console.log(`📁 [File] Writing to: ${configFile}`);
+  console.log(`📁 [File] mainProductImageUrl: ${config.mainProductImageUrl}`);
+  
+  await writeFile(configFile, jsonContent, "utf-8");
+  
+  // Verify the write
+  const { readFile } = await import("fs/promises");
+  const written = await readFile(configFile, "utf-8");
+  const parsed = JSON.parse(written);
+  console.log(`📁 [File] Verified mainProductImageUrl: ${parsed.mainProductImageUrl}`);
   console.log(`✅ [File] Saved product config: ${config.productId}`);
 }
 
@@ -279,9 +299,14 @@ export async function getProductConfig(productId: string): Promise<ProductConfig
  * Save product config to server storage
  */
 export async function saveProductConfig(config: ProductConfig): Promise<void> {
-  console.log(`[Product Storage] Saving config for ${config.productId}, isServerless=${isServerless}`);
+  // Re-check serverless status at runtime
+  const runtimeServerless = isServerlessEnvironment();
+  console.log(`\n🔧 [Product Storage] SAVE called for ${config.productId}`);
+  console.log(`🔧 [Product Storage] isServerless=${isServerless}, runtime=${runtimeServerless}`);
+  console.log(`🔧 [Product Storage] mainProductImageUrl=${config.mainProductImageUrl}`);
   
-  if (isServerless) {
+  if (isServerless || runtimeServerless) {
+    console.log(`🔧 [Product Storage] Using NETLIFY BLOBS`);
     const saved = await saveProductConfigToBlobs(config);
     if (!saved) {
       console.error(`❌ Failed to save product config to Netlify Blobs`);
@@ -289,7 +314,10 @@ export async function saveProductConfig(config: ProductConfig): Promise<void> {
     }
     return;
   }
+  
+  console.log(`🔧 [Product Storage] Using FILE SYSTEM`);
   await saveProductConfigToFile(config);
+  console.log(`🔧 [Product Storage] SAVE complete\n`);
 }
 
 /**

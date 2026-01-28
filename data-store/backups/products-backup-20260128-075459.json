@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cube-125",
+    "name": "Outdoor Sauna Cube 125",
+    "slug": "cube-125",
+    "imageUrl": "/outdoor-sauna-cube-125.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.117Z"
+  },
+  {
+    "id": "cube-220",
+    "name": "Outdoor Sauna Cube 220",
+    "slug": "cube-220",
+    "imageUrl": "/outdoor-sauna-cube-220.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.216Z"
+  },
+  {
+    "id": "cube-300",
+    "name": "Outdoor Sauna Cube 300",
+    "slug": "cube-300",
+    "imageUrl": "/outdoor-sauna-cube-300.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.279Z"
+  },
+  {
+    "id": "hiki-s",
+    "name": "Outdoor Sauna Hiki S",
+    "slug": "hiki-s",
+    "imageUrl": "/outdoor-sauna-hiki-s.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.375Z"
+  },
+  {
+    "id": "hiki-l",
+    "name": "Outdoor Sauna Hiki L",
+    "slug": "hiki-l",
+    "imageUrl": "/outdoor-sauna-hiki-l.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.421Z"
+  },
+  {
+    "id": "barrel-220",
+    "name": "Outdoor Sauna Barrel 220",
+    "slug": "barrel-220",
+    "imageUrl": "/outdoor-sauna-barrel-220.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.446Z"
+  },
+  {
+    "id": "barrel-280",
+    "name": "Outdoor Sauna Barrel 280 Deluxe",
+    "slug": "barrel-280",
+    "imageUrl": "/outdoor-sauna-barrel-280-deluxe.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.481Z"
+  },
+  {
+    "id": "aisti-150",
+    "name": "Indoor Sauna Aisti 150",
+    "slug": "aisti-150",
+    "imageUrl": "/indoor-sauna-aisti-150.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.504Z"
+  },
+  {
+    "id": "aisti-220",
+    "name": "Indoor Sauna Thermo Black 220",
+    "slug": "aisti-220",
+    "imageUrl": "/indoor-sauna-thermo-black-220-4432644.webp",
+    "createdAt": "2026-01-23T09:02:55.051Z",
+    "updatedAt": "2026-01-23T09:02:55.522Z"
+  }
+]

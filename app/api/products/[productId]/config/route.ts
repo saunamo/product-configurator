@@ -52,21 +52,36 @@ export async function PUT(
   try {
     const body = await request.json();
     
+    console.log(`\n📝 [API] PUT /api/products/${params.productId}/config`);
+    console.log(`📝 [API] Incoming body:`, JSON.stringify({
+      mainProductImageUrl: body.mainProductImageUrl,
+      mainProductPipedriveId: body.mainProductPipedriveId,
+      hasSteps: !!body.steps,
+    }));
+    
     // CRITICAL: Load existing config first to preserve ALL fields
-    // This prevents data loss when updating a single field
     const existingConfig = await getProductConfig(params.productId);
+    console.log(`📝 [API] Existing config mainImage:`, existingConfig?.mainProductImageUrl);
     
     // Merge: preserve all existing fields, then apply updates
     const config = {
-      ...(existingConfig || {}), // Preserve all existing fields
-      ...body, // Apply updates
-      productId: params.productId, // Ensure productId is correct
+      ...(existingConfig || {}),
+      ...body,
+      productId: params.productId,
     };
     
+    console.log(`📝 [API] Merged config mainImage:`, config.mainProductImageUrl);
+    
     await saveProductConfig(config);
+    
+    // Verify save by reading back
+    const verifyConfig = await getProductConfig(params.productId);
+    console.log(`📝 [API] After save, verified mainImage:`, verifyConfig?.mainProductImageUrl);
+    console.log(`✅ [API] Save complete for ${params.productId}\n`);
+    
     return NextResponse.json({ success: true, config });
   } catch (error: any) {
-    console.error("Error saving product config:", error);
+    console.error("❌ [API] Error saving product config:", error);
     return NextResponse.json(
       { error: "Failed to save product config", message: error.message },
       { status: 500 }

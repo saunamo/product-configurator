@@ -84,6 +84,7 @@ export default function ProductsManagementPage() {
         try {
           let config = await getProductConfig(product.id);
           if (!config) {
+            // Only create NEW config with default image if config doesn't exist
             config = {
               productId: product.id,
               productName: update.name,
@@ -97,12 +98,13 @@ export default function ProductsManagementPage() {
             saveProductConfig(config);
             updatedCount++;
             console.log(`✅ Created config for ${product.name} → ${update.name}`);
-          } else if (config.productName !== update.name || config.mainProductImageUrl !== update.imageUrl) {
+          } else if (config.productName !== update.name) {
+            // ONLY update product NAME, DO NOT overwrite custom images!
             config.productName = update.name;
-            config.mainProductImageUrl = update.imageUrl;
+            // Keep the existing mainProductImageUrl - don't overwrite it!
             saveProductConfig(config);
             updatedCount++;
-            console.log(`✅ Updated ${product.name} → ${update.name} with image ${update.imageUrl}`);
+            console.log(`✅ Updated product name: ${product.name} → ${update.name} (kept existing image)`);
           }
         } catch (error) {
           console.error(`❌ Failed to update ${product.name}:`, error);

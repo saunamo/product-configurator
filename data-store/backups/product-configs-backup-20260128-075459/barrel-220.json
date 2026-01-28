@@ -1,6 +1,6 @@
 {
-  "productId": "cube-125",
-  "productName": "Outdoor Sauna Cube 125",
+  "productId": "barrel-220",
+  "productName": "Outdoor Sauna Barrel 220",
   "steps": [
     {
       "id": "rear-glass-wall",
@@ -45,7 +45,7 @@
     {
       "id": "quote",
       "name": "Quote",
-      "route": "/products/cube-125/configurator/quote"
+      "route": "/products/barrel-220/configurator/quote"
     }
   ],
   "stepData": {
@@ -58,14 +58,21 @@
           "id": "rear-glass-wall-wooden-backwall",
           "title": "wooden backwall",
           "description": "",
-          "imageUrl": "/cube-full-back-wall.jpg",
+          "imageUrl": "/barrel-full-back-wall.png",
           "price": 0
         },
         {
           "id": "rear-glass-wall-half-moon-glass-backwall",
           "title": "Half moon glass backwall",
           "description": "",
-          "imageUrl": "/cube-back-moon.jpg",
+          "imageUrl": "/barrel-half-moon.png",
+          "price": 0
+        },
+        {
+          "id": "rear-glass-wall-full-glass-backwall",
+          "title": "full glass backwall",
+          "description": "",
+          "imageUrl": "/barrel-full-glass-wall.png",
           "price": 0
         }
       ],
@@ -78,16 +85,15 @@
       "description": "",
       "options": [
         {
-          "id": "lighting-1x",
-          "title": "Behind Backrest (1x 2.5m LED)",
+          "id": "lighting-2x",
+          "title": "Behind Backrests (2x 2.5m LED)",
           "description": "",
           "imageUrl": "",
-          "price": 0,
-          "pipedriveProductId": 17834
+          "price": 0
         },
         {
-          "id": "lighting-2x-25m-led",
-          "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+          "id": "lighting-4x-25m-led",
+          "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
           "description": "",
           "imageUrl": "",
           "price": 0
@@ -270,28 +276,51 @@
       "description": "",
       "options": [
         {
-          "id": "heater-aava-47kw-20kg",
-          "title": "Aava 4.7kW (20kg)",
+          "id": "heater-aava-94kw-20kg",
+          "title": "Aava 9.4kW (20kg)",
           "description": "",
-          "imageUrl": "/images/1769072924930-naxhh9ct5e.webp",
+          "imageUrl": "/images/1769072919112-tq8m05ttrma.webp",
           "price": 0,
-          "pipedriveProductId": 18042
+          "pipedriveProductId": 18028
         },
         {
-          "id": "heater-kajo-66kw-80kg",
-          "title": "Kajo 6.6kW (80kg)",
+          "id": "heater-kajo-9kw-100kg",
+          "title": "Kajo 9kW (100kg)",
           "description": "",
-          "imageUrl": "/images/1769072939937-5y9dgnqzh2a.webp",
+          "imageUrl": "/images/1769072897850-ijdb9qujb5l.webp",
           "price": 0,
-          "pipedriveProductId": 18063
+          "pipedriveProductId": 18056
+        },
+        {
+          "id": "heater-taika-9kw-130kg",
+          "title": "Taika 9kW (130kg)",
+          "description": "",
+          "imageUrl": "/images/1769072854724-41o3ijnycpa.webp",
+          "price": 0,
+          "pipedriveProductId": 18140
         },
         {
           "id": "heater-according-to-selected-heater",
-          "title": "Heater stones",
+          "title": "Heater stones cccording to selected heaters size",
           "description": "",
           "imageUrl": "/images/1769163278618-j26ztxiz44g.webp",
           "price": 0,
           "pipedriveProductId": 17944
+        },
+        {
+          "id": "heater-noki12-20kg",
+          "title": "Noki12 (20kg)",
+          "description": "",
+          "imageUrl": "/images/1769072768893-pvbso478r5.webp",
+          "price": 0,
+          "pipedriveProductId": 18161
+        },
+        {
+          "id": "heater-tuli-16-20kg",
+          "title": "Tuli 16 (20kg)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0
         }
       ],
       "selectionType": "multi",
@@ -361,6 +390,6 @@
     "notes": "",
     "footerText": "Thank you for your interest. For questions, please contact us at the information above."
   },
-  "mainProductImageUrl": "/images/1769579428390-1uzirxy25c5.png",
-  "mainProductPipedriveId": 17855
+  "mainProductImageUrl": "/outdoor-sauna-barrel-220.webp",
+  "mainProductPipedriveId": 17962
 }
