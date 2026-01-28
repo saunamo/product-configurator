@@ -269,7 +269,7 @@ export default function OptionCard({
 
   return (
     <label
-      className={`flex items-start gap-4 w-full text-left cursor-pointer p-4 rounded-lg border-2 transition-all hover:border-[#303337] ${!hasValidImage ? 'items-center' : ''}`}
+      className={`flex flex-col w-full text-left cursor-pointer p-4 rounded-lg border-2 transition-all hover:border-[#303337]`}
       style={{
         backgroundColor: design?.cardBackgroundColor || "#ffffff",
         borderColor: isSelected 
@@ -280,45 +280,37 @@ export default function OptionCard({
       }}
       onClick={handleLabelClick}
     >
-      {hasValidImage && (
-        <div className="flex-shrink-0">
-          <div className="relative w-24 h-24 bg-gray-100 rounded overflow-hidden border border-gray-200">
-            <img
-              src={option.imageUrl ? `${option.imageUrl}${option.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : undefined}
-              alt={option.title}
-              className="w-full h-full object-cover"
-              key={option.imageUrl} // Force re-render when image URL changes
-              onError={(e) => {
-                console.error(`❌ Image failed to load for option ${option.id}:`, option.imageUrl);
-                // Hide image on error instead of showing placeholder
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          </div>
-        </div>
-      )}
-      <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-gray-900 mb-1 text-base">
-          {capitalize(option.title)}
-        </h3>
-        {option.description && (
-          <p className="text-sm text-gray-600 mb-2">
-            {option.description}
-          </p>
-        )}
-        
-        {/* Expandable Extended Description */}
-        {extendedDescription && (
-          <div className="mb-2">
-            {isExpanded && (
-              <div 
-                className="text-sm text-gray-700 mb-3 space-y-3 bg-gray-50 p-3 rounded-lg border border-gray-200"
-                dangerouslySetInnerHTML={{ __html: extendedDescription }}
-                style={{ 
-                  lineHeight: '1.7',
+      {/* Main row: Image + Content */}
+      <div className={`flex items-start gap-4 ${!hasValidImage ? 'items-center' : ''}`}>
+        {hasValidImage && (
+          <div className="flex-shrink-0">
+            <div className="relative w-24 h-24 bg-gray-100 rounded overflow-hidden border border-gray-200">
+              <img
+                src={option.imageUrl ? `${option.imageUrl}${option.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : undefined}
+                alt={option.title}
+                className="w-full h-full object-cover"
+                key={option.imageUrl} // Force re-render when image URL changes
+                onError={(e) => {
+                  console.error(`❌ Image failed to load for option ${option.id}:`, option.imageUrl);
+                  // Hide image on error instead of showing placeholder
+                  (e.target as HTMLImageElement).style.display = "none";
                 }}
               />
-            )}
+            </div>
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-gray-900 mb-1 text-base">
+            {capitalize(option.title)}
+          </h3>
+          {option.description && (
+            <p className="text-sm text-gray-600 mb-2">
+              {option.description}
+            </p>
+          )}
+          
+          {/* Read more button - stays in content column */}
+          {extendedDescription && (
             <button
               type="button"
               onClick={(e) => {
@@ -326,7 +318,7 @@ export default function OptionCard({
                 e.stopPropagation();
                 setIsExpanded(!isExpanded);
               }}
-              className="text-sm font-medium hover:underline transition-colors inline-flex items-center gap-1"
+              className="text-sm font-medium hover:underline transition-colors inline-flex items-center gap-1 mb-2"
               style={{ color: design?.accentColor || "#303337" }}
             >
               {isExpanded ? (
@@ -345,8 +337,7 @@ export default function OptionCard({
                 </>
               )}
             </button>
-          </div>
-        )}
+          )}
         {isIncluded && calculatedPrice === undefined ? (
           <p className="text-sm font-medium text-gray-500">Included</p>
         ) : calculatedPrice !== undefined ? (
@@ -399,30 +390,42 @@ export default function OptionCard({
             Price unavailable
           </p>
         )}
+        </div>
+        <div className="flex-shrink-0 pt-1">
+          <input
+            type={inputType}
+            name={selectionType === "single" ? `option-${stepId || "step"}` : undefined}
+            checked={isSelected}
+            onChange={(e) => {
+              // Call onToggle when input changes
+              // This will be triggered when label is clicked (natural label behavior)
+              onToggle();
+            }}
+            className="w-5 h-5 text-[#303337] border-[#E2DEDA] focus:ring-[#303337] focus:ring-2 cursor-pointer appearance-none rounded border-2"
+            style={{
+              backgroundColor: isSelected ? '#303337' : 'white',
+              borderColor: isSelected ? '#303337' : '#E2DEDA',
+              backgroundImage: isSelected 
+                ? `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E")`
+                : 'none',
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+            }}
+          />
+        </div>
       </div>
-      <div className="flex-shrink-0 pt-1">
-        <input
-          type={inputType}
-          name={selectionType === "single" ? `option-${stepId || "step"}` : undefined}
-          checked={isSelected}
-          onChange={(e) => {
-            // Call onToggle when input changes
-            // This will be triggered when label is clicked (natural label behavior)
-            onToggle();
-          }}
-          className="w-5 h-5 text-[#303337] border-[#E2DEDA] focus:ring-[#303337] focus:ring-2 cursor-pointer appearance-none rounded border-2"
-          style={{
-            backgroundColor: isSelected ? '#303337' : 'white',
-            borderColor: isSelected ? '#303337' : '#E2DEDA',
-            backgroundImage: isSelected 
-              ? `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E")`
-              : 'none',
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+      
+      {/* Expanded Description - Full width below the main row */}
+      {extendedDescription && isExpanded && (
+        <div 
+          className="text-sm text-gray-700 mt-4 space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200"
+          dangerouslySetInnerHTML={{ __html: extendedDescription }}
+          style={{ 
+            lineHeight: '1.7',
           }}
         />
-      </div>
+      )}
     </label>
   );
 }
