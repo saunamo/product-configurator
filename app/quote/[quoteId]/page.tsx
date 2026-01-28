@@ -116,17 +116,17 @@ export default function QuotePortalPage() {
     <div className="min-h-screen bg-[#F3F0ED] py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Quote Header */}
-        <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-[#303337] mb-2">Quote</h1>
-              <p className="text-gray-600">Quote ID: {quote.id}</p>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-8 mb-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-0 mb-6">
+            <div className="flex-1 text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#303337] mb-2">Quote</h1>
+              <p className="text-gray-600 text-sm sm:text-base">Quote ID: {quote.id}</p>
             </div>
-            <div className="ml-4 flex-shrink-0">
+            <div className="sm:ml-4 flex-shrink-0">
               <img 
                 src="/saunamo-logo.png" 
                 alt="Saunamo Logo" 
-                className="h-12 w-auto object-contain"
+                className="h-8 sm:h-12 w-auto object-contain max-w-[150px] sm:max-w-none"
                 onError={(e) => {
                   // Try other image formats if PNG doesn't work
                   const img = e.target as HTMLImageElement;

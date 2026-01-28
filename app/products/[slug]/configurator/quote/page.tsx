@@ -481,6 +481,7 @@ export default function ProductQuotePage() {
                   canProceed={!!customerEmail}
                   steps={finalSteps}
                   productSlug={productSlug}
+                  isGenerating={isGenerating}
                 />
               </div>
             </div>
