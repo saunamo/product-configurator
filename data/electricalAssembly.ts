@@ -2,7 +2,7 @@ import { StepData } from "@/types/configurator";
 
 export const electricalAssemblyData: StepData = {
   stepId: "electrical-assembly",
-  title: "Electrical Installation & Sauna Assembly",
+  title: "Installation & Wood Treatment",
   description: "Select installation and assembly services",
   selectionType: "multi", // Multiple options can be selected
   required: false,

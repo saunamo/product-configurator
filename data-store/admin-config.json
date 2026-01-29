@@ -23,7 +23,7 @@
     },
     {
       "id": "electrical-assembly",
-      "name": "Electrical Installation & Sauna Assembly",
+      "name": "Installation & Wood Treatment",
       "route": "/configurator/electrical-assembly"
     },
     {
@@ -188,7 +188,7 @@
     },
     "electrical-assembly": {
       "stepId": "electrical-assembly",
-      "title": "Electrical Installation & Sauna Assembly",
+      "title": "Installation & Wood Treatment",
       "description": "Select installation and assembly services",
       "selectionType": "multi",
       "required": false,
@@ -367,7 +367,7 @@
       "lighting-2x": "Behind Backrests (2x 2.5m LED)",
       "electrical-assembly-interior": "Wood treament interior",
       "electrical-assembly-electrical-work": "Electrical work",
-      "electrical-assembly-assembly": "Assembly",
+      "electrical-assembly-assembly": "Sauna Assembly",
       "lighting-2x-25m-led": "Under Bench + Behind Backrests (2x 2.5m LED)",
       "lighting-4x-25m-led": "Under Bench + Behind Backrests (4x 2.5m LED)",
       "heater-according-to-selected-heater": "Heater stones",

@@ -23,7 +23,7 @@ export const STEPS: Step[] = [
   },
   {
     id: "electrical-assembly",
-    name: "Electrical Installation & Sauna Assembly",
+    name: "Installation & Wood Treatment",
     route: "/configurator/electrical-assembly",
   },
   {

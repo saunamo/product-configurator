@@ -19,7 +19,7 @@
     },
     {
       "id": "electrical-assembly",
-      "name": "Electrical Installation & Sauna Assembly",
+      "name": "Installation & Wood Treatment",
       "route": "electrical-assembly"
     },
     {
@@ -103,7 +103,7 @@
     },
     "electrical-assembly": {
       "stepId": "electrical-assembly",
-      "title": "Electrical Installation & Sauna Assembly",
+      "title": "Installation & Wood Treatment",
       "description": "",
       "options": [
         {

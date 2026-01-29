@@ -304,7 +304,7 @@ export default function ProductsManagementPage() {
       "Woodburning heaters": "Heater",
       "Lighting": "Lighting",
       "Accessories": "Aromas & Sauna Accessories",
-      "Installation": "Electrical Installation & Sauna Assembly",
+      "Installation": "Installation & Wood Treatment",
       "Icebaths": "Cold Plunge",
       "Hot tubs": "Hot Tubs",
       "Transportation": "Delivery",
