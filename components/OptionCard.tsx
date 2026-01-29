@@ -36,6 +36,8 @@ interface OptionCardProps {
   calculatedQuantity?: number; // Quantity for dynamic calculations (e.g., number of packages for heater stones)
   lightingMultiplier?: number | null; // Multiplier for lighting options (e.g., 2 for "2x 2.5m LED")
   baseLightingOptionId?: string; // Base option ID for lighting price calculation
+  preFetchedPrice?: { price: number; currency: string; vatRate?: number }; // Pre-fetched price from batch API
+  basePreFetchedPrice?: { price: number; currency: string; vatRate?: number }; // Pre-fetched price for base lighting option
 }
 
 export default function OptionCard({
@@ -49,6 +51,8 @@ export default function OptionCard({
   calculatedQuantity,
   lightingMultiplier,
   baseLightingOptionId,
+  preFetchedPrice,
+  basePreFetchedPrice,
 }: OptionCardProps) {
   const { config } = useAdminConfig();
   const design = config?.design;
@@ -162,6 +166,18 @@ export default function OptionCard({
   // Calculate lighting price based on multiplier
   useEffect(() => {
     if (lightingMultiplier && baseLightingOptionId && !isIncluded) {
+      // Use pre-fetched base price if available (much faster!)
+      if (basePreFetchedPrice) {
+        const vatIncludedPrice = basePreFetchedPrice.price * (1 + (basePreFetchedPrice.vatRate || 0.2));
+        const multipliedPrice = vatIncludedPrice * lightingMultiplier;
+        setLightingCalculatedPrice(multipliedPrice);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[OptionCard] Using pre-fetched base lighting price: base £${vatIncludedPrice.toFixed(2)} × ${lightingMultiplier} = £${multipliedPrice.toFixed(2)}`);
+        }
+        return;
+      }
+      
+      // Fall back to individual fetch
       const basePipedriveProductId = config?.globalSettings?.optionPipedriveProducts?.[baseLightingOptionId];
       
       if (basePipedriveProductId) {
@@ -198,13 +214,24 @@ export default function OptionCard({
     } else {
       setLightingCalculatedPrice(null);
     }
-  }, [lightingMultiplier, baseLightingOptionId, isIncluded, config]);
+  }, [lightingMultiplier, baseLightingOptionId, isIncluded, config, basePreFetchedPrice]);
   
   useEffect(() => {
     // Reset price when included status or product ID changes
     setPipedrivePrice(null);
     setIsLoadingPrice(false);
     
+    // Use pre-fetched price if available (much faster!)
+    if (!isIncluded && preFetchedPrice && !lightingMultiplier) {
+      const vatIncludedPrice = preFetchedPrice.price * (1 + (preFetchedPrice.vatRate || 0.2));
+      setPipedrivePrice(vatIncludedPrice);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[OptionCard] Using pre-fetched price for ${option.id}: £${vatIncludedPrice.toFixed(2)}`);
+      }
+      return;
+    }
+    
+    // Fall back to individual fetch if no pre-fetched price
     if (!isIncluded && pipedriveProductId && !lightingMultiplier) {
       if (process.env.NODE_ENV === 'development') {
         console.log(`[OptionCard] Fetching price for product ${pipedriveProductId}, option: ${option.id}, isIncluded: ${isIncluded}`);
@@ -245,7 +272,7 @@ export default function OptionCard({
         console.log(`[OptionCard] No Pipedrive product ID for option ${option.id}, isIncluded: ${isIncluded}`);
       }
     }
-  }, [isIncluded, pipedriveProductId, option.id]);
+  }, [isIncluded, pipedriveProductId, option.id, preFetchedPrice, lightingMultiplier]);
 
   // Check if option has a valid image URL
   const hasValidImage = option.imageUrl && 

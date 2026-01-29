@@ -64,6 +64,9 @@ export default function ProductConfiguratorStepPage() {
   // Load product config
   const [config, setConfig] = useState<ProductConfig | null>(null);
   const [selectedOptionImageUrl, setSelectedOptionImageUrl] = useState<string | undefined>(undefined);
+  // Pre-fetched prices from Pipedrive (keyed by product ID)
+  const [pipedrivePrices, setPipedrivePrices] = useState<Record<number, { price: number; currency: string; vatRate?: number }>>({});
+  const [isLoadingPrices, setIsLoadingPrices] = useState(false);
   
   // Load config function
   const loadConfig = async () => {
@@ -572,9 +575,99 @@ export default function ProductConfiguratorStepPage() {
     }
   }, [config]);
   
+  // Pre-fetch all Pipedrive prices for options in this step
+  useEffect(() => {
+    if (!stepData || !adminConfig) return;
+    
+    // Collect all Pipedrive product IDs from options
+    const productIds: number[] = [];
+    const globalSettings = adminConfig.globalSettings;
+    
+    stepData.options.forEach((option) => {
+      // Check global settings first (preferred)
+      const pipedriveProductId = globalSettings?.optionPipedriveProducts?.[option.id] || option.pipedriveProductId;
+      if (pipedriveProductId && typeof pipedriveProductId === 'number') {
+        productIds.push(pipedriveProductId);
+      }
+    });
+    
+    // Also check for lighting base option if multiplier is used
+    stepData.options.forEach((option) => {
+      if (step === "lighting") {
+        const titleMatch = option.title.match(/(?:^|\()(\d+)x\s/i);
+        if (titleMatch && parseInt(titleMatch[1], 10) > 1) {
+          // Find base option (1x version)
+          const baseOption = stepData.options.find(opt => {
+            const baseTitle = opt.title.toLowerCase();
+            const has1x = (baseTitle.startsWith("1 x") || baseTitle.startsWith("1x") || baseTitle.includes("(1x"));
+            return has1x && baseTitle.includes("2.5m") && baseTitle.includes("led");
+          });
+          if (baseOption) {
+            const basePipedriveProductId = globalSettings?.optionPipedriveProducts?.[baseOption.id] || baseOption.pipedriveProductId;
+            if (basePipedriveProductId && typeof basePipedriveProductId === 'number' && !productIds.includes(basePipedriveProductId)) {
+              productIds.push(basePipedriveProductId);
+            }
+          }
+        }
+      }
+    });
+    
+    // Remove duplicates
+    const uniqueProductIds = [...new Set(productIds)];
+    
+    if (uniqueProductIds.length === 0) {
+      setPipedrivePrices({});
+      return;
+    }
+    
+    // Fetch prices in batch
+    setIsLoadingPrices(true);
+    fetch('/api/pipedrive/products/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productIds: uniqueProductIds }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.products) {
+          const priceMap: Record<number, { price: number; currency: string; vatRate?: number }> = {};
+          
+          Object.entries(data.products).forEach(([productIdStr, product]: [string, any]) => {
+            const productId = parseInt(productIdStr, 10);
+            if (product?.prices?.[0]) {
+              const priceData = product.prices[0];
+              const priceGBP = priceData.currency === "GBP" 
+                ? priceData.price 
+                : product.prices.find((p: any) => p.currency === "GBP")?.price || priceData.price;
+              
+              // Extract VAT rate
+              let vatRate: number | undefined;
+              if (product.tax !== undefined && product.tax !== null) {
+                vatRate = typeof product.tax === 'number' ? product.tax / 100 : parseFloat(product.tax) / 100;
+              }
+              
+              priceMap[productId] = {
+                price: priceGBP,
+                currency: priceData.currency || "GBP",
+                vatRate,
+              };
+            }
+          });
+          
+          setPipedrivePrices(priceMap);
+        }
+        setIsLoadingPrices(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch prices in batch:', err);
+        setIsLoadingPrices(false);
+      });
+  }, [stepData, adminConfig, step]);
+  
   // Clear selected option image when step changes (so step image can show)
   useEffect(() => {
     setSelectedOptionImageUrl(undefined);
+    setPipedrivePrices({}); // Clear prices when step changes
   }, [step]);
   
   // Update selected option image when selection changes
@@ -781,6 +874,16 @@ export default function ProductConfiguratorStepPage() {
   }
 
   const selectedIds = getSelection(stepData.stepId);
+  
+  // Helper function to get pre-fetched price for an option
+  const getPreFetchedPrice = (optionId: string) => {
+    const globalSettings = adminConfig?.globalSettings;
+    const pipedriveProductId = globalSettings?.optionPipedriveProducts?.[optionId] || stepData.options.find(o => o.id === optionId)?.pipedriveProductId;
+    if (pipedriveProductId && typeof pipedriveProductId === 'number') {
+      return pipedrivePrices[pipedriveProductId];
+    }
+    return undefined;
+  };
   
   // Get current heater selection to ensure price calculation updates reactively
   // Use state.selections directly to ensure reactivity
@@ -1150,6 +1253,7 @@ export default function ProductConfiguratorStepPage() {
                         onToggle={() => handleToggle(option.id)}
                         stepId={step}
                         productType={productType}
+                        preFetchedPrice={getPreFetchedPrice(option.id)}
                       />
                     );
                   })}
@@ -1208,6 +1312,7 @@ export default function ProductConfiguratorStepPage() {
                         onToggle={() => handleToggle(option.id)}
                         stepId={step}
                         productType={productType}
+                        preFetchedPrice={getPreFetchedPrice(option.id)}
                       />
                     );
                   })}
@@ -1310,6 +1415,7 @@ export default function ProductConfiguratorStepPage() {
                     productType={productType}
                     calculatedPrice={calculatedPrice}
                     calculatedQuantity={calculatedQuantity}
+                    preFetchedPrice={getPreFetchedPrice(option.id)}
                   />
                 );
               })}
@@ -1370,6 +1476,9 @@ export default function ProductConfiguratorStepPage() {
               return baseOption?.id;
             })() : undefined;
             
+            // Get pre-fetched price for base lighting option if multiplier is used
+            const basePreFetchedPrice = baseLightingOptionId ? getPreFetchedPrice(baseLightingOptionId) : undefined;
+            
             return (
               <OptionCard
                 key={option.id}
@@ -1381,6 +1490,8 @@ export default function ProductConfiguratorStepPage() {
                 productType={productType}
                 lightingMultiplier={lightingMultiplier}
                 baseLightingOptionId={baseLightingOptionId}
+                preFetchedPrice={getPreFetchedPrice(option.id)}
+                basePreFetchedPrice={basePreFetchedPrice}
               />
             );
           })}
