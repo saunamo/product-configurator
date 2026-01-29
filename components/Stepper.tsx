@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { STEPS } from "@/constants/steps";
 import { StepId, Step } from "@/types/configurator";
@@ -17,6 +17,46 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
   const { config } = useAdminConfig();
   const steps = propSteps || config?.steps || STEPS;
   const currentIndex = steps.findIndex((step) => step.id === currentStepId);
+  
+  // Refs for scrolling to active step on mobile
+  const navRef = useRef<HTMLElement>(null);
+  const stepRefs = useRef<Map<string, HTMLLIElement>>(new Map());
+  
+  // Auto-scroll to active step on mobile when step changes
+  useEffect(() => {
+    if (!navRef.current || currentIndex === -1) return;
+    
+    // Small delay to ensure DOM has updated
+    const timeoutId = setTimeout(() => {
+      const activeStep = steps[currentIndex];
+      const activeStepElement = stepRefs.current.get(activeStep.id);
+      
+      if (activeStepElement && navRef.current) {
+        // Check if we're on mobile (viewport width < 640px, which is Tailwind's sm breakpoint)
+        const isMobile = window.innerWidth < 640;
+        
+        if (isMobile) {
+          // Get the container and step positions
+          const container = navRef.current;
+          const stepRect = activeStepElement.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          
+          // Calculate scroll position to center the active step
+          const stepCenter = stepRect.left + stepRect.width / 2;
+          const containerCenter = containerRect.width / 2;
+          const scrollLeft = container.scrollLeft + (stepCenter - containerRect.left - containerCenter);
+          
+          // Smooth scroll to center the active step
+          container.scrollTo({
+            left: Math.max(0, scrollLeft), // Ensure we don't scroll to negative values
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 100); // Small delay to ensure layout is complete
+    
+    return () => clearTimeout(timeoutId);
+  }, [currentStepId, currentIndex, steps]);
   
   // Debug: Log which steps are being used
   if (process.env.NODE_ENV === 'development') {
@@ -51,7 +91,11 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
   };
 
   return (
-    <nav className="w-full overflow-x-auto" aria-label="Configurator steps">
+    <nav 
+      ref={navRef}
+      className="w-full overflow-x-auto stepper-scroll" 
+      aria-label="Configurator steps"
+    >
       <ol className="flex items-start w-full relative min-w-max">
         {/* Connector lines between steps only (not before first or after last) */}
         {steps.map((step, index) => {
@@ -84,7 +128,17 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
           const isCompleted = index < currentIndex;
 
           return (
-            <li key={step.id} className="flex flex-col items-center flex-1 relative z-10 min-w-[60px] sm:min-w-[80px]">
+            <li 
+              key={step.id} 
+              ref={(el) => {
+                if (el) {
+                  stepRefs.current.set(step.id, el);
+                } else {
+                  stepRefs.current.delete(step.id);
+                }
+              }}
+              className="flex flex-col items-center flex-1 relative z-10 min-w-[60px] sm:min-w-[80px]"
+            >
               {/* Circle - fixed position, always aligned */}
               <button
                 onClick={() => handleStepClick(step)}

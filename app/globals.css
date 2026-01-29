@@ -59,4 +59,15 @@ textarea::placeholder {
   .text-balance {
     text-wrap: balance;
   }
+  
+  /* Hide scrollbar for stepper on mobile */
+  .stepper-scroll {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+  }
+  
+  .stepper-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }
