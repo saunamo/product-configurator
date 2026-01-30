@@ -1,0 +1,77 @@
+{
+  "id": "8031",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "customerName": "Ville",
+  "customerPhone": "034124",
+  "items": [
+    {
+      "stepId": "main-product",
+      "stepName": "Sauna",
+      "optionId": "main-product",
+      "optionTitle": "Outdoor Sauna Cube 125",
+      "optionDescription": "Base product",
+      "price": 6458.33,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "rear-glass-wall",
+      "stepName": "Rear Wall Option",
+      "optionId": "rear-glass-wall-wooden-backwall",
+      "optionTitle": "Wooden backwall",
+      "optionDescription": "",
+      "price": 0,
+      "quantity": 1
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-aava-47kw-20kg",
+      "optionTitle": "Aava 4.7kW (20kg)",
+      "optionDescription": "",
+      "price": 495.83,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "heater",
+      "stepName": "Heater",
+      "optionId": "heater-according-to-selected-heater",
+      "optionTitle": "Heater stones (1 package)",
+      "optionDescription": "",
+      "price": 29.5,
+      "quantity": 1,
+      "heaterStonesCalculatedPrice": 29.5,
+      "heaterStonesQuantity": 1
+    },
+    {
+      "stepId": "lighting",
+      "stepName": "Lighting",
+      "optionId": "lighting-1x",
+      "optionTitle": "Behind Backrest (1x 2.5m LED)",
+      "optionDescription": "",
+      "price": 175,
+      "quantity": 1,
+      "vatRate": 0.2,
+      "lightingMultiplier": 1,
+      "baseLightingOptionId": "lighting-1x"
+    },
+    {
+      "stepId": "aromas-accessories",
+      "stepName": "Accessories",
+      "optionId": "aromas-accessories-accessory-set",
+      "optionTitle": "Accessory set",
+      "optionDescription": "",
+      "price": 57.91666667,
+      "quantity": 1,
+      "vatRate": 0.2
+    }
+  ],
+  "subtotal": 7216.57666667,
+  "tax": 1437.415333334,
+  "total": 8653.992000004,
+  "createdAt": "2026-01-30T12:37:32.966Z",
+  "expiresAt": "2026-03-01T12:37:32.966Z",
+  "notes": "test"
+}

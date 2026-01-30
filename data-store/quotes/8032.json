@@ -1,0 +1,33 @@
+{
+  "id": "8032",
+  "productName": "Outdoor Sauna Cube 125",
+  "customerEmail": "ville@saunamo.pt",
+  "items": [
+    {
+      "stepId": "main-product",
+      "stepName": "Sauna",
+      "optionId": "main-product",
+      "optionTitle": "Outdoor Sauna Cube 125",
+      "optionDescription": "Base product",
+      "price": 6458.33,
+      "quantity": 1,
+      "vatRate": 0.2
+    },
+    {
+      "stepId": "delivery",
+      "stepName": "Delivery",
+      "optionId": "delivery-standard",
+      "optionTitle": "Standard Delivery UK",
+      "optionDescription": "Curbside delivery within 2-3 weeks",
+      "price": 937.5,
+      "quantity": 1,
+      "vatRate": 0.2
+    }
+  ],
+  "subtotal": 7395.83,
+  "tax": 1479.1660000000002,
+  "total": 8874.996,
+  "createdAt": "2026-01-30T12:41:13.681Z",
+  "expiresAt": "2026-03-01T12:41:13.681Z",
+  "notes": ""
+}

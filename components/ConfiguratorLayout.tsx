@@ -204,7 +204,8 @@ export default function ConfiguratorLayout({
           <div 
             className="md:flex-1 flex flex-col gap-4"
           >
-            <div className="md:sticky md:top-8">
+            {/* Only make image sticky if there's no left panel content (not on quote page) */}
+            <div className={leftPanelContent ? "" : "md:sticky md:top-8"}>
               <ProductImage
                 imageUrl={displayImageUrl}
                 alt={`${productName} - ${stepData?.title || currentStepId}`}
@@ -254,7 +255,8 @@ export default function ConfiguratorLayout({
           <div 
             className="lg:flex-[7] flex flex-col gap-4"
           >
-            <div className="lg:sticky lg:top-8">
+            {/* Only make image sticky if there's no left panel content (not on quote page) */}
+            <div className={leftPanelContent ? "" : "lg:sticky lg:top-8"}>
               <ProductImage
                 imageUrl={displayImageUrl}
                 alt={`${productName} - ${stepData?.title || currentStepId}`}

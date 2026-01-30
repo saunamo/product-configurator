@@ -408,8 +408,8 @@ export async function POST(request: NextRequest) {
         console.log(`[Webhook] Quote portal URL: ${quotePortalUrl}`);
         console.log(`[Webhook] Product image URL: ${productImageUrl}`);
         
-        // Logo URL (no spaces in filename for email compatibility)
-        const logoUrl = `${productionBaseUrl}/saunamo-logo.webp`;
+        // Logo URL (use PNG for email compatibility - WebP not supported by all email clients)
+        const logoUrl = `${productionBaseUrl}/saunamo-logo.png`;
         console.log(`[Webhook] Logo URL: ${logoUrl}`);
         
         const companyName = process.env.COMPANY_NAME || "Saunamo, Arbor Eco LDA";
