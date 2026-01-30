@@ -375,7 +375,9 @@ export default function OptionCard({
               )}
             </button>
           )}
-        {option.priceLabel && option.id !== "delivery-outside-uk" ? (
+        {option.id === "delivery-outside-uk" ? (
+          null
+        ) : option.priceLabel ? (
           <p 
             className="text-sm font-medium"
             style={{ color: design?.accentColor || "#303337" }}
