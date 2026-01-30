@@ -206,6 +206,9 @@ export default function QuotePortalPage() {
                 </thead>
                 <tbody>
                   {quote.items.map((item, index) => {
+                    // Check if this is a POA (Price on Application) item
+                    const isPOA = (item as any).priceLabel === "POA" || (item as any).priceLabel?.toLowerCase() === "poa";
+                    
                     // Calculate VAT rate (default to 20% for UK)
                     // item.vatRate is stored as decimal (e.g., 0.20 for 20%)
                     // quote.taxRate is also stored as decimal
@@ -229,7 +232,10 @@ export default function QuotePortalPage() {
                             {item.optionDescription && (
                               <div className="text-sm text-gray-500 mt-1">
                                 {item.optionDescription.split('\n').map((line, idx) => (
-                                  <p key={idx} className={line === "Included" ? "font-medium text-green-700" : ""}>
+                                  <p key={idx} className={
+                                    line === "Included" ? "font-medium text-green-700" : 
+                                    line === "Price on Application" ? "font-medium text-red-600" : ""
+                                  }>
                                     {line}
                                   </p>
                                 ))}
@@ -238,16 +244,16 @@ export default function QuotePortalPage() {
                           </div>
                         </td>
                         <td className="text-right py-4 px-4 font-medium text-gray-900">
-                          {formatCurrency(priceExclVat)}
+                          {isPOA ? "POA" : formatCurrency(priceExclVat)}
                         </td>
                         <td className="text-right py-4 px-4 text-gray-700">
-                          {(vatRate * 100).toFixed(0)}%
+                          {isPOA ? "-" : `${(vatRate * 100).toFixed(0)}%`}
                         </td>
                         <td className="text-right py-4 px-4 text-gray-700">
                           {quantity}
                         </td>
                         <td className="text-right py-4 px-4 font-medium text-gray-900">
-                          {formatCurrency(totalInclVat)}
+                          {isPOA ? "POA" : formatCurrency(totalInclVat)}
                         </td>
                       </tr>
                     );

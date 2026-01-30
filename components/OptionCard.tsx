@@ -373,7 +373,14 @@ export default function OptionCard({
               )}
             </button>
           )}
-        {isIncluded && calculatedPrice === undefined ? (
+        {option.priceLabel ? (
+          <p 
+            className="text-sm font-medium"
+            style={{ color: design?.accentColor || "#303337" }}
+          >
+            {option.priceLabel}
+          </p>
+        ) : isIncluded && calculatedPrice === undefined ? (
           <p className="text-sm font-medium text-gray-500">Included</p>
         ) : calculatedPrice !== undefined ? (
           <div>

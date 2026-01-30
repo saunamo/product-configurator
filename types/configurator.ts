@@ -13,6 +13,7 @@ export type Option = {
   extendedDescription?: string; // Extended description for "Read more" expansion
   imageUrl: string;
   price: number;
+  priceLabel?: string; // Custom price label (e.g., "POA" for Price on Application)
   // External price integration
   shopifyProductId?: string; // Shopify product ID for price sync
   pipedriveFieldId?: string; // Pipedrive custom field ID for price sync

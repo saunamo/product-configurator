@@ -9,6 +9,7 @@ export type QuoteItem = {
   price: number;
   vatRate?: number; // VAT rate as decimal (e.g., 0.23 for 23%)
   quantity?: number; // Quantity (defaults to 1)
+  priceLabel?: string; // Custom price label (e.g., "POA" for Price on Application)
   lightingMultiplier?: number; // Multiplier for lighting options (e.g., 2 for "2x 2.5m LED")
   baseLightingOptionId?: string; // Base option ID for lighting price calculation
   heaterStonesCalculatedPrice?: number; // Calculated price for heater stones based on selected heater

@@ -286,6 +286,15 @@ export function generateQuote(
           : "Included";
       }
       
+      // Handle POA (Price on Application) options
+      const isPOA = option.priceLabel === "POA" || option.priceLabel?.toLowerCase() === "poa";
+      if (isPOA) {
+        displayDescription = displayDescription 
+          ? `${displayDescription}\nPrice on Application`
+          : "Price on Application";
+        finalPrice = 0; // Ensure price is 0 for POA items
+      }
+      
       items.push({
         stepId: stepId as StepId,
         stepName,
@@ -295,6 +304,7 @@ export function generateQuote(
         price: finalPrice,
         quantity: finalQuantity,
         vatRate: undefined, // Will be set from Pipedrive if available
+        priceLabel: option.priceLabel, // Preserve the price label for display
         lightingMultiplier: lightingMultiplier || undefined,
         baseLightingOptionId: baseLightingOptionId,
         heaterStonesCalculatedPrice: heaterStonesCalculatedPrice,

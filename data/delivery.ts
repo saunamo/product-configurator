@@ -14,6 +14,14 @@ export const deliveryData: StepData = {
       imageUrl: "",
       price: 200,
     },
+    {
+      id: "delivery-outside-uk",
+      title: "Delivery Outside UK",
+      description: "International delivery - price will be confirmed separately",
+      imageUrl: "",
+      price: 0,
+      priceLabel: "POA", // Price on Application
+    },
   ],
 };
 

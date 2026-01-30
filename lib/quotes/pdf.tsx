@@ -234,6 +234,9 @@ export function QuotePDFDocument({
               <Text style={[styles.tableHeaderText, styles.colTotal]}>Total (incl. VAT)</Text>
             </View>
             {quote.items.map((item, index) => {
+              // Check if this is a POA (Price on Application) item
+              const isPOA = item.priceLabel === "POA" || item.priceLabel?.toLowerCase() === "poa";
+              
               // Calculate VAT rate (default to 20% for UK)
               const vatRate = item.vatRate !== undefined ? item.vatRate : (quote.taxRate !== undefined ? quote.taxRate : 0.20);
               const quantity = item.quantity || 1;
@@ -264,8 +267,8 @@ export function QuotePDFDocument({
                               styles.tableCell, 
                               { 
                                 fontSize: 9, 
-                                color: line === "Included" ? "#059669" : "#9ca3af",
-                                fontWeight: line === "Included" ? "bold" : "normal"
+                                color: line === "Included" ? "#059669" : line === "Price on Application" ? "#dc2626" : "#9ca3af",
+                                fontWeight: (line === "Included" || line === "Price on Application") ? "bold" : "normal"
                               }
                             ]}
                           >
@@ -276,16 +279,16 @@ export function QuotePDFDocument({
                     )}
                   </View>
                   <Text style={[styles.tableCell, styles.colPriceVat0, { fontWeight: "bold" }]}>
-                    {formatCurrency(priceExclVat)}
+                    {isPOA ? "POA" : formatCurrency(priceExclVat)}
                   </Text>
                   <Text style={[styles.tableCell, styles.colVat]}>
-                    {(vatRate * 100).toFixed(0)}%
+                    {isPOA ? "-" : `${(vatRate * 100).toFixed(0)}%`}
                   </Text>
                   <Text style={[styles.tableCell, styles.colQuantity]}>
                     {quantity}
                   </Text>
                   <Text style={[styles.tableCell, styles.colTotal, { fontWeight: "bold" }]}>
-                    {formatCurrency(totalInclVat)}
+                    {isPOA ? "POA" : formatCurrency(totalInclVat)}
                   </Text>
                 </View>
               );
