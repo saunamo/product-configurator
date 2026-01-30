@@ -267,6 +267,14 @@
           "imageUrl": "",
           "price": 200,
           "pipedriveProductId": 18212
+        },
+        {
+          "id": "delivery-outside-uk",
+          "title": "Delivery Outside UK",
+          "description": "International delivery - price will be confirmed separately",
+          "imageUrl": "",
+          "price": 0,
+          "priceLabel": "POA"
         }
       ],
       "imageUrl": "/images/1769084980555-i3qjrai1i89.webp"
