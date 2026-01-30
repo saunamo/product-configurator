@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 
 interface ProductImageProps {
@@ -21,6 +21,17 @@ export default function ProductImage({
   priority = false,
 }: ProductImageProps) {
   const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
+  
+  // Reset loaded state when image URL changes for smooth transition
+  useEffect(() => {
+    if (imageUrl !== currentImageUrl) {
+      setIsLoaded(false);
+      setCurrentImageUrl(imageUrl);
+      setHasError(false);
+    }
+  }, [imageUrl, currentImageUrl]);
   
   // Placeholder image if none provided
   const defaultImageUrl =
@@ -69,13 +80,15 @@ export default function ProductImage({
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 70vw"
-          className={`${shouldUseContain ? 'object-contain' : 'object-cover'}`}
+          className={`${shouldUseContain ? 'object-contain' : 'object-cover'} transition-opacity duration-300 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={shouldUseContain ? { objectPosition: 'center' } : undefined}
           priority={priority}
           quality={85}
+          onLoad={() => setIsLoaded(true)}
           onError={() => {
             console.warn(`⚠️ Failed to load image: ${imageUrl}, falling back to default`);
             setHasError(true);
+            setIsLoaded(true);
           }}
         />
       ) : (
@@ -83,23 +96,25 @@ export default function ProductImage({
         <img
           src={finalImageUrl}
           alt={alt}
-          className={`w-full h-full ${shouldUseContain ? 'object-contain' : 'object-cover'} ${shouldUseContain ? 'max-w-full max-h-full' : ''}`}
+          className={`w-full h-full ${shouldUseContain ? 'object-contain' : 'object-cover'} ${shouldUseContain ? 'max-w-full max-h-full' : ''} transition-opacity duration-300 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={shouldUseContain ? {
             objectPosition: 'center',
             maxWidth: '100%',
             maxHeight: '100%',
           } : undefined}
           loading="lazy"
+          onLoad={() => setIsLoaded(true)}
           onError={(e) => {
             if (e.currentTarget.src !== defaultImageUrl) {
               console.warn(`⚠️ Failed to load image: ${imageUrl}, falling back to default`);
               e.currentTarget.src = defaultImageUrl;
             }
+            setIsLoaded(true);
           }}
         />
       )}
       {capitalizedLabel && (
-        <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm font-medium z-10">
+        <div className={`absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm font-medium z-10 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
           {capitalizedLabel}
         </div>
       )}

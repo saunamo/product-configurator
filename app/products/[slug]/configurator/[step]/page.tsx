@@ -894,6 +894,33 @@ export default function ProductConfiguratorStepPage() {
     }
   }, [config?.steps]);
 
+  // Preload images for the next step to reduce lag on navigation
+  useEffect(() => {
+    if (!config || !stepData) return;
+    
+    const currentIndex = config.steps.findIndex(s => s.id === step);
+    const nextStep = currentIndex < config.steps.length - 1 ? config.steps[currentIndex + 1] : null;
+    
+    if (nextStep && nextStep.id !== "quote") {
+      // Get next step's data
+      const nextStepData = config.stepData?.[nextStep.id];
+      if (nextStepData?.options) {
+        // Preload option images for next step
+        nextStepData.options.forEach((option: any) => {
+          if (option.imageUrl) {
+            const img = new window.Image();
+            img.src = option.imageUrl;
+          }
+        });
+        // Also preload step image if it exists
+        if (nextStepData.imageUrl) {
+          const img = new window.Image();
+          img.src = nextStepData.imageUrl;
+        }
+      }
+    }
+  }, [config, step, stepData]);
+
   // For quote step, stepData is intentionally null (it doesn't have options)
   // So we skip the stepData check for quote step
   if (!stepData && step !== "quote") {
@@ -903,7 +930,17 @@ export default function ProductConfiguratorStepPage() {
       return (
         <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
           <div className="text-center">
-            <div className="text-lg text-gray-600 mb-2">Loading configuration...</div>
+            <div 
+              className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
+              style={{ animation: 'breathe 2s ease-in-out infinite' }}
+            ></div>
+            <p className="text-gray-500">Loading configurator...</p>
+            <style jsx>{`
+              @keyframes breathe {
+                0%, 100% { transform: scale(1); opacity: 0.6; }
+                50% { transform: scale(1.15); opacity: 1; }
+              }
+            `}</style>
           </div>
         </div>
       );
@@ -913,7 +950,17 @@ export default function ProductConfiguratorStepPage() {
     return (
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
         <div className="text-center">
-          <div className="text-lg text-gray-600 mb-2">Loading step...</div>
+          <div 
+            className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
+            style={{ animation: 'breathe 2s ease-in-out infinite' }}
+          ></div>
+          <p className="text-gray-500">Loading configurator...</p>
+          <style jsx>{`
+            @keyframes breathe {
+              0%, 100% { transform: scale(1); opacity: 0.6; }
+              50% { transform: scale(1.15); opacity: 1; }
+            }
+          `}</style>
         </div>
       </div>
     );
@@ -1274,10 +1321,29 @@ export default function ProductConfiguratorStepPage() {
     return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
   }, [customerEmail, handleGenerateQuote]);
 
-  // Don't show loading state for normal steps - use cached config or show nothing briefly
-  // This prevents the "Loading configuration..." flash between steps
+  // Show a nice loading animation on initial configurator load
+  // This only shows when config hasn't loaded yet (first visit)
   if (!config) {
-    return null; // Return null instead of loading message for instant transitions
+    return (
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="text-center">
+          {/* Breathing circle - calm, zen-like loader */}
+          <div 
+            className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
+            style={{
+              animation: 'breathe 2s ease-in-out infinite',
+            }}
+          ></div>
+          <p className="text-gray-500">Loading configurator...</p>
+          <style jsx>{`
+            @keyframes breathe {
+              0%, 100% { transform: scale(1); opacity: 0.6; }
+              50% { transform: scale(1.15); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      </div>
+    );
   }
 
   // For quote step, render the quote form instead of options
