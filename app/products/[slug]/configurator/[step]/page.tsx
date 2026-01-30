@@ -428,7 +428,7 @@ export default function ProductConfiguratorStepPage() {
             } else if (isBarrel) {
               // Check admin config for barrel half-moon image first
               const adminBarrelHalfMoonImage = adminConfig?.globalSettings?.optionImages?.["barrel_glass-half-moon"];
-              const barrelHalfMoonImage = adminBarrelHalfMoonImage || "/barrel-half-moon.png";
+              const barrelHalfMoonImage = adminBarrelHalfMoonImage || "/barrel-half-moon.webp";
               console.log(`🖼️ useMemo: ✅ Setting barrel half-moon image for option "${option.title}": ${barrelHalfMoonImage} (admin: ${adminBarrelHalfMoonImage || 'none'})`);
               return { ...option, imageUrl: barrelHalfMoonImage };
             }
@@ -449,7 +449,7 @@ export default function ProductConfiguratorStepPage() {
             } else if (isBarrel) {
               // Check admin config for barrel wooden backwall image first
               const adminBarrelWoodenImage = adminConfig?.globalSettings?.optionImages?.["barrel_wooden-backwall"];
-              const barrelWoodenImage = adminBarrelWoodenImage || "/barrel-full-back-wall.png";
+              const barrelWoodenImage = adminBarrelWoodenImage || "/barrel-full-back-wall.webp";
               console.log(`🖼️ useMemo: ✅ Setting barrel wooden backwall image: ${barrelWoodenImage} (admin: ${adminBarrelWoodenImage || 'none'})`);
               return { ...option, imageUrl: barrelWoodenImage };
             }
@@ -463,7 +463,7 @@ export default function ProductConfiguratorStepPage() {
           if (isFullGlassBackwall && isBarrel) {
             // Check admin config for barrel full glass backwall image first
             const adminBarrelFullGlassImage = adminConfig?.globalSettings?.optionImages?.["barrel_full-glass-backwall"];
-            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.webp";
             console.log(`🖼️ useMemo: ✅ Setting barrel full glass backwall image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
             return { ...option, imageUrl: barrelFullGlassImage };
           }
@@ -472,7 +472,7 @@ export default function ProductConfiguratorStepPage() {
           if (option.id === "glass-standard" && isBarrel) {
             // Check admin config for barrel full glass backwall image first
             const adminBarrelFullGlassImage = adminConfig?.globalSettings?.optionImages?.["barrel_full-glass-backwall"];
-            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.png";
+            const barrelFullGlassImage = adminBarrelFullGlassImage || "/barrel-full-glass-wall.webp";
             console.log(`🖼️ useMemo: ✅ Setting barrel standard glass image: ${barrelFullGlassImage} (admin: ${adminBarrelFullGlassImage || 'none'})`);
             return { ...option, imageUrl: barrelFullGlassImage };
           }

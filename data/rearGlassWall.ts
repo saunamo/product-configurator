@@ -46,7 +46,7 @@ export const rearGlassWallData: StepData = {
       id: "full-glass-backwall",
       title: "Full glass backwall",
       description: "Full glass back wall for maximum visibility",
-      imageUrl: "/barrel-full-glass-wall.png", // For barrel models
+      imageUrl: "/barrel-full-glass-wall.webp", // For barrel models
       price: 0,
     },
   ],

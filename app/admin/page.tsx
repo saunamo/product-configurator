@@ -1964,11 +1964,11 @@ export default function AdminPage() {
                                           let actualImageUrl = globalImageUrl;
                                           if (!actualImageUrl) {
                                             if (option.optionId === "wooden-backwall") {
-                                              actualImageUrl = "/barrel-full-back-wall.png";
+                                              actualImageUrl = "/barrel-full-back-wall.webp";
                                             } else if (option.optionId === "full-glass-backwall") {
-                                              actualImageUrl = "/barrel-full-glass-wall.png";
+                                              actualImageUrl = "/barrel-full-glass-wall.webp";
                                             } else if (option.optionId === "glass-half-moon") {
-                                              actualImageUrl = "/barrel-half-moon.png";
+                                              actualImageUrl = "/barrel-half-moon.webp";
                                             } else {
                                               actualImageUrl = option.defaultImageUrl || "";
                                             }

@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Quote } from "@/types/quote";
 import { QuoteSettings } from "@/types/admin";
 import { defaultQuoteSettings } from "@/constants/defaultQuoteSettings";
@@ -122,29 +123,14 @@ export default function QuotePortalPage() {
               <h1 className="text-2xl sm:text-3xl font-bold text-[#303337] mb-2">Quote</h1>
               <p className="text-gray-600 text-sm sm:text-base">Quote ID: {quote.id}</p>
             </div>
-            <div className="sm:ml-4 flex-shrink-0">
-              <img 
-                src="/saunamo-logo.png" 
+            <div className="sm:ml-4 flex-shrink-0 relative h-8 sm:h-12 w-[120px] sm:w-[180px]">
+              <Image 
+                src="/saunamo-logo.webp" 
                 alt="Saunamo Logo" 
-                className="h-8 sm:h-12 w-auto object-contain max-w-[150px] sm:max-w-none"
-                onError={(e) => {
-                  // Try other image formats if PNG doesn't work
-                  const img = e.target as HTMLImageElement;
-                  const basePath = "/saunamo-logo";
-                  const extensions = [".jpg", ".jpeg", ".svg", ".webp"];
-                  let currentIndex = 0;
-                  const tryNext = () => {
-                    if (currentIndex < extensions.length) {
-                      img.src = basePath + extensions[currentIndex];
-                      currentIndex++;
-                    } else {
-                      // If all image formats fail, hide the image
-                      img.style.display = "none";
-                    }
-                  };
-                  img.onerror = tryNext;
-                  tryNext();
-                }}
+                fill
+                sizes="180px"
+                className="object-contain"
+                priority
               />
             </div>
           </div>

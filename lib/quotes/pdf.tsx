@@ -170,7 +170,7 @@ export function QuotePDFDocument({
             </View>
             <View style={{ marginLeft: 16 }}>
               <Image
-                src={join(process.cwd(), "public", "saunamo-logo.png")}
+                src={join(process.cwd(), "public", "saunamo-logo.webp")}
                 style={{ width: 199, height: 35 }} // 28% smaller: 276 * 0.72 = 199, 48 * 0.72 = 35
               />
             </View>

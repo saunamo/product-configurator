@@ -63,7 +63,7 @@
           "id": "full-glass-backwall",
           "title": "Full glass backwall",
           "description": "Full glass back wall for maximum visibility",
-          "imageUrl": "/barrel-full-glass-wall.png",
+          "imageUrl": "/barrel-full-glass-wall.webp",
           "price": 0
         },
         {
@@ -325,13 +325,13 @@
       "electrical-assembly": "/images/1769500090936-pymhygphmi.jpg",
       "lighting": "/images/1769073539150-w1298ql4wj.jpg",
       "cold-plunge": "/images/1769517698929-olj7v730q1c.jpg",
-      "delivery": "/images/1769084980555-i3qjrai1i89.png",
+      "delivery": "/images/1769084980555-i3qjrai1i89.webp",
       "hot-tubs": "/images/1769518705080-jjf2umkp10c.jpg",
       "aromas-accessories": "/images/1769169330318-e9etacwqp0e.webp"
     },
     "optionImages": {
       "aromas-accessories-accessory-set": "/images/1769072721626-veveawvms6.webp",
-      "aromas-accessories-sauna-scent-set": "/images/1769517664363-okk859hpy4g.png",
+      "aromas-accessories-sauna-scent-set": "/images/1769517664363-okk859hpy4g.webp",
       "aromas-accessories-sauna-hats": "/images/1769072748464-fjgmyzm8fq.jpg",
       "heater-noki12-20kg": "/images/1769072768893-pvbso478r5.webp",
       "heater-noki-12-20kg": "/images/1769072776224-5zan3e6f3x.webp",
@@ -352,7 +352,7 @@
       "hot-tubs-hot-tub-vellamo-s": "/images/1769501411168-psjwepkj5l.webp",
       "hot-tubs-hot-tub-vellamo-m": "/images/1769501321725-hrm2a46ckzh.jpg",
       "hot-tubs-hot-tub-vellamo-l": "/images/1769501331353-0iocn4gtcwv.jpg",
-      "heater-according-to-selected-heater": "/images/1769528759523-7gle5us65ni.png",
+      "heater-according-to-selected-heater": "/images/1769528759523-7gle5us65ni.webp",
       "stones-according-to-selected-heater": "/images/1769163278618-j26ztxiz44g.webp"
     },
     "optionTitles": {

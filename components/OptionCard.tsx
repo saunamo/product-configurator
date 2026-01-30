@@ -4,6 +4,7 @@ import { Option } from "@/types/configurator";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
 import { capitalize } from "@/utils/capitalize";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Extended descriptions for cold plunge and hot tub products
 const EXTENDED_DESCRIPTIONS: Record<string, string> = {
@@ -313,18 +314,21 @@ export default function OptionCard({
     >
       {/* Main row: Image + Content */}
       <div className={`flex items-start gap-4 ${!hasValidImage ? 'items-center' : ''}`}>
-        {hasValidImage && (
+        {hasValidImage && option.imageUrl && (
           <div className="flex-shrink-0">
             <div className="relative w-24 h-24 bg-gray-100 rounded overflow-hidden border border-gray-200">
-              <img
-                src={option.imageUrl ? `${option.imageUrl}${option.imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}` : undefined}
+              <Image
+                src={option.imageUrl}
                 alt={option.title}
-                className="w-full h-full object-cover"
-                key={option.imageUrl} // Force re-render when image URL changes
+                fill
+                sizes="96px"
+                className="object-cover"
+                quality={80}
+                loading="lazy"
                 onError={(e) => {
                   console.error(`❌ Image failed to load for option ${option.id}:`, option.imageUrl);
-                  // Hide image on error instead of showing placeholder
-                  (e.target as HTMLImageElement).style.display = "none";
+                  // Hide image container on error
+                  (e.target as HTMLImageElement).parentElement!.style.display = "none";
                 }}
               />
             </div>
