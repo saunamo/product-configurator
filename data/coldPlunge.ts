@@ -2,8 +2,8 @@ import { StepData } from "@/types/configurator";
 
 export const coldPlungeData: StepData = {
   stepId: "cold-plunge",
-  title: "Cold Plunge",
-  description: "Add a cold plunge experience to complement your sauna",
+  title: "Ice Bath",
+  description: "Add an ice bath experience to complement your sauna",
   selectionType: "single",
   required: false,
   options: [

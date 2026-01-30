@@ -28,7 +28,7 @@ export const STEPS: Step[] = [
   },
   {
     id: "cold-plunge",
-    name: "Cold Plunge",
+    name: "Ice Bath",
     route: "/configurator/cold-plunge",
   },
   {

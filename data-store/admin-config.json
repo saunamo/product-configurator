@@ -33,7 +33,7 @@
     },
     {
       "id": "cold-plunge",
-      "name": "Cold Plunge",
+      "name": "Ice Bath",
       "route": "/configurator/cold-plunge"
     }
   ],
@@ -248,7 +248,7 @@
     },
     "cold-plunge": {
       "stepId": "cold-plunge",
-      "title": "Cold Plunge",
+      "title": "Ice Bath",
       "description": "Add a cold plunge experience to complement your sauna",
       "selectionType": "single",
       "required": false,

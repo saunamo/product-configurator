@@ -29,7 +29,7 @@
     },
     {
       "id": "cold-plunge",
-      "name": "Cold Plunge",
+      "name": "Ice Bath",
       "route": "cold-plunge"
     },
     {
@@ -173,7 +173,7 @@
     },
     "cold-plunge": {
       "stepId": "cold-plunge",
-      "title": "Cold Plunge",
+      "title": "Ice Bath",
       "description": "",
       "options": [
         {

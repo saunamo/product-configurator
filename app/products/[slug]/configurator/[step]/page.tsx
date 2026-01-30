@@ -78,6 +78,12 @@ export default function ProductConfiguratorStepPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [quoteError, setQuoteError] = useState("");
   
+  // Ice Bath expandable section state
+  const [iceBathExpanded, setIceBathExpanded] = useState(false);
+  
+  // Hot Tubs expandable section state
+  const [hotTubsExpanded, setHotTubsExpanded] = useState(false);
+  
   // Load config function
   const loadConfig = async () => {
     try {
@@ -1675,6 +1681,150 @@ export default function ProductConfiguratorStepPage() {
             </div>
           </div>
         </>
+      ) : step === "cold-plunge" ? (
+        /* Ice Bath step - shows expandable prompt */
+        <div className="space-y-4">
+          {/* Expandable Ice Bath prompt */}
+          {!iceBathExpanded && selectedIds.length === 0 ? (
+            <div 
+              className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-green-800 transition-colors cursor-pointer p-6"
+              onClick={() => setIceBathExpanded(true)}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Would you like to add an Ice Bath to your order?</h3>
+                  <p className="text-sm text-gray-600 mt-1">Complete your wellness experience with contrast therapy</p>
+                </div>
+                <div className="flex items-center gap-2 text-green-800 flex-shrink-0 ml-4">
+                  <span className="text-sm font-medium">View options</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Expanded Ice Bath options */
+            <OptionSection
+              title="Ice Bath"
+              description={stepData.description}
+              subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
+              subtext={stepData.subtext}
+              moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
+                ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
+                : undefined}
+            >
+              {/* Hide options link - collapses back to prompt */}
+              {selectedIds.length === 0 && (
+                <button
+                  onClick={() => setIceBathExpanded(false)}
+                  className="mb-4 text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Hide options
+                </button>
+              )}
+              {stepData.options.map((option) => {
+                const productName = config?.productName || "";
+                const productId = config?.productId || "";
+                const isCube = productSlug.toLowerCase().includes("cube") || 
+                               productName.toLowerCase().includes("cube") ||
+                               productId.toLowerCase().includes("cube");
+                const isBarrel = productSlug.toLowerCase().includes("barrel") || 
+                                productName.toLowerCase().includes("barrel") ||
+                                productId.toLowerCase().includes("barrel");
+                const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
+                
+                return (
+                  <OptionCard
+                    key={option.id}
+                    option={option}
+                    isSelected={selectedIds.includes(option.id)}
+                    selectionType={stepData.selectionType}
+                    onToggle={() => handleToggle(option.id)}
+                    stepId={step}
+                    productType={productType}
+                    preFetchedPrice={getPreFetchedPrice(option.id)}
+                  />
+                );
+              })}
+            </OptionSection>
+          )}
+        </div>
+      ) : step === "hot-tubs" ? (
+        /* Hot Tubs step - shows expandable prompt */
+        <div className="space-y-4">
+          {/* Expandable Hot Tubs prompt */}
+          {!hotTubsExpanded && selectedIds.length === 0 ? (
+            <div 
+              className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-green-800 transition-colors cursor-pointer p-6"
+              onClick={() => setHotTubsExpanded(true)}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Would you like to add a Hot Tub to your order?</h3>
+                  <p className="text-sm text-gray-600 mt-1">Enhance your outdoor wellness experience</p>
+                </div>
+                <div className="flex items-center gap-2 text-green-800 flex-shrink-0 ml-4">
+                  <span className="text-sm font-medium">View options</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Expanded Hot Tubs options */
+            <OptionSection
+              title="Hot Tubs"
+              description={stepData.description}
+              subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
+              subtext={stepData.subtext}
+              moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
+                ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
+                : undefined}
+            >
+              {/* Hide options link - collapses back to prompt */}
+              {selectedIds.length === 0 && (
+                <button
+                  onClick={() => setHotTubsExpanded(false)}
+                  className="mb-4 text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Hide options
+                </button>
+              )}
+              {stepData.options.map((option) => {
+                const productName = config?.productName || "";
+                const productId = config?.productId || "";
+                const isCube = productSlug.toLowerCase().includes("cube") || 
+                               productName.toLowerCase().includes("cube") ||
+                               productId.toLowerCase().includes("cube");
+                const isBarrel = productSlug.toLowerCase().includes("barrel") || 
+                                productName.toLowerCase().includes("barrel") ||
+                                productId.toLowerCase().includes("barrel");
+                const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
+                
+                return (
+                  <OptionCard
+                    key={option.id}
+                    option={option}
+                    isSelected={selectedIds.includes(option.id)}
+                    selectionType={stepData.selectionType}
+                    onToggle={() => handleToggle(option.id)}
+                    stepId={step}
+                    productType={productType}
+                    preFetchedPrice={getPreFetchedPrice(option.id)}
+                  />
+                );
+              })}
+            </OptionSection>
+          )}
+        </div>
       ) : (
         <OptionSection
           title={stepData.title}
