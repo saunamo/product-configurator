@@ -930,17 +930,12 @@ export default function ProductConfiguratorStepPage() {
       return (
         <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
           <div className="text-center">
-            <div 
-              className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
-              style={{ animation: 'breathe 2s ease-in-out infinite' }}
-            ></div>
+            <img 
+              src="/saunamo-logo.webp" 
+              alt="Saunamo" 
+              className="h-10 mx-auto mb-6 animate-pulse"
+            />
             <p className="text-gray-500">Loading configurator...</p>
-            <style jsx>{`
-              @keyframes breathe {
-                0%, 100% { transform: scale(1); opacity: 0.6; }
-                50% { transform: scale(1.15); opacity: 1; }
-              }
-            `}</style>
           </div>
         </div>
       );
@@ -950,17 +945,12 @@ export default function ProductConfiguratorStepPage() {
     return (
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
         <div className="text-center">
-          <div 
-            className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
-            style={{ animation: 'breathe 2s ease-in-out infinite' }}
-          ></div>
+          <img 
+            src="/saunamo-logo.webp" 
+            alt="Saunamo" 
+            className="h-10 mx-auto mb-6 animate-pulse"
+          />
           <p className="text-gray-500">Loading configurator...</p>
-          <style jsx>{`
-            @keyframes breathe {
-              0%, 100% { transform: scale(1); opacity: 0.6; }
-              50% { transform: scale(1.15); opacity: 1; }
-            }
-          `}</style>
         </div>
       </div>
     );
@@ -1327,20 +1317,12 @@ export default function ProductConfiguratorStepPage() {
     return (
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
         <div className="text-center">
-          {/* Breathing circle - calm, zen-like loader */}
-          <div 
-            className="w-12 h-12 bg-[#303337] rounded-full mx-auto mb-6"
-            style={{
-              animation: 'breathe 2s ease-in-out infinite',
-            }}
-          ></div>
+          <img 
+            src="/saunamo-logo.webp" 
+            alt="Saunamo" 
+            className="h-10 mx-auto mb-6 animate-pulse"
+          />
           <p className="text-gray-500">Loading configurator...</p>
-          <style jsx>{`
-            @keyframes breathe {
-              0%, 100% { transform: scale(1); opacity: 0.6; }
-              50% { transform: scale(1.15); opacity: 1; }
-            }
-          `}</style>
         </div>
       </div>
     );

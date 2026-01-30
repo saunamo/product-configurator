@@ -63,7 +63,12 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#faf9f7]">
       <div className="text-center">
-        <div className="text-lg text-gray-600">Loading product...</div>
+        <img 
+          src="/saunamo-logo.webp" 
+          alt="Saunamo" 
+          className="h-10 mx-auto mb-6 animate-pulse"
+        />
+        <p className="text-gray-500">Loading configurator...</p>
       </div>
     </div>
   );
