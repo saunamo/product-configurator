@@ -292,9 +292,6 @@ export function generateQuote(
                     option.priceLabel === "POA" || 
                     option.priceLabel?.toLowerCase() === "poa";
       if (isPOA) {
-        displayDescription = displayDescription 
-          ? `${displayDescription}\nPrice to be confirmed`
-          : "Price to be confirmed";
         finalPrice = 0; // Ensure price is 0 for POA items
         
         // Add delivery location if this is the delivery-outside-uk option
@@ -304,7 +301,7 @@ export function generateQuote(
           if (deliveryLocation) {
             displayDescription = displayDescription 
               ? `${displayDescription}\nDelivery Location: ${deliveryLocation}`
-              : `Price to be confirmed\nDelivery Location: ${deliveryLocation}`;
+              : `Delivery Location: ${deliveryLocation}`;
           }
         }
       }

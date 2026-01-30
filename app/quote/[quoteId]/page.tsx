@@ -239,7 +239,6 @@ export default function QuotePortalPage() {
                                   return (
                                     <p key={idx} className={
                                       line === "Included" ? "font-medium text-green-700" : 
-                                      line === "Price to be confirmed" ? "font-medium text-red-600" :
                                       isLocationLine ? "font-medium text-blue-600" : ""
                                     }>
                                       {line}
