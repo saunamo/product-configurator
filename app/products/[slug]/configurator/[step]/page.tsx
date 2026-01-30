@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import ConfiguratorLayout from "@/components/ConfiguratorLayout";
 import OptionSection from "@/components/OptionSection";
 import OptionCard from "@/components/OptionCard";
@@ -12,6 +12,8 @@ import { StepId, StepData } from "@/types/configurator";
 import { DEFAULT_STEP } from "@/constants/steps";
 import { getProductConfig } from "@/utils/productStorage";
 import { ProductConfig } from "@/types/product";
+import { capitalize } from "@/utils/capitalize";
+import NavigationButtons from "@/components/NavigationButtons";
 
 export default function ProductConfiguratorStepPage() {
   const params = useParams();
@@ -67,6 +69,14 @@ export default function ProductConfiguratorStepPage() {
   // Pre-fetched prices from Pipedrive (keyed by product ID)
   const [pipedrivePrices, setPipedrivePrices] = useState<Record<number, { price: number; currency: string; vatRate?: number }>>({});
   const [isLoadingPrices, setIsLoadingPrices] = useState(false);
+  
+  // Quote form state
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
   
   // Load config function
   const loadConfig = async () => {
@@ -169,6 +179,9 @@ export default function ProductConfiguratorStepPage() {
   
   // Get stepData with product-specific image updates - use useMemo to ensure React tracks changes
   const stepData = useMemo(() => {
+    // Quote step doesn't have stepData - it has a custom form instead
+    if (step === "quote") return null;
+    
     // Use config stepData if it exists (product-specific), otherwise use default
     // Don't merge - use one or the other to avoid duplicates
     const configStepData = config?.stepData?.[step];
@@ -577,7 +590,9 @@ export default function ProductConfiguratorStepPage() {
   
   // Pre-fetch all Pipedrive prices for options in this step
   useEffect(() => {
-    if (!stepData || !adminConfig) return;
+    // Skip price fetching for quote step (it's a separate page)
+    if (step === "quote") return;
+    if (!stepData || !adminConfig || !stepData.options || stepData.options.length === 0) return;
     
     // Collect all Pipedrive product IDs from options
     const productIds: number[] = [];
@@ -745,6 +760,9 @@ export default function ProductConfiguratorStepPage() {
   }, [stepData, getSelection, step, state.selections]);
 
   useEffect(() => {
+    // Skip redirect logic for quote step (it's handled separately)
+    if (step === "quote") return;
+    
     // Check if this is rear-glass-wall step and should be blocked for Hiki/Aisti only (Cube 125 should have it)
     if (step === "rear-glass-wall" && config) {
       const productName = config.productName || "";
@@ -763,7 +781,8 @@ export default function ProductConfiguratorStepPage() {
       }
     }
     
-    if (!stepData && config) {
+    // Don't redirect for quote step - it intentionally has no stepData
+    if (!stepData && config && step !== "quote") {
       // If stepData not found, redirect to first step of this product
       const firstStep = config.steps?.[0];
       if (firstStep) {
@@ -869,14 +888,38 @@ export default function ProductConfiguratorStepPage() {
     }
   }, [config?.steps]);
 
-  if (!stepData) {
-    return null;
+  // For quote step, stepData is intentionally null (it doesn't have options)
+  // So we skip the stepData check for quote step
+  if (!stepData && step !== "quote") {
+    // Don't return null - Next.js treats it as 404
+    // Show loading state or redirect instead
+    if (!config) {
+      return (
+        <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-lg text-gray-600 mb-2">Loading configuration...</div>
+          </div>
+        </div>
+      );
+    }
+    // If config exists but stepData is null, it might be an invalid step
+    // The redirect logic in useEffect will handle this
+    return (
+      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Loading step...</div>
+        </div>
+      </div>
+    );
   }
 
-  const selectedIds = getSelection(stepData.stepId);
+  // For quote step, selectedIds and other stepData-dependent vars are not needed
+  // Guard against null stepData for quote step
+  const selectedIds = stepData ? getSelection(stepData.stepId) : [];
   
   // Helper function to get pre-fetched price for an option
   const getPreFetchedPrice = (optionId: string) => {
+    if (!stepData || !stepData.options) return undefined;
     const globalSettings = adminConfig?.globalSettings;
     const pipedriveProductId = globalSettings?.optionPipedriveProducts?.[optionId] || stepData.options.find(o => o.id === optionId)?.pipedriveProductId;
     if (pipedriveProductId && typeof pipedriveProductId === 'number') {
@@ -890,7 +933,8 @@ export default function ProductConfiguratorStepPage() {
   const heaterSelection = step === "heater" ? (state?.selections?.["heater"] || []) : [];
   
   // Get the selected option title for the badge (preserves exact capitalization)
-  const selectedOptionTitle = selectedIds.length > 0 
+  // Guard against null stepData for quote step
+  const selectedOptionTitle = (selectedIds.length > 0 && stepData)
     ? (() => {
         // For single selection, get the first selected option's title
         // For multi selection, get the last selected option's title (most recently selected)
@@ -1160,37 +1204,246 @@ export default function ProductConfiguratorStepPage() {
     }
   };
 
-  // Handle Quote step - redirect to dedicated quote page with input fields
-  // This must be a useEffect (hook) and called unconditionally
-  useEffect(() => {
-    if (step === "quote" && config) {
-      // Redirect to the dedicated quote page which has the input fields
-      const quoteRoute = `/products/${productSlug}/configurator/quote`;
-      // Use router to navigate (this is a special case where we need the full page)
-      router.replace(quoteRoute);
+  // Handle quote generation
+  const handleGenerateQuote = useCallback(async () => {
+    if (!customerEmail) {
+      setQuoteError("Please enter your email address");
+      return;
     }
-  }, [step, productSlug, router, config]);
 
-  // Don't show loading state - use cached config or show nothing briefly
+    if (!config) {
+      setQuoteError("Product configuration not loaded. Please refresh the page.");
+      return;
+    }
+
+    setIsGenerating(true);
+    setQuoteError("");
+
+    try {
+      const response = await fetch("/api/quotes/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: config.productId,
+          productName: config.productName,
+          productConfig: config,
+          selections: state.selections,
+          customerEmail,
+          customerName: customerName || undefined,
+          customerPhone: customerPhone || undefined,
+          notes: notes || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to generate quote");
+      }
+
+      const data = await response.json();
+      
+      if (data.quoteId) {
+        router.push(`/quote/${data.quoteId}`);
+      } else {
+        setQuoteError("Quote generated but no quote ID returned");
+      }
+    } catch (err: any) {
+      setQuoteError(err.message || "Failed to generate quote. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [customerEmail, customerName, customerPhone, notes, config, state.selections, router]);
+
+  // Listen for generateQuote event from NavigationButtons
+  useEffect(() => {
+    const handleGenerateQuoteEvent = () => {
+      if (customerEmail) {
+        handleGenerateQuote();
+      } else {
+        setQuoteError("Please enter your email address");
+      }
+    };
+    
+    window.addEventListener('generateQuote', handleGenerateQuoteEvent);
+    return () => window.removeEventListener('generateQuote', handleGenerateQuoteEvent);
+  }, [customerEmail, handleGenerateQuote]);
+
+  // Don't show loading state for normal steps - use cached config or show nothing briefly
   // This prevents the "Loading configuration..." flash between steps
   if (!config) {
     return null; // Return null instead of loading message for instant transitions
   }
 
-  // Show loading state briefly while redirecting to quote page
+  // For quote step, render the quote form instead of options
   if (step === "quote") {
-    return (
-      <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-lg text-gray-600 mb-2">Loading quote...</div>
-        </div>
+    const quoteStep = config.steps.find(s => s.id === "quote");
+    const design = config.design;
+    
+    // Build the "Your Selections" summary for the left panel (below image)
+    const quoteSummary = (
+      <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Selections</h3>
+        
+        {/* Main Product */}
+        {config.mainProductPipedriveId && (
+          <div className="border-b border-gray-200 pb-4">
+            <h4 className="font-medium text-gray-900 mb-2">Sauna</h4>
+            <ul className="space-y-1">
+              <li className="text-sm text-gray-700">
+                {capitalize(config.productName || "Main Product")}
+              </li>
+            </ul>
+          </div>
+        )}
+        
+        {config.steps.filter(s => s.id !== "quote").map((stepItem) => {
+          const stepItemData = config.stepData[stepItem.id];
+          const selectedIds = state.selections[stepItem.id] || [];
+          if (selectedIds.length === 0 || !stepItemData) return null;
+
+          return (
+            <div key={stepItem.id} className="border-b border-gray-200 pb-4 last:border-0">
+              <h4 className="font-medium text-gray-900 mb-2">
+                {stepItem.id === "rear-glass-wall" ? "Rear Wall Option" : stepItem.name}
+              </h4>
+              <ul className="space-y-1">
+                {selectedIds.map((optionId) => {
+                  let option = stepItemData.options.find((opt) => opt.id === optionId);
+                  
+                  if (!option) {
+                    const defaultStepData = getStepData(stepItem.id);
+                    if (defaultStepData) {
+                      option = defaultStepData.options.find((opt) => opt.id === optionId);
+                    }
+                  }
+                  
+                  if (!option) {
+                    return (
+                      <li key={optionId} className="text-sm text-gray-700">
+                        {capitalize(optionId.replace(/-/g, " "))}
+                      </li>
+                    );
+                  }
+                  
+                  let displayTitle = option.title;
+                  if (stepItem.id === "heater") {
+                    const titleLower = option.title.toLowerCase();
+                    if (titleLower.includes("according to") || titleLower.includes("heater stone")) {
+                      displayTitle = "Heater stones";
+                    }
+                  }
+                  
+                  return (
+                    <li key={optionId} className="text-sm text-gray-700">
+                      {capitalize(displayTitle)}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </div>
+    );
+    
+    return (
+      <ConfiguratorLayout
+        currentStepId={"quote" as StepId}
+        stepData={null}
+        productImageUrl={productImageUrl}
+        productName={config.productName}
+        steps={config.steps}
+        design={config.design}
+        productSlug={productSlug}
+        canProceed={!!customerEmail}
+        selectedOptionImageUrl={undefined}
+        selectedOptionTitle={undefined}
+        isGenerating={isGenerating}
+        leftPanelContent={quoteSummary}
+      >
+        {/* Contact Information Form - appears on the right side */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Contact Information</h2>
+            <p className="text-gray-600">
+              Please provide your contact details to generate your quote.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                placeholder="your@email.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                placeholder="John Doe"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                placeholder="+44 20 1234 5678"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Notes (Optional)
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                placeholder="Any special requirements or questions..."
+              />
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {quoteError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-sm text-red-800">{quoteError}</p>
+            </div>
+          )}
+        </div>
+      </ConfiguratorLayout>
     );
   }
 
+  // For non-quote steps, render the normal options
   return (
     <ConfiguratorLayout
-      currentStepId={stepData.stepId as StepId}
+      currentStepId={stepData?.stepId as StepId}
       stepData={stepData}
       productImageUrl={productImageUrl}
       productName={config.productName}

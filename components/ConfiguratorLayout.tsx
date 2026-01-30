@@ -13,7 +13,7 @@ import { STEPS as DEFAULT_STEPS } from "@/constants/steps";
 
 interface ConfiguratorLayoutProps {
   currentStepId: StepId;
-  stepData: StepData;
+  stepData: StepData | null;
   children: ReactNode;
   productImageUrl?: string;
   productName?: string;
@@ -23,6 +23,8 @@ interface ConfiguratorLayoutProps {
   canProceed?: boolean; // Optional override for canProceed calculation
   selectedOptionImageUrl?: string; // Image URL of selected option to display
   selectedOptionTitle?: string; // Title of selected option for badge (preserves capitalization)
+  isGenerating?: boolean; // For quote generation loading state
+  leftPanelContent?: ReactNode; // Content to show below the image on the left side (e.g., quote summary)
 }
 
 export default function ConfiguratorLayout({
@@ -37,11 +39,13 @@ export default function ConfiguratorLayout({
   canProceed: propCanProceed,
   selectedOptionImageUrl,
   selectedOptionTitle: propSelectedOptionTitle,
+  isGenerating,
+  leftPanelContent,
 }: ConfiguratorLayoutProps) {
   const { isStepComplete } = useConfigurator();
   const { config } = useAdminConfig();
-  // Use prop if provided, otherwise calculate
-  const canProceed = propCanProceed !== undefined ? propCanProceed : isStepComplete(currentStepId, stepData);
+  // Use prop if provided, otherwise calculate (handle null stepData for quote step)
+  const canProceed = propCanProceed !== undefined ? propCanProceed : (stepData ? isStepComplete(currentStepId, stepData) : true);
   
   // Use props if provided (product-based), otherwise use context (legacy)
   const productName = propProductName || config?.productName || "The Skuare";
@@ -61,14 +65,14 @@ export default function ConfiguratorLayout({
   
   const displayImageUrl = 
     (isValidImageUrl(selectedOptionImageUrl) ? selectedOptionImageUrl : undefined) ||
-    (isValidImageUrl(stepData.imageUrl) ? stepData.imageUrl : undefined) ||
+    (stepData && isValidImageUrl(stepData.imageUrl) ? stepData.imageUrl : undefined) ||
     (isValidImageUrl(productImageUrl) ? productImageUrl : undefined) ||
     (config && isValidImageUrl(config.mainProductImageUrl) ? config.mainProductImageUrl : undefined) ||
     undefined;
   
   // Determine if we should use option image scaling (for step images and option images)
   // Step images (like accessories) should also use object-contain for better scaling
-  const isStepImage = !selectedOptionImageUrl && isValidImageUrl(stepData.imageUrl);
+  const isStepImage = !selectedOptionImageUrl && stepData && isValidImageUrl(stepData.imageUrl);
   const shouldUseOptionImageScaling = !!selectedOptionImageUrl || isStepImage;
   
   // Use contain scaling for main product image to show it fully without cropping
@@ -83,7 +87,7 @@ export default function ConfiguratorLayout({
   // Find the selected option title for the image label
   // Use propSelectedOptionTitle if provided (preserves exact capitalization), otherwise find by imageUrl
   const selectedOptionLabel = propSelectedOptionTitle || (() => {
-    const selectedOption = selectedOptionImageUrl 
+    const selectedOption = (selectedOptionImageUrl && stepData)
       ? stepData.options.find(opt => opt.imageUrl === selectedOptionImageUrl)
       : undefined;
     return selectedOption?.title;
@@ -96,8 +100,8 @@ export default function ConfiguratorLayout({
         priority: "selectedOption > stepImage > productImage > adminConfig",
         hasSelectedOptionImage: !!selectedOptionImageUrl,
         selectedOptionImageUrl: selectedOptionImageUrl?.substring(0, 50),
-        hasStepImageUrl: !!stepData.imageUrl,
-        stepImageUrl: stepData.imageUrl?.substring(0, 50),
+        hasStepImageUrl: !!stepData?.imageUrl,
+        stepImageUrl: stepData?.imageUrl?.substring(0, 50),
         hasProductImageUrl: !!productImageUrl,
         productImageUrl: productImageUrl?.substring(0, 50),
         hasConfigMainImage: !!config?.mainProductImageUrl,
@@ -106,7 +110,7 @@ export default function ConfiguratorLayout({
         stepId: currentStepId,
       });
     }
-  }, [selectedOptionImageUrl, productImageUrl, config?.mainProductImageUrl, stepData.imageUrl, displayImageUrl, currentStepId]);
+  }, [selectedOptionImageUrl, productImageUrl, config?.mainProductImageUrl, stepData?.imageUrl, displayImageUrl, currentStepId]);
   const imageWidth = design?.imageWidth || "70%";
   const panelWidth = design?.panelWidth || "30%";
 
@@ -156,13 +160,19 @@ export default function ConfiguratorLayout({
             <div className="px-4 py-4">
               <ProductImage
                 imageUrl={displayImageUrl}
-                alt={`${productName} - ${stepData.title}`}
+                alt={`${productName} - ${stepData?.title || currentStepId}`}
                 selectedOptionLabel={selectedOptionLabel}
                 isOptionImage={shouldUseOptionImageScaling}
                 useContainScaling={useContainForMainImage}
               />
             </div>
           </div>
+          {/* Left panel content below image on mobile (e.g., quote summary) */}
+          {leftPanelContent && (
+            <div className="px-4 py-4">
+              {leftPanelContent}
+            </div>
+          )}
           {/* Scrollable options panel below image */}
           <div className="px-4 py-4 pb-6">
             <div 
@@ -181,6 +191,7 @@ export default function ConfiguratorLayout({
                   canProceed={canProceed}
                   steps={finalSteps}
                   productSlug={productSlug}
+                  isGenerating={isGenerating}
                 />
               </div>
             </div>
@@ -189,17 +200,25 @@ export default function ConfiguratorLayout({
 
         {/* Tablet (768px - 1023px): Side by side with 50/50 split */}
         <div className="hidden md:flex lg:hidden md:flex-row gap-4 md:gap-6 px-4 md:px-6 py-4 md:py-6">
-          {/* Left: Product Image - 50% on tablet */}
+          {/* Left: Product Image + optional content below - 50% on tablet */}
           <div 
-            className="md:flex-1 md:sticky md:top-8"
+            className="md:flex-1 flex flex-col gap-4"
           >
-            <ProductImage
-              imageUrl={displayImageUrl}
-              alt={`${productName} - ${stepData.title}`}
-              selectedOptionLabel={selectedOptionLabel}
-              isOptionImage={shouldUseOptionImageScaling}
-              useContainScaling={useContainForMainImage}
-            />
+            <div className="md:sticky md:top-8">
+              <ProductImage
+                imageUrl={displayImageUrl}
+                alt={`${productName} - ${stepData?.title || currentStepId}`}
+                selectedOptionLabel={selectedOptionLabel}
+                isOptionImage={shouldUseOptionImageScaling}
+                useContainScaling={useContainForMainImage}
+              />
+            </div>
+            {/* Left panel content below image (e.g., quote summary) */}
+            {leftPanelContent && (
+              <div>
+                {leftPanelContent}
+              </div>
+            )}
           </div>
 
           {/* Right: Configuration Panel - 50% on tablet */}
@@ -222,6 +241,7 @@ export default function ConfiguratorLayout({
                   canProceed={canProceed}
                   steps={finalSteps}
                   productSlug={productSlug}
+                  isGenerating={isGenerating}
                 />
               </div>
             </div>
@@ -230,17 +250,25 @@ export default function ConfiguratorLayout({
 
         {/* Desktop (≥ 1024px): Side by side with 70/30 split */}
         <div className="hidden lg:flex lg:flex-row gap-4 sm:gap-8 px-4 sm:px-8 py-4 sm:py-8">
-          {/* Left: Product Image - ~70% on desktop */}
+          {/* Left: Product Image + optional content below - ~70% on desktop */}
           <div 
-            className="lg:flex-[7] lg:sticky lg:top-8"
+            className="lg:flex-[7] flex flex-col gap-4"
           >
-            <ProductImage
-              imageUrl={displayImageUrl}
-              alt={`${productName} - ${stepData.title}`}
-              selectedOptionLabel={selectedOptionLabel}
-              isOptionImage={shouldUseOptionImageScaling}
-              useContainScaling={useContainForMainImage}
-            />
+            <div className="lg:sticky lg:top-8">
+              <ProductImage
+                imageUrl={displayImageUrl}
+                alt={`${productName} - ${stepData?.title || currentStepId}`}
+                selectedOptionLabel={selectedOptionLabel}
+                isOptionImage={shouldUseOptionImageScaling}
+                useContainScaling={useContainForMainImage}
+              />
+            </div>
+            {/* Left panel content below image (e.g., quote summary) */}
+            {leftPanelContent && (
+              <div>
+                {leftPanelContent}
+              </div>
+            )}
           </div>
 
           {/* Right: Configuration Panel - ~30% on desktop */}
@@ -263,6 +291,7 @@ export default function ConfiguratorLayout({
                   canProceed={canProceed}
                   steps={finalSteps}
                   productSlug={productSlug}
+                  isGenerating={isGenerating}
                 />
               </div>
             </div>
