@@ -34,13 +34,13 @@ button, [role="button"], a, input[type="button"], input[type="submit"] {
 }
 
 /* Admin panel input fields - white text */
-/* Exclude quote form inputs which should have black text */
-input[type="text"]:not(.quote-form-input),
-input[type="number"]:not(.quote-form-input),
-input[type="email"]:not(.quote-form-input),
-input[type="url"]:not(.quote-form-input),
-textarea:not(.quote-form-input),
-select:not(.quote-form-input) {
+/* Exclude quote form inputs and delivery location input which should have black text */
+input[type="text"]:not(.quote-form-input):not(.delivery-location-input),
+input[type="number"]:not(.quote-form-input):not(.delivery-location-input),
+input[type="email"]:not(.quote-form-input):not(.delivery-location-input),
+input[type="url"]:not(.quote-form-input):not(.delivery-location-input),
+textarea:not(.quote-form-input):not(.delivery-location-input),
+select:not(.quote-form-input):not(.delivery-location-input) {
   color: #ffffff !important;
 }
 
@@ -54,6 +54,10 @@ select:not(.quote-form-input) {
   color: #303337 !important;
 }
 
+.delivery-location-input::placeholder {
+  color: #9ca3af !important;
+}
+
 .quote-form-input::placeholder {
   color: #9ca3af !important;
 }
@@ -64,8 +68,8 @@ input[type="text"][class*="text-gray-900"] {
   color: #1f2937 !important;
 }
 
-input[type="text"]:not(.quote-form-input)::placeholder,
-textarea:not(.quote-form-input)::placeholder {
+input[type="text"]:not(.quote-form-input):not(.delivery-location-input)::placeholder,
+textarea:not(.quote-form-input):not(.delivery-location-input)::placeholder {
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
