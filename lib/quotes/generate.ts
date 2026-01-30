@@ -286,13 +286,27 @@ export function generateQuote(
           : "Included";
       }
       
-      // Handle POA (Price on Application) options
-      const isPOA = option.priceLabel === "POA" || option.priceLabel?.toLowerCase() === "poa";
+      // Handle POA (Price to be confirmed) options
+      const isPOA = option.priceLabel === "Price to be confirmed" || 
+                    option.priceLabel?.toLowerCase() === "price to be confirmed" ||
+                    option.priceLabel === "POA" || 
+                    option.priceLabel?.toLowerCase() === "poa";
       if (isPOA) {
         displayDescription = displayDescription 
-          ? `${displayDescription}\nPrice on Application`
-          : "Price on Application";
+          ? `${displayDescription}\nPrice to be confirmed`
+          : "Price to be confirmed";
         finalPrice = 0; // Ensure price is 0 for POA items
+        
+        // Add delivery location if this is the delivery-outside-uk option
+        if (stepId === "delivery" && option.id === "delivery-outside-uk") {
+          // Try to get delivery location from request (passed from client)
+          const deliveryLocation = (request as any).deliveryLocation || "";
+          if (deliveryLocation) {
+            displayDescription = displayDescription 
+              ? `${displayDescription}\nDelivery Location: ${deliveryLocation}`
+              : `Price to be confirmed\nDelivery Location: ${deliveryLocation}`;
+          }
+        }
       }
       
       items.push({

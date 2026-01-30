@@ -234,8 +234,11 @@ export function QuotePDFDocument({
               <Text style={[styles.tableHeaderText, styles.colTotal]}>Total (incl. VAT)</Text>
             </View>
             {quote.items.map((item, index) => {
-              // Check if this is a POA (Price on Application) item
-              const isPOA = item.priceLabel === "POA" || item.priceLabel?.toLowerCase() === "poa";
+              // Check if this is a POA (Price to be confirmed) item
+              const isPOA = item.priceLabel === "Price to be confirmed" || 
+                            item.priceLabel?.toLowerCase() === "price to be confirmed" ||
+                            item.priceLabel === "POA" || 
+                            item.priceLabel?.toLowerCase() === "poa";
               
               // Calculate VAT rate (default to 20% for UK)
               const vatRate = item.vatRate !== undefined ? item.vatRate : (quote.taxRate !== undefined ? quote.taxRate : 0.20);
@@ -260,21 +263,26 @@ export function QuotePDFDocument({
                     </Text>
                     {item.optionDescription && (
                       <View style={{ marginTop: 4 }}>
-                        {item.optionDescription.split('\n').map((line, idx) => (
-                          <Text 
-                            key={idx} 
-                            style={[
-                              styles.tableCell, 
-                              { 
-                                fontSize: 9, 
-                                color: line === "Included" ? "#059669" : line === "Price on Application" ? "#dc2626" : "#9ca3af",
-                                fontWeight: (line === "Included" || line === "Price on Application") ? "bold" : "normal"
-                              }
-                            ]}
-                          >
-                            {line}
-                          </Text>
-                        ))}
+                        {item.optionDescription.split('\n').map((line, idx) => {
+                          const isLocationLine = line.startsWith("Delivery Location:");
+                          return (
+                            <Text 
+                              key={idx} 
+                              style={[
+                                styles.tableCell, 
+                                { 
+                                  fontSize: 9, 
+                                  color: line === "Included" ? "#059669" : 
+                                         line === "Price to be confirmed" ? "#dc2626" :
+                                         isLocationLine ? "#2563eb" : "#9ca3af",
+                                  fontWeight: (line === "Included" || line === "Price to be confirmed" || isLocationLine) ? "bold" : "normal"
+                                }
+                              ]}
+                            >
+                              {line}
+                            </Text>
+                          );
+                        })}
                       </View>
                     )}
                   </View>

@@ -20,7 +20,7 @@ export const deliveryData: StepData = {
       description: "International delivery - price will be confirmed separately",
       imageUrl: "",
       price: 0,
-      priceLabel: "POA", // Price on Application
+      priceLabel: "Price to be confirmed",
     },
   ],
 };

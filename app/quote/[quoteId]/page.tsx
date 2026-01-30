@@ -206,8 +206,11 @@ export default function QuotePortalPage() {
                 </thead>
                 <tbody>
                   {quote.items.map((item, index) => {
-                    // Check if this is a POA (Price on Application) item
-                    const isPOA = (item as any).priceLabel === "POA" || (item as any).priceLabel?.toLowerCase() === "poa";
+                    // Check if this is a POA (Price to be confirmed) item
+                    const isPOA = (item as any).priceLabel === "Price to be confirmed" || 
+                                  (item as any).priceLabel?.toLowerCase() === "price to be confirmed" ||
+                                  (item as any).priceLabel === "POA" || 
+                                  (item as any).priceLabel?.toLowerCase() === "poa";
                     
                     // Calculate VAT rate (default to 20% for UK)
                     // item.vatRate is stored as decimal (e.g., 0.20 for 20%)
@@ -231,14 +234,18 @@ export default function QuotePortalPage() {
                             <p className="text-sm text-gray-600">{item.stepName}</p>
                             {item.optionDescription && (
                               <div className="text-sm text-gray-500 mt-1">
-                                {item.optionDescription.split('\n').map((line, idx) => (
-                                  <p key={idx} className={
-                                    line === "Included" ? "font-medium text-green-700" : 
-                                    line === "Price on Application" ? "font-medium text-red-600" : ""
-                                  }>
-                                    {line}
-                                  </p>
-                                ))}
+                                {item.optionDescription.split('\n').map((line, idx) => {
+                                  const isLocationLine = line.startsWith("Delivery Location:");
+                                  return (
+                                    <p key={idx} className={
+                                      line === "Included" ? "font-medium text-green-700" : 
+                                      line === "Price to be confirmed" ? "font-medium text-red-600" :
+                                      isLocationLine ? "font-medium text-blue-600" : ""
+                                    }>
+                                      {line}
+                                    </p>
+                                  );
+                                })}
                               </div>
                             )}
                           </div>

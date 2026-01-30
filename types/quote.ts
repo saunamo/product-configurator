@@ -45,5 +45,6 @@ export type QuoteGenerationRequest = {
   customerName?: string;
   customerPhone?: string;
   notes?: string;
+  deliveryLocation?: string; // Delivery location for "Delivery Outside UK" option
 };
 

@@ -84,6 +84,9 @@ export default function ProductConfiguratorStepPage() {
   // Hot Tubs expandable section state
   const [hotTubsExpanded, setHotTubsExpanded] = useState(false);
   
+  // Delivery location state (for "Delivery Outside UK" option)
+  const [deliveryLocation, setDeliveryLocation] = useState<string>("");
+  
   // Load config function
   const loadConfig = async () => {
     try {
@@ -894,6 +897,27 @@ export default function ProductConfiguratorStepPage() {
     }
   }, [config?.steps]);
 
+  // Load delivery location from localStorage on mount
+  useEffect(() => {
+    if (step === "delivery" && typeof window !== "undefined") {
+      const savedLocation = localStorage.getItem(`delivery-location-${productSlug}`);
+      if (savedLocation) {
+        setDeliveryLocation(savedLocation);
+      }
+    }
+  }, [step, productSlug]);
+  
+  // Save delivery location to localStorage when it changes
+  useEffect(() => {
+    if (step === "delivery") {
+      if (deliveryLocation && typeof window !== "undefined") {
+        localStorage.setItem(`delivery-location-${productSlug}`, deliveryLocation);
+      } else if (!deliveryLocation && typeof window !== "undefined") {
+        localStorage.removeItem(`delivery-location-${productSlug}`);
+      }
+    }
+  }, [deliveryLocation, step, productSlug]);
+  
   // Preload images for the next step to reduce lag on navigation
   useEffect(() => {
     if (!config || !stepData) return;
@@ -1263,6 +1287,11 @@ export default function ProductConfiguratorStepPage() {
     setQuoteError("");
 
     try {
+      // Get delivery location if available
+      const savedDeliveryLocation = typeof window !== "undefined" 
+        ? localStorage.getItem(`delivery-location-${productSlug}`) || ""
+        : "";
+      
       const response = await fetch("/api/quotes/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1275,6 +1304,7 @@ export default function ProductConfiguratorStepPage() {
           customerName: customerName || undefined,
           customerPhone: customerPhone || undefined,
           notes: notes || undefined,
+          deliveryLocation: savedDeliveryLocation,
         }),
       });
 
@@ -1295,7 +1325,7 @@ export default function ProductConfiguratorStepPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [customerEmail, customerName, customerPhone, notes, config, state.selections, router]);
+  }, [customerEmail, customerName, customerPhone, notes, config, state.selections, router, productSlug]);
 
   // Listen for generateQuote event from NavigationButtons
   useEffect(() => {
@@ -1869,6 +1899,75 @@ export default function ProductConfiguratorStepPage() {
             </OptionSection>
           )}
         </div>
+      ) : step === "delivery" ? (
+        <OptionSection
+          title={stepData.title}
+          description={stepData.description}
+          subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
+          subtext={stepData.subtext}
+          moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
+            ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
+            : undefined}
+        >
+          {stepData.options.map((option) => {
+            const productName = config?.productName || "";
+            const productId = config?.productId || "";
+            const isCube = productSlug.toLowerCase().includes("cube") || 
+                           productName.toLowerCase().includes("cube") ||
+                           productId.toLowerCase().includes("cube");
+            const isBarrel = productSlug.toLowerCase().includes("barrel") || 
+                            productName.toLowerCase().includes("barrel") ||
+                            productId.toLowerCase().includes("barrel");
+            const productType = isCube ? "cube" : isBarrel ? "barrel" : undefined;
+            
+            const isOutsideUK = option.id === "delivery-outside-uk";
+            const isSelected = selectedIds.includes(option.id);
+            
+            return (
+              <div key={option.id}>
+                <OptionCard
+                  option={option}
+                  isSelected={isSelected}
+                  selectionType={stepData.selectionType}
+                  onToggle={() => {
+                    handleToggle(option.id);
+                    // Clear location if deselecting
+                    if (isSelected) {
+                      setDeliveryLocation("");
+                      if (typeof window !== "undefined") {
+                        localStorage.removeItem(`delivery-location-${productSlug}`);
+                      }
+                    }
+                  }}
+                  stepId={step}
+                  productType={productType}
+                  preFetchedPrice={getPreFetchedPrice(option.id)}
+                />
+                {/* Show input field when "Delivery Outside UK" is selected */}
+                {isOutsideUK && isSelected && (
+                  <div className="mt-3 ml-4 pl-4 border-l-2 border-green-800">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Delivery Location
+                    </label>
+                    <input
+                      type="text"
+                      value={deliveryLocation}
+                      onChange={(e) => {
+                        setDeliveryLocation(e.target.value);
+                        // Store immediately
+                        if (typeof window !== "undefined") {
+                          localStorage.setItem(`delivery-location-${productSlug}`, e.target.value);
+                        }
+                      }}
+                      placeholder="Enter delivery location (e.g., France, Germany, etc.)"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 text-[#303337] placeholder:text-gray-400"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </OptionSection>
       ) : (
         <OptionSection
           title={stepData.title}
