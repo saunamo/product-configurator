@@ -123,12 +123,12 @@ export default function QuotePortalPage() {
               <h1 className="text-2xl sm:text-3xl font-bold text-[#303337] mb-2">Quote</h1>
               <p className="text-gray-600 text-sm sm:text-base">Quote ID: {quote.id}</p>
             </div>
-            <div className="sm:ml-4 flex-shrink-0 relative h-8 sm:h-12 w-[120px] sm:w-[180px]">
+            <div className="sm:ml-4 flex-shrink-0 relative h-10 sm:h-14 w-[160px] sm:w-[230px]">
               <Image 
-                src="/saunamo-logo.webp" 
+                src="/saunamo-logo.png" 
                 alt="Saunamo Logo" 
                 fill
-                sizes="180px"
+                sizes="230px"
                 className="object-contain"
                 priority
               />
