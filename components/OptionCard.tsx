@@ -39,6 +39,7 @@ interface OptionCardProps {
   baseLightingOptionId?: string; // Base option ID for lighting price calculation
   preFetchedPrice?: { price: number; currency: string; vatRate?: number }; // Pre-fetched price from batch API
   basePreFetchedPrice?: { price: number; currency: string; vatRate?: number }; // Pre-fetched price for base lighting option
+  additionalContent?: React.ReactNode; // Additional content to render inside the card when selected
 }
 
 export default function OptionCard({
@@ -54,6 +55,7 @@ export default function OptionCard({
   baseLightingOptionId,
   preFetchedPrice,
   basePreFetchedPrice,
+  additionalContent,
 }: OptionCardProps) {
   const { config } = useAdminConfig();
   const design = config?.design;
@@ -457,6 +459,13 @@ export default function OptionCard({
           />
         </div>
       </div>
+      
+      {/* Additional Content (e.g., delivery location input) - Renders when selected */}
+      {isSelected && additionalContent && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          {additionalContent}
+        </div>
+      )}
       
       {/* Expanded Description - Full width below the main row */}
       {extendedDescription && isExpanded && (

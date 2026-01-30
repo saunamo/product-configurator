@@ -49,6 +49,11 @@ select:not(.quote-form-input) {
   color: #303337 !important;
 }
 
+/* Delivery location input - brand dark text */
+.delivery-location-input {
+  color: #303337 !important;
+}
+
 .quote-form-input::placeholder {
   color: #9ca3af !important;
 }

@@ -1924,28 +1924,26 @@ export default function ProductConfiguratorStepPage() {
             const isSelected = selectedIds.includes(option.id);
             
             return (
-              <div key={option.id}>
-                <OptionCard
-                  option={option}
-                  isSelected={isSelected}
-                  selectionType={stepData.selectionType}
-                  onToggle={() => {
-                    handleToggle(option.id);
-                    // Clear location if deselecting
-                    if (isSelected) {
-                      setDeliveryLocation("");
-                      if (typeof window !== "undefined") {
-                        localStorage.removeItem(`delivery-location-${productSlug}`);
-                      }
+              <OptionCard
+                key={option.id}
+                option={option}
+                isSelected={isSelected}
+                selectionType={stepData.selectionType}
+                onToggle={() => {
+                  handleToggle(option.id);
+                  // Clear location if deselecting
+                  if (isSelected) {
+                    setDeliveryLocation("");
+                    if (typeof window !== "undefined") {
+                      localStorage.removeItem(`delivery-location-${productSlug}`);
                     }
-                  }}
-                  stepId={step}
-                  productType={productType}
-                  preFetchedPrice={getPreFetchedPrice(option.id)}
-                />
-                {/* Show input field when "Delivery Outside UK" is selected */}
-                {isOutsideUK && isSelected && (
-                  <div className="mt-3 ml-4 pl-4 border-l-2 border-green-800">
+                  }
+                }}
+                stepId={step}
+                productType={productType}
+                preFetchedPrice={getPreFetchedPrice(option.id)}
+                additionalContent={isOutsideUK && isSelected ? (
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Delivery Location
                     </label>
@@ -1960,11 +1958,12 @@ export default function ProductConfiguratorStepPage() {
                         }
                       }}
                       placeholder="Enter delivery location (e.g., France, Germany, etc.)"
-                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 text-[#303337] placeholder:text-gray-400"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 delivery-location-input text-[#303337] placeholder:text-gray-400"
+                      style={{ color: '#303337' }}
                     />
                   </div>
-                )}
-              </div>
+                ) : undefined}
+              />
             );
           })}
         </OptionSection>
