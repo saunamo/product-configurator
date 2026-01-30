@@ -1943,7 +1943,7 @@ export default function ProductConfiguratorStepPage() {
                 productType={productType}
                 preFetchedPrice={getPreFetchedPrice(option.id)}
                 additionalContent={isOutsideUK && isSelected ? (
-                  <div>
+                  <div onClick={(e) => e.stopPropagation()}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Delivery Location
                     </label>
@@ -1957,6 +1957,7 @@ export default function ProductConfiguratorStepPage() {
                           localStorage.setItem(`delivery-location-${productSlug}`, e.target.value);
                         }
                       }}
+                      onClick={(e) => e.stopPropagation()}
                       placeholder="Enter delivery location (e.g., France, Germany, etc.)"
                       className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800 delivery-location-input text-[#303337] placeholder:text-gray-400"
                       style={{ color: '#303337' }}

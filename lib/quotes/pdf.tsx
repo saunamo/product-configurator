@@ -273,8 +273,9 @@ export function QuotePDFDocument({
                                 { 
                                   fontSize: 9, 
                                   color: line === "Included" ? "#059669" : 
+                                         line === "Price to be confirmed" ? "#dc2626" :
                                          isLocationLine ? "#2563eb" : "#9ca3af",
-                                  fontWeight: (line === "Included" || isLocationLine) ? "bold" : "normal"
+                                  fontWeight: (line === "Included" || line === "Price to be confirmed" || isLocationLine) ? "bold" : "normal"
                                 }
                               ]}
                             >
