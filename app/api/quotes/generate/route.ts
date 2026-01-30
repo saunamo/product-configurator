@@ -379,16 +379,20 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`\n📤 [Webhook] Sending Zapier webhook NOW (after quote saved)...`);
         
-        // Get production base URL
+        // Get production base URL - IMPORTANT: This must match your actual deployed domain
+        // Priority: NEXT_PUBLIC_SITE_URL > QUOTE_PORTAL_URL > NEXT_PUBLIC_APP_URL > default
         let productionBaseUrl = "https://config.saunamo.co.uk"; // Default to config subdomain
         
-        if (process.env.QUOTE_PORTAL_URL) {
+        if (process.env.NEXT_PUBLIC_SITE_URL) {
+          productionBaseUrl = process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+        } else if (process.env.QUOTE_PORTAL_URL) {
           productionBaseUrl = process.env.QUOTE_PORTAL_URL.replace(/\/quote.*$/, '').replace(/\/$/, '');
         } else if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) {
           productionBaseUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
         }
         
         console.log(`[Webhook] Using production base URL: ${productionBaseUrl}`);
+        console.log(`[Webhook] Environment vars: NEXT_PUBLIC_SITE_URL=${process.env.NEXT_PUBLIC_SITE_URL}, QUOTE_PORTAL_URL=${process.env.QUOTE_PORTAL_URL}, NEXT_PUBLIC_APP_URL=${process.env.NEXT_PUBLIC_APP_URL}`);
         
         // Get product image URL
         const productConfig = body.productConfig as any;
@@ -398,12 +402,14 @@ export async function POST(request: NextRequest) {
           productImageUrl = (adminConfig as any)?.mainProductImageUrl || "";
         }
         
-        // Make URL absolute
+        // Make URL absolute and convert .webp to .jpg for email compatibility (email clients don't support webp)
         if (productImageUrl && !productImageUrl.startsWith('http')) {
-          productImageUrl = `${productionBaseUrl}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`;
+          // Remove leading slash if present for consistent handling
+          const cleanPath = productImageUrl.startsWith('/') ? productImageUrl : `/${productImageUrl}`;
+          productImageUrl = `${productionBaseUrl}${cleanPath}`;
         }
         
-        // Quote portal URL
+        // Quote portal URL - this is where customers view their quote
         const quotePortalUrl = `${productionBaseUrl}/quote/${quote.id}`;
         console.log(`[Webhook] Quote portal URL: ${quotePortalUrl}`);
         console.log(`[Webhook] Product image URL: ${productImageUrl}`);

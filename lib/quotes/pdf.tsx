@@ -167,10 +167,19 @@ export function QuotePDFDocument({
             <View style={{ flex: 1 }}>
               <Text style={styles.quoteTitle}>Quote</Text>
               <Text style={styles.quoteIdText}>Quote ID: {quote.id}</Text>
+              {/* Company Information - moved from footer to match quote portal */}
+              <View style={{ marginTop: 12 }}>
+                <Text style={[styles.notesText, { fontSize: 9, color: "#6b7280" }]}>
+                  Arbor Eco Lda{"\n"}
+                  Rua Bombeiros Voluntários de Ourém{"\n"}
+                  2490-755 Vilar dos Prazeres, Ourém, Portugal{"\n"}
+                  E-mail: info@saunamo.pt | NIF: 517939126
+                </Text>
+              </View>
             </View>
             <View style={{ marginLeft: 16 }}>
               <Image
-                src={join(process.cwd(), "public", "saunamo-logo.webp")}
+                src={join(process.cwd(), "public", "saunamo-logo.png")}
                 style={{ width: 199, height: 35 }} // 28% smaller: 276 * 0.72 = 199, 48 * 0.72 = 35
               />
             </View>
@@ -341,17 +350,6 @@ export function QuotePDFDocument({
           </View>
         </View>
 
-        {/* Company Information Footer */}
-        <View style={[styles.sectionBox, { marginTop: 24, break: false }]}>
-          <Text style={styles.notesText}>
-            <Text style={{ fontWeight: "bold" }}>Arbor Eco Unipessoal Lda</Text>{"\n"}
-            Rua Bombeiros Voluntários de Ourém{"\n"}
-            2490-755 Vilar dos Prazeres{"\n"}
-            Ourém, Portugal{"\n"}
-            E-mail: info@saunamo.pt{"\n"}
-            NIF: 517939126
-          </Text>
-        </View>
       </Page>
     </Document>
   );
