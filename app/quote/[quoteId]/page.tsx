@@ -134,6 +134,22 @@ export default function QuotePortalPage() {
               />
             </div>
           </div>
+          
+          {/* Company Information */}
+          <div className="border-t border-gray-200 pt-4 text-sm text-gray-700">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <p className="font-semibold text-gray-900">Arbor Eco Lda</p>
+                <p>Rua Bombeiros Voluntários de Ourém</p>
+                <p>2490-755 Vilar dos Prazeres</p>
+                <p>Ourém, Portugal</p>
+              </div>
+              <div className="sm:text-right">
+                <p>E-mail: <a href="mailto:info@saunamo.pt" className="text-[#303337] hover:underline">info@saunamo.pt</a></p>
+                <p>NIF: 517939126</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Customer Information - Combined with Quote Details */}
@@ -335,17 +351,6 @@ export default function QuotePortalPage() {
           </button>
         </div>
 
-        {/* Company Information Footer */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
-          <div className="text-sm text-gray-700 space-y-1">
-            <p className="font-semibold text-gray-900">Arbor Eco Unipessoal Lda</p>
-            <p>Rua Bombeiros Voluntários de Ourém</p>
-            <p>2490-755 Vilar dos Prazeres</p>
-            <p>Ourém, Portugal</p>
-            <p className="mt-2">E-mail: <a href="mailto:info@saunamo.pt" className="text-[#303337] hover:underline">info@saunamo.pt</a></p>
-            <p>NIF: 517939126</p>
-          </div>
-        </div>
       </div>
     </div>
   );

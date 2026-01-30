@@ -1433,8 +1433,7 @@ export default function ProductConfiguratorStepPage() {
                 type="email"
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
-                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="your@email.com"
                 required
               />
@@ -1448,8 +1447,7 @@ export default function ProductConfiguratorStepPage() {
                 type="text"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
-                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="John Doe"
               />
             </div>
@@ -1462,8 +1460,7 @@ export default function ProductConfiguratorStepPage() {
                 type="tel"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
-                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="+44 20 1234 5678"
               />
             </div>
@@ -1476,8 +1473,7 @@ export default function ProductConfiguratorStepPage() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
-                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+                className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="Any special requirements or questions..."
               />
             </div>

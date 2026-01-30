@@ -44,14 +44,23 @@ select:not(.quote-form-input) {
   color: #ffffff !important;
 }
 
+/* Quote form inputs - brand dark text */
+.quote-form-input {
+  color: #303337 !important;
+}
+
+.quote-form-input::placeholder {
+  color: #9ca3af !important;
+}
+
 /* Override for option title inputs - they should have black text */
 input[type="text"].text-gray-900,
 input[type="text"][class*="text-gray-900"] {
   color: #1f2937 !important;
 }
 
-input[type="text"]::placeholder,
-textarea::placeholder {
+input[type="text"]:not(.quote-form-input)::placeholder,
+textarea:not(.quote-form-input)::placeholder {
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
