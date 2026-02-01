@@ -89,14 +89,16 @@
           "title": "Behind Backrests (2x 2.5m LED)",
           "description": "",
           "imageUrl": "",
-          "price": 0
+          "price": 420,
+          "pipedriveProductId": 17834
         },
         {
           "id": "lighting-4x-25m-led",
           "title": "Under Bench + Behind Backrests (4x 2.5m LED)",
           "description": "",
           "imageUrl": "",
-          "price": 0
+          "price": 840,
+          "pipedriveProductId": 17834
         }
       ],
       "selectionType": "single",
