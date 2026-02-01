@@ -1431,13 +1431,23 @@ export default function ProductConfiguratorStepPage() {
         {/* Installation Disclaimers */}
         {(() => {
           const installationSelections = state.selections["electrical-assembly"] || [];
+          
+          // Check for electrical work - specific IDs only
           const hasElectrical = installationSelections.some(id => 
-            id === "electrical-installation" || id === "full-service"
-          );
-          const hasAssembly = installationSelections.some(id => 
-            id === "sauna-assembly" || id === "full-service"
+            id === "electrical-installation" || 
+            id === "full-service" ||
+            id === "electrical-assembly-electrical-work" ||
+            id.toLowerCase().includes("electrical-work")
           );
           
+          // Check for assembly - specific IDs only (exclude electrical-work option)
+          const hasAssembly = installationSelections.some(id => 
+            id === "sauna-assembly" || 
+            id === "full-service" ||
+            id === "electrical-assembly-assembly"
+          );
+          
+          // Only show disclaimers if at least one is missing
           if (hasElectrical && hasAssembly) return null;
           
           return (

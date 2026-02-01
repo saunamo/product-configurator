@@ -24,6 +24,8 @@ const EXTENDED_DESCRIPTIONS: Record<string, string> = {
   // Wood Treatment
   "electrical-assembly-wood-treament-exterior": `<p>This is a protective treatment for the exterior wood, designed to extend its lifespan and maintain its appearance over time. With this treatment, we apply Tikkurila primer oil and Valtti Color Plus wood varnish to protect the wood against moisture, UV exposure, insects, mold, rot, and general weathering.</p><p>For long-term durability and resistance to the elements, annual reapplication of Valtti Color Plus is recommended. This treatment is essential for preserving the wood's structure and finish in outdoor conditions.</p>`,
   "electrical-assembly-interior": `<p>This is a protective treatment for the interior wooden surfaces of the sauna. With this treatment, we apply Tikkurila Sauna Wax and Sauna Floor Oil to improve resistance to dirt and mold.</p><p>While optional, this treatment is highly recommended to preserve the natural beauty of the wood and maintain a clean, protected finish inside the sauna.</p>`,
+  // Aisti interior treatment (handles typo in option ID)
+  "electrical-assembly-wood-treament-interior": `<p>This is a protective treatment for the interior wooden surfaces of the sauna. With this treatment, we apply Tikkurila Sauna Wax and Sauna Floor Oil to improve resistance to dirt and mold.</p><p>While optional, this treatment is highly recommended to preserve the natural beauty of the wood and maintain a clean, protected finish inside the sauna.</p>`,
 };
 
 interface OptionCardProps {

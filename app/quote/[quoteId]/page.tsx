@@ -272,22 +272,29 @@ export default function QuotePortalPage() {
           
           {/* Installation Disclaimers - Please Note section */}
           {(() => {
+            // Only check items from the electrical-assembly step
             const installationItems = quote.items.filter(item => 
-              item.stepId === "electrical-assembly" || 
-              item.stepName?.toLowerCase().includes("installation")
+              item.stepId === "electrical-assembly"
             );
+            
+            // Check for electrical work - specific IDs and title containing "electrical work"
             const hasElectrical = installationItems.some(item => 
               item.optionId === "electrical-installation" || 
               item.optionId === "full-service" ||
-              item.optionTitle?.toLowerCase().includes("electrical")
+              item.optionId === "electrical-assembly-electrical-work" ||
+              item.optionId?.toLowerCase().includes("electrical-work") ||
+              item.optionTitle?.toLowerCase().includes("electrical work")
             );
+            
+            // Check for assembly - specific IDs and title containing "assembly" (not "electrical")
             const hasAssembly = installationItems.some(item => 
               item.optionId === "sauna-assembly" || 
               item.optionId === "full-service" ||
-              item.optionTitle?.toLowerCase().includes("assembly") ||
-              item.optionTitle?.toLowerCase().includes("full service")
+              item.optionId === "electrical-assembly-assembly" ||
+              (item.optionTitle?.toLowerCase().includes("assembly") && !item.optionTitle?.toLowerCase().includes("electrical"))
             );
             
+            // Only show disclaimers if at least one is missing
             if (hasElectrical && hasAssembly) return null;
             
             return (
