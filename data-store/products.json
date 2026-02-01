@@ -70,5 +70,21 @@
     "imageUrl": "/indoor-sauna-thermo-black-220-4432644.webp",
     "createdAt": "2026-01-23T09:02:55.051Z",
     "updatedAt": "2026-01-23T09:02:55.522Z"
+  },
+  {
+    "id": "aura-110",
+    "name": "Infrared Sauna Aura 110",
+    "slug": "aura-110",
+    "imageUrl": "",
+    "createdAt": "2026-02-01T14:00:00.000Z",
+    "updatedAt": "2026-02-01T14:00:00.000Z"
+  },
+  {
+    "id": "aura-150",
+    "name": "Infrared Sauna Aura 150",
+    "slug": "aura-150",
+    "imageUrl": "",
+    "createdAt": "2026-02-01T14:00:00.000Z",
+    "updatedAt": "2026-02-01T14:00:00.000Z"
   }
 ]

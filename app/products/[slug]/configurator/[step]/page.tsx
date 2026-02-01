@@ -772,21 +772,20 @@ export default function ProductConfiguratorStepPage() {
     // Skip redirect logic for quote step (it's handled separately)
     if (step === "quote") return;
     
-    // Check if this is rear-glass-wall step and should be blocked for Hiki/Aisti only (Cube 125 should have it)
-    if (step === "rear-glass-wall" && config) {
-      const productName = config.productName || "";
-      const slugLower = productSlug.toLowerCase();
-      const nameLower = productName.toLowerCase();
-      const isHikiOrAisti = slugLower.includes("hiki") || 
-                            slugLower.includes("aisti") ||
-                            nameLower.includes("hiki") ||
-                            nameLower.includes("aisti");
+    // Check if current step is valid for this product
+    if (config && config.steps) {
+      const validStepIds = config.steps.map(s => s.id);
+      const isStepValid = validStepIds.includes(step);
       
-      if (isHikiOrAisti) {
-        console.log(`🚫 Blocking rear-glass-wall step for ${productName} (Hiki/Aisti model)`);
-        // Redirect to first available step (heater)
-        router.push(`/products/${productSlug}/configurator/heater`);
-        return;
+      if (!isStepValid) {
+        console.log(`🚫 Step "${step}" is not valid for this product. Valid steps:`, validStepIds);
+        // Redirect to first available step for this product
+        const firstStep = config.steps[0];
+        if (firstStep) {
+          console.log(`↪️ Redirecting to first step: ${firstStep.id}`);
+          router.push(`/products/${productSlug}/configurator/${firstStep.id}`);
+          return;
+        }
       }
     }
     
@@ -1356,6 +1355,26 @@ export default function ProductConfiguratorStepPage() {
         </div>
       </div>
     );
+  }
+
+  // Check if current step is valid for this product - show loading while redirecting
+  if (config.steps && step !== "quote") {
+    const validStepIds = config.steps.map(s => s.id);
+    if (!validStepIds.includes(step)) {
+      // Don't render anything - let the useEffect redirect
+      return (
+        <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
+          <div className="text-center">
+            <img 
+              src="/saunamo-logo.webp" 
+              alt="Saunamo" 
+              className="h-10 mx-auto mb-6 animate-pulse"
+            />
+            <p className="text-gray-500">Loading configurator...</p>
+          </div>
+        </div>
+      );
+    }
   }
 
   // For quote step, render the quote form instead of options

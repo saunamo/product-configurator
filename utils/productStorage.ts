@@ -258,44 +258,32 @@ export async function processProductConfig(
   productInfo?: { slug?: string; name?: string }
 ): Promise<ProductConfig> {
   try {
-    // Ensure all steps from STEPS constant are included, in the correct order
-      const { STEPS } = require("@/constants/steps");
-      const { stepDataMap } = require("@/data");
-      const stepOrder = STEPS.map((s: { id: string }) => s.id);
-      
-      // Build steps array: include all steps from STEPS constant, preserving existing step data
-      const reorderedSteps = stepOrder
-        .map((stepId: string) => {
-          // First, try to find existing step in config
-          const existingStep = config.steps?.find((s: { id: string }) => s.id === stepId);
-          if (existingStep) {
-            return existingStep;
-          }
-          // If step doesn't exist, create it from STEPS constant
-          const stepFromConstant = STEPS.find((s: { id: string }) => s.id === stepId);
-          if (stepFromConstant) {
-            console.log(`➕ Adding missing step "${stepId}" to product config`);
-            return {
-              id: stepFromConstant.id,
-              name: stepFromConstant.name,
-              route: stepFromConstant.route,
-            };
-          }
-          return null;
-        })
-        .filter((step): step is NonNullable<typeof step> => step !== null)
-        // Add any extra steps that aren't in STEPS constant (for backward compatibility)
-        .concat(config.steps?.filter((s: { id: string }) => !stepOrder.includes(s.id)) || []);
-      
-      // Ensure stepData exists for all steps (add default stepData if missing)
-      const updatedStepData = { ...config.stepData };
-      for (const step of reorderedSteps) {
-        if (!updatedStepData[step.id] && stepDataMap[step.id]) {
-          console.log(`➕ Adding missing stepData for "${step.id}" to product config`);
-          updatedStepData[step.id] = stepDataMap[step.id];
-        }
+    // Use product's configured steps - DO NOT add missing steps from STEPS constant
+    // Each product defines its own steps in its config file
+    const { STEPS } = require("@/constants/steps");
+    const { stepDataMap } = require("@/data");
+    const stepOrder = STEPS.map((s: { id: string }) => s.id);
+    
+    // Reorder existing product steps according to STEPS constant order (but DON'T add missing ones)
+    const existingStepIds = config.steps?.map((s: { id: string }) => s.id) || [];
+    const reorderedSteps = [...(config.steps || [])].sort((a, b) => {
+      const aIndex = stepOrder.indexOf(a.id);
+      const bIndex = stepOrder.indexOf(b.id);
+      // If not in STEPS constant, put at end
+      const aPos = aIndex >= 0 ? aIndex : stepOrder.length + existingStepIds.indexOf(a.id);
+      const bPos = bIndex >= 0 ? bIndex : stepOrder.length + existingStepIds.indexOf(b.id);
+      return aPos - bPos;
+    });
+    
+    // Ensure stepData exists for all product steps (add default stepData if missing)
+    const updatedStepData = { ...config.stepData };
+    for (const step of reorderedSteps) {
+      if (!updatedStepData[step.id] && stepDataMap[step.id]) {
+        console.log(`➕ Adding missing stepData for "${step.id}" to product config`);
+        updatedStepData[step.id] = stepDataMap[step.id];
       }
-      config.stepData = updatedStepData;
+    }
+    config.stepData = updatedStepData;
       
       // Filter out rear-glass-wall step for Hiki and Aisti models only (Cube 125 should have it)
       // Get product info to check model type

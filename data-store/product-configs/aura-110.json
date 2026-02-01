@@ -1,0 +1,300 @@
+{
+  "productId": "aura-110",
+  "productName": "Infrared Sauna Aura 110",
+  "steps": [
+    {
+      "id": "lighting",
+      "name": "Lighting",
+      "route": "lighting"
+    },
+    {
+      "id": "aromas-accessories",
+      "name": "Aromas & Sauna Accessories",
+      "route": "aromas-accessories"
+    },
+    {
+      "id": "electrical-assembly",
+      "name": "Installation & Wood Treatment",
+      "route": "electrical-assembly"
+    },
+    {
+      "id": "cold-plunge",
+      "name": "Ice Bath",
+      "route": "cold-plunge"
+    },
+    {
+      "id": "hot-tubs",
+      "name": "Hot Tubs",
+      "route": "hot-tubs"
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery",
+      "route": "/configurator/delivery"
+    },
+    {
+      "id": "quote",
+      "name": "Quote",
+      "route": "/products/aura-110/configurator/quote"
+    }
+  ],
+  "stepData": {
+    "lighting": {
+      "stepId": "lighting",
+      "title": "Lighting",
+      "description": "",
+      "options": [
+        {
+          "id": "lighting-1x",
+          "title": "Behind Backrest (1x 2.5m LED)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0,
+          "pipedriveProductId": 17834
+        },
+        {
+          "id": "lighting-2x-25m-led",
+          "title": "Under Bench + Behind Backrests (2x 2.5m LED)",
+          "description": "",
+          "imageUrl": "",
+          "price": 0
+        }
+      ],
+      "selectionType": "single",
+      "required": false,
+      "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+    },
+    "aromas-accessories": {
+      "stepId": "aromas-accessories",
+      "title": "Aromas & Sauna Accessories",
+      "description": "",
+      "options": [
+        {
+          "id": "aromas-accessories-accessory-set",
+          "title": "Accessory set",
+          "description": "",
+          "imageUrl": "/images/1769072721626-veveawvms6.webp",
+          "price": 0,
+          "pipedriveProductId": 17933
+        },
+        {
+          "id": "aromas-accessories-sauna-scent-set",
+          "title": "Sauna scent set",
+          "description": "",
+          "imageUrl": "/images/1769517664363-okk859hpy4g.webp",
+          "price": 0,
+          "pipedriveProductId": 17838
+        },
+        {
+          "id": "aromas-accessories-sauna-hats",
+          "title": "Sauna hat",
+          "description": "",
+          "imageUrl": "/images/1769072748464-fjgmyzm8fq.jpg",
+          "price": 0
+        }
+      ],
+      "selectionType": "multi",
+      "required": false,
+      "imageUrl": "/images/1769169330318-e9etacwqp0e.webp"
+    },
+    "electrical-assembly": {
+      "stepId": "electrical-assembly",
+      "title": "Installation & Wood Treatment",
+      "description": "",
+      "options": [
+        {
+          "id": "electrical-assembly-wood-treament-interior",
+          "title": "Wood treament interior",
+          "description": "",
+          "imageUrl": "",
+          "price": 0,
+          "pipedriveProductId": 17833
+        },
+        {
+          "id": "electrical-assembly-assembly",
+          "title": "Assembly",
+          "description": "",
+          "imageUrl": "",
+          "price": 0,
+          "pipedriveProductId": 17856
+        },
+        {
+          "id": "electrical-assembly-electrical-work",
+          "title": "Electrical work",
+          "description": "",
+          "imageUrl": "",
+          "price": 0,
+          "pipedriveProductId": 17971
+        }
+      ],
+      "selectionType": "multi",
+      "required": false,
+      "imageUrl": "/images/1769500090936-pymhygphmi.jpg"
+    },
+    "cold-plunge": {
+      "stepId": "cold-plunge",
+      "title": "Ice Bath",
+      "description": "",
+      "options": [
+        {
+          "id": "cold-plunge-ice-bath-ergo",
+          "title": "Ice bath Ergo",
+          "description": "",
+          "imageUrl": "/images/1769517708499-r744r1266z.jpg",
+          "price": 0,
+          "pipedriveProductId": 17881
+        },
+        {
+          "id": "cold-plunge-ice-bath-cube",
+          "title": "Ice bath Cube",
+          "description": "",
+          "imageUrl": "/images/1769073043001-mpi3sz4rql7.webp",
+          "price": 0,
+          "pipedriveProductId": 16408
+        },
+        {
+          "id": "cold-plunge-ice-bath-ofuro",
+          "title": "Ice bath Ofuro",
+          "description": "",
+          "imageUrl": "/images/1769517745067-ol556to70ul.jpg",
+          "price": 0,
+          "pipedriveProductId": 17873
+        }
+      ],
+      "selectionType": "multi",
+      "required": false,
+      "imageUrl": "/images/1769517698929-olj7v730q1c.jpg"
+    },
+    "hot-tubs": {
+      "stepId": "hot-tubs",
+      "title": "Hot Tubs",
+      "description": "",
+      "options": [
+        {
+          "id": "hot-tubs-hot-tub-cube-200",
+          "title": "Hot tub Cube 200",
+          "description": "",
+          "imageUrl": "/images/1769518650992-1rce479rk79.jpg",
+          "price": 0,
+          "pipedriveProductId": 17812
+        },
+        {
+          "id": "hot-tubs-hot-tub-therma-200",
+          "title": "Hot tub Therma 200",
+          "description": "",
+          "imageUrl": "/images/1769501295646-9n9pmvtsiel.jpg",
+          "price": 0,
+          "pipedriveProductId": 17782
+        },
+        {
+          "id": "hot-tubs-hot-tub-therma-220",
+          "title": "Hot tub Therma 220",
+          "description": "",
+          "imageUrl": "/images/1769501307252-snbs06c2a4h.jpg",
+          "price": 0,
+          "pipedriveProductId": 17952
+        },
+        {
+          "id": "hot-tubs-hot-tub-vellamo-s",
+          "title": "Hot tub Vellamo S",
+          "description": "",
+          "imageUrl": "/images/1769501411168-psjwepkj5l.webp",
+          "price": 0,
+          "pipedriveProductId": 16421
+        },
+        {
+          "id": "hot-tubs-hot-tub-vellamo-m",
+          "title": "Hot tub Vellamo M",
+          "description": "",
+          "imageUrl": "/images/1769501321725-hrm2a46ckzh.jpg",
+          "price": 0,
+          "pipedriveProductId": 16423
+        },
+        {
+          "id": "hot-tubs-hot-tub-vellamo-l",
+          "title": "Hot tub Vellamo L",
+          "description": "",
+          "imageUrl": "/images/1769501331353-0iocn4gtcwv.jpg",
+          "price": 0,
+          "pipedriveProductId": 16426
+        }
+      ],
+      "selectionType": "multi",
+      "required": false,
+      "imageUrl": "/images/1769518705080-jjf2umkp10c.jpg"
+    },
+    "delivery": {
+      "stepId": "delivery",
+      "title": "Delivery",
+      "description": "Choose your delivery option",
+      "selectionType": "single",
+      "required": true,
+      "options": [
+        {
+          "id": "delivery-standard",
+          "title": "Standard Delivery UK",
+          "description": "Curbside delivery within 2-3 weeks",
+          "imageUrl": "",
+          "price": 200,
+          "pipedriveProductId": 18212
+        },
+        {
+          "id": "delivery-outside-uk",
+          "title": "Delivery Outside UK",
+          "description": "International delivery - price will be confirmed separately",
+          "imageUrl": "",
+          "price": 0,
+          "priceLabel": "Price to be confirmed"
+        }
+      ],
+      "imageUrl": "/images/1769084980555-i3qjrai1i89.webp"
+    },
+    "quote": {
+      "stepId": "quote",
+      "title": "Quote",
+      "description": "Review your selections and generate a quote",
+      "selectionType": "single",
+      "required": false,
+      "options": []
+    }
+  },
+  "design": {
+    "backgroundColor": "#F3F0ED",
+    "textColor": "#908F8D",
+    "accentColor": "#303337",
+    "cardBackgroundColor": "#ffffff",
+    "borderColor": "#E2DEDA",
+    "fontFamily": "Questrial, sans-serif",
+    "headingFontSize": "1.875rem",
+    "bodyFontSize": "1rem",
+    "cardPadding": "1.5rem",
+    "sectionSpacing": "2rem",
+    "borderRadius": "0.5rem",
+    "imageWidth": "70%",
+    "panelWidth": "30%"
+  },
+  "priceSource": "pipedrive",
+  "quoteSettings": {
+    "companyName": "Saunamo, Arbor Eco LDA",
+    "companyAddress": "",
+    "companyCity": "",
+    "companyState": "",
+    "companyZip": "",
+    "companyCountry": "",
+    "companyPhone": "",
+    "companyEmail": "",
+    "companyWebsite": "",
+    "companyLogoUrl": "",
+    "quoteValidityDays": 30,
+    "taxRate": 0,
+    "taxEnabled": false,
+    "currency": "GBP",
+    "discountCampaigns": [],
+    "termsAndConditions": "This quote is valid for the specified period. Prices are subject to change without notice. Payment terms: Net 30 days.",
+    "paymentTerms": "Payment is due within 30 days of invoice date. Late payments may incur additional fees.",
+    "notes": "",
+    "footerText": "Thank you for your interest. For questions, please contact us at the information above."
+  },
+  "mainProductImageUrl": "/images/1769955206512-rszga5515q.webp",
+  "mainProductPipedriveId": 18179
+}
