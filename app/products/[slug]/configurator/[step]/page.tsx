@@ -1089,12 +1089,12 @@ export default function ProductConfiguratorStepPage() {
     const kg = parseInt(kgMatch[1], 10);
     if (isNaN(kg)) return undefined;
     
-    // Calculate: kg / 20 = number of packages needed
+    // Calculate: kg / 20 = number of packages needed (rounded up - we don't sell half packages)
     // 1 package = 20kg = £29.50
-    const packagesNeeded = kg / 20;
+    const packagesNeeded = Math.ceil(kg / 20);
     const totalPrice = packagesNeeded * 29.50;
     
-    console.log(`Heater stones calculation: ${kg}kg / 20kg = ${packagesNeeded} packages × £29.50 = £${totalPrice.toFixed(2)}`);
+    console.log(`Heater stones calculation: ${kg}kg / 20kg = ${packagesNeeded} packages (rounded up) × £29.50 = £${totalPrice.toFixed(2)}`);
     
     return {
       kg,
