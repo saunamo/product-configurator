@@ -4,7 +4,7 @@
  */
 
 import { Quote } from "@/types/quote";
-import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal } from "./client";
+import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, getStages } from "./client";
 
 export type PipedriveDealConfig = {
   pipelineId?: number;
@@ -52,29 +52,69 @@ export async function createDealFromQuote(
 
   // Create the deal
   // Note: quote.id will be updated to the deal ID after creation
+  const pipelineId = config?.pipelineId || 2; // Default to Saunamo Website pipeline (ID 2)
+  
+  // Fetch stages for the pipeline to get the first/default stage
+  let stageId: number | undefined = config?.stageId;
+  
+  if (!stageId && pipelineId) {
+    try {
+      console.log(`[createDealFromQuote] Fetching stages for pipeline ${pipelineId}...`);
+      const stagesResponse = await getStages(pipelineId);
+      const stages = stagesResponse.data || [];
+      
+      if (stages.length > 0) {
+        // Get the first stage (usually the default/starting stage)
+        stageId = stages[0].id;
+        console.log(`[createDealFromQuote] Using first stage from pipeline ${pipelineId}: stage_id=${stageId}, name="${stages[0].name}"`);
+      } else {
+        console.warn(`[createDealFromQuote] No stages found for pipeline ${pipelineId}, creating deal without stage_id`);
+      }
+    } catch (error: any) {
+      console.error(`[createDealFromQuote] Failed to fetch stages for pipeline ${pipelineId}:`, error?.message || error);
+      // Continue without stage_id - Pipedrive might assign a default stage
+    }
+  }
+  
   const dealData: any = {
     title: `Config Quote UK: ${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`,
     value: quote.total,
     currency: "GBP",
     person_id: personId,
-    pipeline_id: 2, // Saunamo Website pipeline
+    pipeline_id: pipelineId,
   };
+  
+  // Set stage_id if we have one
+  if (stageId) {
+    dealData.stage_id = stageId;
+  }
 
   // Add custom fields if provided
   if (config?.customFields) {
     Object.assign(dealData, config.customFields);
   }
 
-  // Set stage if provided
-  if (config?.stageId) {
-    dealData.stage_id = config.stageId;
-  }
+  console.log(`[createDealFromQuote] Creating deal with data:`, {
+    title: dealData.title,
+    pipeline_id: dealData.pipeline_id,
+    stage_id: dealData.stage_id,
+    value: dealData.value,
+    currency: dealData.currency,
+    person_id: dealData.person_id,
+  });
 
   let result;
   try {
     result = await createDeal(dealData);
+    console.log(`[createDealFromQuote] Deal created successfully:`, {
+      dealId: result?.data?.id,
+      title: result?.data?.title,
+      pipeline_id: result?.data?.pipeline?.id,
+      stage_id: result?.data?.stage_id,
+    });
   } catch (error: any) {
     console.error("[createDealFromQuote] Failed to create deal:", error?.message || error);
+    console.error("[createDealFromQuote] Deal data that failed:", JSON.stringify(dealData, null, 2));
     throw error; // Re-throw so caller knows it failed
   }
   
