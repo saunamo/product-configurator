@@ -53,10 +53,11 @@ export async function createDealFromQuote(
   // Create the deal
   // Note: quote.id will be updated to the deal ID after creation
   const dealData: any = {
-    title: `Quote: ${quote.productName} - ${quote.customerEmail}`,
+    title: `Config Quote UK: ${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`,
     value: quote.total,
-    currency: "GBP", // Changed from USD to GBP
+    currency: "GBP",
     person_id: personId,
+    pipeline_id: 2, // Saunamo Website pipeline
   };
 
   // Add custom fields if provided
