@@ -302,6 +302,39 @@ export function QuotePDFDocument({
               );
             })}
           </View>
+          
+          {/* Installation Disclaimers - Please Note section */}
+          {(() => {
+            const installationItems = quote.items.filter(item => 
+              item.stepId === "electrical-assembly" || 
+              item.stepName?.toLowerCase().includes("installation")
+            );
+            const hasElectrical = installationItems.some(item => 
+              item.optionId === "electrical-installation" || 
+              item.optionId === "full-service" ||
+              item.optionTitle?.toLowerCase().includes("electrical")
+            );
+            const hasAssembly = installationItems.some(item => 
+              item.optionId === "sauna-assembly" || 
+              item.optionId === "full-service" ||
+              item.optionTitle?.toLowerCase().includes("assembly") ||
+              item.optionTitle?.toLowerCase().includes("full service")
+            );
+            
+            if (hasElectrical && hasAssembly) return null;
+            
+            return (
+              <View style={{ marginTop: 16, paddingTop: 12 }}>
+                <Text style={[styles.fieldValue, { marginBottom: 8 }]}>Please Note</Text>
+                {!hasElectrical && (
+                  <Text style={[styles.notesText, { marginBottom: 4 }]}>• Electrical installations are not included.</Text>
+                )}
+                {!hasAssembly && (
+                  <Text style={styles.notesText}>• Sauna Assembly is not included.</Text>
+                )}
+              </View>
+            );
+          })()}
         </View>
 
         {/* Summary */}
@@ -356,8 +389,7 @@ export function QuotePDFDocument({
             <Text style={[styles.notesText, { marginBottom: 6 }]}>• The remaining balance must be paid before the product is delivered.</Text>
             <Text style={[styles.notesText, { marginBottom: 6 }]}>• The deposit is non-refundable if the customer cancels the order.</Text>
             <Text style={[styles.notesText, { marginBottom: 6 }]}>• Transportation costs are subject to change.</Text>
-            <Text style={[styles.notesText, { marginBottom: 6 }]}>• If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.</Text>
-            <Text style={styles.notesText}>• Electrical installations are not included.</Text>
+            <Text style={styles.notesText}>• If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.</Text>
           </View>
         </View>
 

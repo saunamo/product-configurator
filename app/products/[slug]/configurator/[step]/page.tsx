@@ -1427,6 +1427,37 @@ export default function ProductConfiguratorStepPage() {
             </div>
           );
         })}
+        
+        {/* Installation Disclaimers */}
+        {(() => {
+          const installationSelections = state.selections["electrical-assembly"] || [];
+          const hasElectrical = installationSelections.some(id => 
+            id === "electrical-installation" || id === "full-service"
+          );
+          const hasAssembly = installationSelections.some(id => 
+            id === "sauna-assembly" || id === "full-service"
+          );
+          
+          if (hasElectrical && hasAssembly) return null;
+          
+          return (
+            <div className="pt-4">
+              <h4 className="font-medium text-gray-900 mb-2">Please Note</h4>
+              <ul className="space-y-1">
+                {!hasElectrical && (
+                  <li className="text-sm text-gray-700">
+                    Electrical installations are not included.
+                  </li>
+                )}
+                {!hasAssembly && (
+                  <li className="text-sm text-gray-700">
+                    Sauna Assembly is not included.
+                  </li>
+                )}
+              </ul>
+            </div>
+          );
+        })()}
       </div>
     );
     
@@ -1764,12 +1795,9 @@ export default function ProductConfiguratorStepPage() {
               className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-green-800 transition-colors cursor-pointer p-6"
               onClick={() => setIceBathExpanded(true)}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Would you like to add an Ice Bath to your order?</h3>
-                  <p className="text-sm text-gray-600 mt-1">Complete your wellness experience with contrast therapy</p>
-                </div>
-                <div className="flex items-center gap-2 text-green-800 flex-shrink-0 ml-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Would you like to add an Ice Bath to your order?</h3>
+                <div className="flex items-center gap-2 text-green-800 mt-3">
                   <span className="text-sm font-medium">View options</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1781,9 +1809,6 @@ export default function ProductConfiguratorStepPage() {
             /* Expanded Ice Bath options */
             <OptionSection
               title="Ice Bath"
-              description={stepData.description}
-              subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
-              subtext={stepData.subtext}
               moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
                 ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
                 : undefined}
@@ -1836,12 +1861,9 @@ export default function ProductConfiguratorStepPage() {
               className="bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-green-800 transition-colors cursor-pointer p-6"
               onClick={() => setHotTubsExpanded(true)}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Would you like to add a Hot Tub to your order?</h3>
-                  <p className="text-sm text-gray-600 mt-1">Enhance your outdoor wellness experience</p>
-                </div>
-                <div className="flex items-center gap-2 text-green-800 flex-shrink-0 ml-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Would you like to add a Hot Tub to your order?</h3>
+                <div className="flex items-center gap-2 text-green-800 mt-3">
                   <span className="text-sm font-medium">View options</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1853,9 +1875,6 @@ export default function ProductConfiguratorStepPage() {
             /* Expanded Hot Tubs options */
             <OptionSection
               title="Hot Tubs"
-              description={stepData.description}
-              subheader={adminConfig?.globalSettings?.stepSubheaders?.[step]}
-              subtext={stepData.subtext}
               moreInfoUrl={adminConfig?.globalSettings?.stepMoreInfoEnabled?.[step] 
                 ? adminConfig?.globalSettings?.stepMoreInfoUrl?.[step] 
                 : undefined}

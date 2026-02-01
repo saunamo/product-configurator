@@ -269,6 +269,41 @@ export default function QuotePortalPage() {
               </table>
             </div>
           )}
+          
+          {/* Installation Disclaimers - Please Note section */}
+          {(() => {
+            const installationItems = quote.items.filter(item => 
+              item.stepId === "electrical-assembly" || 
+              item.stepName?.toLowerCase().includes("installation")
+            );
+            const hasElectrical = installationItems.some(item => 
+              item.optionId === "electrical-installation" || 
+              item.optionId === "full-service" ||
+              item.optionTitle?.toLowerCase().includes("electrical")
+            );
+            const hasAssembly = installationItems.some(item => 
+              item.optionId === "sauna-assembly" || 
+              item.optionId === "full-service" ||
+              item.optionTitle?.toLowerCase().includes("assembly") ||
+              item.optionTitle?.toLowerCase().includes("full service")
+            );
+            
+            if (hasElectrical && hasAssembly) return null;
+            
+            return (
+              <div className="mt-6 pt-4">
+                <h3 className="font-medium text-gray-900 mb-2">Please Note</h3>
+                <ul className="space-y-1">
+                  {!hasElectrical && (
+                    <li className="text-sm text-gray-700">Electrical installations are not included.</li>
+                  )}
+                  {!hasAssembly && (
+                    <li className="text-sm text-gray-700">Sauna Assembly is not included.</li>
+                  )}
+                </ul>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Summary */}
@@ -324,7 +359,6 @@ export default function QuotePortalPage() {
             <li>The deposit is non-refundable if the customer cancels the order.</li>
             <li>Transportation costs are subject to change.</li>
             <li>If an installation service is contracted with Arbor Eco LDA, it is limited to product assembly.</li>
-            <li>Electrical installations are not included.</li>
           </ul>
         </div>
 
