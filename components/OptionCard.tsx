@@ -428,7 +428,7 @@ export default function OptionCard({
             className="text-sm font-medium"
             style={{ color: design?.accentColor || "#303337" }}
           >
-            +${option.price.toLocaleString()}
+            +£{option.price.toLocaleString()}
           </p>
         ) : (
           <p 
