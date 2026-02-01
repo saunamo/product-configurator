@@ -61,8 +61,7 @@
         }
       ],
       "selectionType": "single",
-      "required": false,
-      "imageUrl": "/images/1769073539150-w1298ql4wj.jpg"
+      "required": false
     },
     "aromas-accessories": {
       "stepId": "aromas-accessories",
@@ -94,8 +93,7 @@
         }
       ],
       "selectionType": "multi",
-      "required": false,
-      "imageUrl": "/images/1769169330318-e9etacwqp0e.webp"
+      "required": false
     },
     "electrical-assembly": {
       "stepId": "electrical-assembly",
@@ -128,8 +126,7 @@
         }
       ],
       "selectionType": "multi",
-      "required": false,
-      "imageUrl": "/images/1769500090936-pymhygphmi.jpg"
+      "required": false
     },
     "cold-plunge": {
       "stepId": "cold-plunge",
@@ -162,8 +159,7 @@
         }
       ],
       "selectionType": "multi",
-      "required": false,
-      "imageUrl": "/images/1769517698929-olj7v730q1c.jpg"
+      "required": false
     },
     "hot-tubs": {
       "stepId": "hot-tubs",
@@ -220,8 +216,7 @@
         }
       ],
       "selectionType": "multi",
-      "required": false,
-      "imageUrl": "/images/1769518705080-jjf2umkp10c.jpg"
+      "required": false
     },
     "delivery": {
       "stepId": "delivery",
@@ -246,8 +241,7 @@
           "price": 0,
           "priceLabel": "Price to be confirmed"
         }
-      ],
-      "imageUrl": "/images/1769084980555-i3qjrai1i89.webp"
+      ]
     },
     "quote": {
       "stepId": "quote",

@@ -330,11 +330,14 @@ export default function ProductConfiguratorStepPage() {
     
     // Apply step image with priority: product-specific > global settings (Global Settings tab) > admin stepData (Steps tab) > default (none)
     // Global Settings stepImages take precedence over stepData.imageUrl because they're more recent/updated
+    // EXCEPTION: Aura products should NOT have global step images applied - they use their main product image
+    const isAuraProduct = productSlug.toLowerCase().includes("aura") || config?.productName?.toLowerCase().includes("aura");
     const globalStepImage = adminConfig?.globalSettings?.stepImages?.[step];
     const adminStepDataForImage = adminConfig?.stepData?.[step];
     
     // Priority: product-specific > global settings > admin stepData
-    if (!baseStepData.imageUrl) {
+    // Skip global step images for Aura products
+    if (!baseStepData.imageUrl && !isAuraProduct) {
       if (globalStepImage) {
         // Global Settings tab image (highest priority for admin images)
         baseStepData = {
@@ -350,11 +353,14 @@ export default function ProductConfiguratorStepPage() {
         };
         console.log(`🖼️ useMemo: Applied admin stepData image for ${step}: "${adminStepDataForImage.imageUrl}"`);
       }
+    } else if (isAuraProduct) {
+      console.log(`🖼️ useMemo: Skipping global step images for Aura product - using main product image`);
     } else {
       // Product-specific image takes precedence, but log what we have
       console.log(`🖼️ useMemo: Step ${step} already has product-specific imageUrl: "${baseStepData.imageUrl}"`);
       // Still apply global step image if it exists (override product-specific if needed)
-      if (globalStepImage) {
+      // BUT skip for Aura products
+      if (globalStepImage && !isAuraProduct) {
         baseStepData = {
           ...baseStepData,
           imageUrl: globalStepImage,

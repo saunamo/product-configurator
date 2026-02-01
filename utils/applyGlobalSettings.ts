@@ -403,7 +403,12 @@ export async function applyGlobalSettingsToProductConfig(
   // PRIORITY: Product-specific step images ALWAYS override global ones
   // If product-specific step image is set, it becomes the default for that product
   // If product-specific step image is NOT set, use global image as fallback
-  if (globalSettings.stepImages) {
+  // EXCEPTION: Aura products should NOT have global step images applied - they use their main product image
+  const idLowerForStepImages = productId.toLowerCase();
+  const nameLowerForStepImages = productName.toLowerCase();
+  const isAuraProduct = idLowerForStepImages.includes("aura") || nameLowerForStepImages.includes("aura");
+  
+  if (globalSettings.stepImages && !isAuraProduct) {
     console.log("🖼️ ===== APPLYING GLOBAL STEP IMAGES =====");
     Object.keys(updatedStepData).forEach((stepId) => {
       const stepData = updatedStepData[stepId];
@@ -427,6 +432,9 @@ export async function applyGlobalSettingsToProductConfig(
       }
     });
     console.log("🖼️ ===== GLOBAL STEP IMAGES APPLICATION COMPLETE =====");
+  } else if (isAuraProduct) {
+    console.log("🖼️ ===== SKIPPING GLOBAL STEP IMAGES FOR AURA PRODUCT =====");
+    console.log("🖼️ Aura products use their main product image instead of step images");
   }
 
   // Apply global option images and Pipedrive products
