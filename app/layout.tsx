@@ -4,8 +4,18 @@ import { ConfiguratorProvider } from "@/contexts/ConfiguratorContext";
 import { AdminConfigProvider } from "@/contexts/AdminConfigContext";
 
 export const metadata: Metadata = {
-  title: "Saunamo Product Configurator",
-  description: "Saunamo Product Configurator",
+  title: {
+    template: "%s | Saunamo",
+    default: "Saunamo Product Configurator - Design Your Perfect Sauna",
+  },
+  description: "Customize your dream sauna with Saunamo's interactive product configurator. Choose from outdoor saunas, infrared saunas, indoor saunas, and more. Get an instant quote.",
+  keywords: ["sauna", "outdoor sauna", "indoor sauna", "infrared sauna", "sauna configurator", "custom sauna", "Saunamo"],
+  openGraph: {
+    title: "Saunamo Product Configurator",
+    description: "Design and customize your perfect sauna. Choose heaters, lighting, accessories, and delivery options.",
+    type: "website",
+    siteName: "Saunamo",
+  },
 };
 
 export default function RootLayout({
