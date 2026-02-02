@@ -63,6 +63,62 @@ export default function ProductConfiguratorStepPage() {
   // This allows instant transitions without waiting for Next.js router
   const step = currentStep;
   
+  // Update document title when step changes (for client-side navigation)
+  useEffect(() => {
+    const formatProductName = (slug: string): string => {
+      const productMappings: Record<string, string> = {
+        "cube-125": "Outdoor Sauna Cube 125",
+        "cube-220": "Outdoor Sauna Cube 220",
+        "cube-300": "Outdoor Sauna Cube 300",
+        "barrel-220": "Outdoor Sauna Barrel 220",
+        "barrel-280": "Outdoor Sauna Barrel 280",
+        "aura-110": "Infrared Sauna Aura 110",
+        "aura-150": "Infrared Sauna Aura 150",
+        "hiki-s": "Indoor Sauna Hiki S",
+        "hiki-l": "Indoor Sauna Hiki L",
+        "aisti-150": "Indoor Sauna Aisti 150",
+      };
+      
+      if (productMappings[slug]) {
+        return productMappings[slug];
+      }
+      
+      return slug
+        .split("-")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    };
+    
+    const formatStepName = (step: string): string => {
+      const stepMappings: Record<string, string> = {
+        "heater": "Heater Selection",
+        "rear-glass-wall": "Rear Wall Options",
+        "lighting": "Lighting Options",
+        "accessories": "Accessories",
+        "electrical-assembly": "Installation & Assembly",
+        "delivery": "Delivery Options",
+        "cold-plunge": "Ice Bath Options",
+        "hot-tubs": "Hot Tub Options",
+        "quote": "Get Your Quote",
+      };
+      
+      if (stepMappings[step]) {
+        return stepMappings[step];
+      }
+      
+      return step
+        .split("-")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    };
+    
+    if (productSlug && step) {
+      const productName = formatProductName(productSlug);
+      const stepName = formatStepName(step);
+      document.title = `${stepName} - ${productName} | Saunamo Configurator`;
+    }
+  }, [productSlug, step]);
+  
   // Load product config
   const [config, setConfig] = useState<ProductConfig | null>(null);
   const [selectedOptionImageUrl, setSelectedOptionImageUrl] = useState<string | undefined>(undefined);
