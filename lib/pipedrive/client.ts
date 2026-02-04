@@ -112,6 +112,36 @@ export async function getDeals(filters?: {
 }
 
 /**
+ * Search for deals by person ID and title pattern
+ * Used to check for duplicate deals before creating new ones
+ */
+export async function searchDealsByPersonAndTitle(
+  personId: number,
+  titlePattern: string,
+  pipelineId?: number
+) {
+  const params = new URLSearchParams();
+  params.append("person_id", personId.toString());
+  if (pipelineId) params.append("pipeline_id", pipelineId.toString());
+  params.append("limit", "100"); // Get up to 100 deals to check
+  
+  const query = params.toString();
+  const response = await pipedriveRequest<{ data: any[] }>(`/deals${query ? `?${query}` : ""}`);
+  
+  // Filter deals that match the title pattern (e.g., "Config Quote UK: Sally Stewart: Outdoor Sauna Cube 125")
+  if (response.data) {
+    const matchingDeals = response.data.filter((deal: any) => {
+      const dealTitle = deal.title || "";
+      // Check if title contains the pattern (customer name and product name)
+      return dealTitle.includes(titlePattern) || titlePattern.includes(dealTitle.split(":")[1]?.trim() || "");
+    });
+    return { data: matchingDeals };
+  }
+  
+  return { data: [] };
+}
+
+/**
  * Get custom fields
  */
 export async function getCustomFields(fieldType: "deal" | "person" | "organization" = "deal") {

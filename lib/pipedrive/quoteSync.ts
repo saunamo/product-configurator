@@ -4,7 +4,7 @@
  */
 
 import { Quote } from "@/types/quote";
-import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, getStages } from "./client";
+import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, getStages, searchDealsByPersonAndTitle } from "./client";
 
 export type PipedriveDealConfig = {
   pipelineId?: number;
@@ -50,6 +50,54 @@ export async function createDealFromQuote(
     }
   }
 
+  // Check for duplicate deals before creating a new one
+  // Look for existing deals for this person with the same product
+  let existingDealId: number | undefined;
+  if (personId) {
+    try {
+      const dealTitlePattern = `${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`;
+      const pipelineId = config?.pipelineId || 2;
+      
+      console.log(`[createDealFromQuote] Checking for duplicate deals for person ${personId} with pattern: "${dealTitlePattern}"`);
+      const duplicateSearch = await searchDealsByPersonAndTitle(personId, dealTitlePattern, pipelineId);
+      
+      if (duplicateSearch.data && duplicateSearch.data.length > 0) {
+        // Filter to only recent deals (within last 7 days) to avoid matching very old deals
+        const recentDeals = duplicateSearch.data.filter((deal: any) => {
+          if (!deal.add_time) return false;
+          const dealDate = new Date(deal.add_time);
+          const daysAgo = (Date.now() - dealDate.getTime()) / (1000 * 60 * 60 * 24);
+          return daysAgo <= 7; // Only consider deals from last 7 days
+        });
+        
+        if (recentDeals.length > 0) {
+          // Sort by most recent first
+          recentDeals.sort((a: any, b: any) => {
+            const dateA = new Date(a.add_time).getTime();
+            const dateB = new Date(b.add_time).getTime();
+            return dateB - dateA;
+          });
+          
+          existingDealId = recentDeals[0].id;
+          console.log(`⚠️ [createDealFromQuote] Found ${recentDeals.length} existing deal(s) for this customer/product. Most recent: deal ${existingDealId}`);
+          console.log(`⚠️ [createDealFromQuote] Will update existing deal ${existingDealId} instead of creating duplicate`);
+        }
+      }
+    } catch (error: any) {
+      console.warn(`[createDealFromQuote] Error checking for duplicates (will create new deal):`, error?.message || error);
+      // Continue to create new deal if duplicate check fails
+    }
+  }
+  
+  // If we found an existing deal, return it instead of creating a new one
+  if (existingDealId) {
+    console.log(`[createDealFromQuote] Using existing deal ${existingDealId} to prevent duplicate`);
+    return {
+      dealId: existingDealId,
+      personId,
+    };
+  }
+  
   // Create the deal
   // Note: quote.id will be updated to the deal ID after creation
   const pipelineId = config?.pipelineId || 2; // Default to Saunamo Website pipeline (ID 2)

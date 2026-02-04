@@ -1006,6 +1006,37 @@ export default function ProductConfiguratorStepPage() {
     }
   }, [config, step, stepData]);
 
+  // Helper function to format product name for SEO
+  const formatProductNameForSEO = (slug: string): string => {
+    const productMappings: Record<string, string> = {
+      "cube-125": "Outdoor Sauna Cube 125",
+      "cube-220": "Outdoor Sauna Cube 220",
+      "cube-300": "Outdoor Sauna Cube 300",
+      "barrel-220": "Outdoor Sauna Barrel 220",
+      "barrel-280": "Outdoor Sauna Barrel 280",
+      "aura-110": "Infrared Sauna Aura 110",
+      "aura-150": "Infrared Sauna Aura 150",
+      "hiki-s": "Indoor Sauna Hiki S",
+      "hiki-l": "Indoor Sauna Hiki L",
+      "aisti-150": "Indoor Sauna Aisti 150",
+    };
+    return productMappings[slug] || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  };
+
+  // Helper function to format step name for SEO
+  const formatStepNameForSEO = (stepId: string): string => {
+    const stepMappings: Record<string, string> = {
+      "heater": "Heater Selection",
+      "rear-glass-wall": "Rear Wall Options",
+      "lighting": "Lighting Options",
+      "accessories": "Accessories",
+      "electrical-assembly": "Installation & Assembly",
+      "delivery": "Delivery Options",
+      "quote": "Get Your Quote",
+    };
+    return stepMappings[stepId] || stepId.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  };
+
   // For quote step, stepData is intentionally null (it doesn't have options)
   // So we skip the stepData check for quote step
   if (!stepData && step !== "quote") {
@@ -1020,6 +1051,10 @@ export default function ProductConfiguratorStepPage() {
               alt="Saunamo" 
               className="h-10 mx-auto mb-6 animate-pulse"
             />
+            {/* SEO: h1 for crawlers that don't execute JavaScript */}
+            <h1 className="text-xl font-semibold text-gray-700 mb-2">
+              {formatStepNameForSEO(step)} - {formatProductNameForSEO(productSlug)}
+            </h1>
             <p className="text-gray-500">Loading configurator...</p>
           </div>
         </div>
@@ -1035,6 +1070,10 @@ export default function ProductConfiguratorStepPage() {
             alt="Saunamo" 
             className="h-10 mx-auto mb-6 animate-pulse"
           />
+          {/* SEO: h1 for crawlers that don't execute JavaScript */}
+          <h1 className="text-xl font-semibold text-gray-700 mb-2">
+            {formatStepNameForSEO(step)} - {formatProductNameForSEO(productSlug)}
+          </h1>
           <p className="text-gray-500">Loading configurator...</p>
         </div>
       </div>
@@ -1413,6 +1452,10 @@ export default function ProductConfiguratorStepPage() {
             alt="Saunamo" 
             className="h-10 mx-auto mb-6 animate-pulse"
           />
+          {/* SEO: h1 for crawlers that don't execute JavaScript */}
+          <h1 className="text-xl font-semibold text-gray-700 mb-2">
+            {formatStepNameForSEO(step)} - {formatProductNameForSEO(productSlug)}
+          </h1>
           <p className="text-gray-500">Loading configurator...</p>
         </div>
       </div>
@@ -1432,6 +1475,10 @@ export default function ProductConfiguratorStepPage() {
               alt="Saunamo" 
               className="h-10 mx-auto mb-6 animate-pulse"
             />
+            {/* SEO: h1 for crawlers that don't execute JavaScript */}
+            <h1 className="text-xl font-semibold text-gray-700 mb-2">
+              {formatStepNameForSEO(step)} - {formatProductNameForSEO(productSlug)}
+            </h1>
             <p className="text-gray-500">Loading configurator...</p>
           </div>
         </div>

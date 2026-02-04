@@ -60,6 +60,31 @@ export default function ProductPage() {
     return () => clearTimeout(timer);
   }, [slug, isClient]);
 
+  // Format product name from slug for SEO h1
+  const formatProductName = (slug: string): string => {
+    const productMappings: Record<string, string> = {
+      "cube-125": "Outdoor Sauna Cube 125",
+      "cube-220": "Outdoor Sauna Cube 220",
+      "cube-300": "Outdoor Sauna Cube 300",
+      "barrel-220": "Outdoor Sauna Barrel 220",
+      "barrel-280": "Outdoor Sauna Barrel 280",
+      "aura-110": "Infrared Sauna Aura 110",
+      "aura-150": "Infrared Sauna Aura 150",
+      "hiki-s": "Indoor Sauna Hiki S",
+      "hiki-l": "Indoor Sauna Hiki L",
+      "aisti-150": "Indoor Sauna Aisti 150",
+    };
+    
+    if (productMappings[slug]) {
+      return productMappings[slug];
+    }
+    
+    return slug
+      .split("-")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#faf9f7]">
       <div className="text-center">
@@ -68,6 +93,10 @@ export default function ProductPage() {
           alt="Saunamo" 
           className="h-10 mx-auto mb-6 animate-pulse"
         />
+        {/* SEO: h1 for crawlers that don't execute JavaScript */}
+        <h1 className="text-xl font-semibold text-gray-700 mb-2">
+          Configure {formatProductName(slug)}
+        </h1>
         <p className="text-gray-500">Loading configurator...</p>
       </div>
     </div>
