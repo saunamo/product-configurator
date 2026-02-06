@@ -4,7 +4,7 @@
  */
 
 import { Quote } from "@/types/quote";
-import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, getStages, searchDealsByPersonAndTitle } from "./client";
+import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, searchDealsByPersonAndTitle } from "./client";
 
 export type PipedriveDealConfig = {
   pipelineId?: number;
@@ -90,8 +90,10 @@ export async function createDealFromQuote(
   }
   
   // If we found an existing deal, return it instead of creating a new one
+  // Don't send notification for duplicate deals
   if (existingDealId) {
     console.log(`[createDealFromQuote] Using existing deal ${existingDealId} to prevent duplicate`);
+    console.log(`[createDealFromQuote] Skipping lead notification (duplicate deal)`);
     return {
       dealId: existingDealId,
       personId,
@@ -102,27 +104,9 @@ export async function createDealFromQuote(
   // Note: quote.id will be updated to the deal ID after creation
   const pipelineId = config?.pipelineId || 2; // Default to Saunamo Website pipeline (ID 2)
   
-  // Fetch stages for the pipeline to get the first/default stage
-  let stageId: number | undefined = config?.stageId;
-  
-  if (!stageId && pipelineId) {
-    try {
-      console.log(`[createDealFromQuote] Fetching stages for pipeline ${pipelineId}...`);
-      const stagesResponse = await getStages(pipelineId);
-      const stages = stagesResponse.data || [];
-      
-      if (stages.length > 0) {
-        // Get the first stage (usually the default/starting stage)
-        stageId = stages[0].id;
-        console.log(`[createDealFromQuote] Using first stage from pipeline ${pipelineId}: stage_id=${stageId}, name="${stages[0].name}"`);
-      } else {
-        console.warn(`[createDealFromQuote] No stages found for pipeline ${pipelineId}, creating deal without stage_id`);
-      }
-    } catch (error: any) {
-      console.error(`[createDealFromQuote] Failed to fetch stages for pipeline ${pipelineId}:`, error?.message || error);
-      // Continue without stage_id - Pipedrive might assign a default stage
-    }
-  }
+  // Use stage ID 13 (New Lead 1) directly
+  const stageId: number = config?.stageId || 13;
+  console.log(`[createDealFromQuote] Using stage_id=${stageId} for pipeline ${pipelineId}`);
   
   const dealData: any = {
     title: `Config Quote UK: ${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`,
@@ -174,6 +158,7 @@ export async function createDealFromQuote(
 
   // Quote data will be saved to Pipedrive note by saveQuote function
   // This happens after the deal is created
+  // Lead notification will be sent via Zapier webhook (configured in quote generation route)
 
   // Add products to the deal if Pipedrive product IDs are available
   if (pipedriveProductIds && quote.items.length > 0) {
