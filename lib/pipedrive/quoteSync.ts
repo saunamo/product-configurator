@@ -4,7 +4,7 @@
  */
 
 import { Quote } from "@/types/quote";
-import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, searchDealsByPersonAndTitle } from "./client";
+import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, searchDealsByPersonAndTitle, getStages } from "./client";
 
 export type PipedriveDealConfig = {
   pipelineId?: number;
@@ -103,6 +103,18 @@ export async function createDealFromQuote(
   // Create the deal
   // Note: quote.id will be updated to the deal ID after creation
   const pipelineId = config?.pipelineId || 2; // Default to Saunamo Website pipeline (ID 2)
+  
+  // Log all available stages for debugging
+  try {
+    const stagesResponse = await getStages(pipelineId);
+    const stages = stagesResponse.data || [];
+    console.log(`[createDealFromQuote] Available stages in pipeline ${pipelineId}:`);
+    stages.forEach((stage: any) => {
+      console.log(`  - Stage ID ${stage.id}: "${stage.name}"`);
+    });
+  } catch (e) {
+    console.log(`[createDealFromQuote] Could not fetch stages for logging`);
+  }
   
   // Use stage ID 13 (New Lead 1) directly
   const stageId: number = config?.stageId || 13;
