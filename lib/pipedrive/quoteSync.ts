@@ -116,9 +116,8 @@ export async function createDealFromQuote(
     console.log(`[createDealFromQuote] Could not fetch stages for logging`);
   }
   
-  // Use stage ID 13 (New Lead 1) directly
-  const stageId: number = config?.stageId || 13;
-  console.log(`[createDealFromQuote] Using stage_id=${stageId} for pipeline ${pipelineId}`);
+  // Use stage ID 13 directly (hardcoded - do not change based on stage name)
+  const stageId: number = 13;
   
   const dealData: any = {
     title: `Config Quote UK: ${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`,
@@ -126,12 +125,10 @@ export async function createDealFromQuote(
     currency: "GBP",
     person_id: personId,
     pipeline_id: pipelineId,
+    stage_id: stageId,  // Always set stage_id to 13
   };
   
-  // Set stage_id if we have one
-  if (stageId) {
-    dealData.stage_id = stageId;
-  }
+  console.log(`[createDealFromQuote] IMPORTANT: stage_id is set to ${dealData.stage_id}`);
 
   // Add custom fields if provided
   if (config?.customFields) {
