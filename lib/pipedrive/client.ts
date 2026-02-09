@@ -164,6 +164,20 @@ export async function getPipelines() {
 }
 
 /**
+ * Find a pipeline by name
+ */
+export async function findPipelineByName(name: string): Promise<number | null> {
+  try {
+    const response = await getPipelines();
+    const pipeline = response.data?.find((p: any) => p.name === name);
+    return pipeline?.id || null;
+  } catch (error) {
+    console.error(`Failed to find pipeline "${name}":`, error);
+    return null;
+  }
+}
+
+/**
  * Create a person (contact)
  */
 export async function createPerson(personData: {

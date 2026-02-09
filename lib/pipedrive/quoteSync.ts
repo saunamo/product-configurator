@@ -4,7 +4,7 @@
  */
 
 import { Quote } from "@/types/quote";
-import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, searchDealsByPersonAndTitle, getStages } from "./client";
+import { createDeal, createPerson, findPersonByEmail, getDeal, addProductsToDeal, searchDealsByPersonAndTitle, getStages, findPipelineByName } from "./client";
 
 export type PipedriveDealConfig = {
   pipelineId?: number;
@@ -50,13 +50,29 @@ export async function createDealFromQuote(
     }
   }
 
+  // Get the pipeline ID - use config if provided, otherwise find "Configurator Leads UK" pipeline
+  let pipelineId: number;
+  if (config?.pipelineId) {
+    pipelineId = config.pipelineId;
+  } else {
+    // Find "Configurator Leads UK" pipeline by name
+    const configuratorPipelineId = await findPipelineByName("Configurator Leads UK");
+    if (configuratorPipelineId) {
+      pipelineId = configuratorPipelineId;
+      console.log(`[createDealFromQuote] Found "Configurator Leads UK" pipeline with ID: ${pipelineId}`);
+    } else {
+      // Fallback to pipeline ID 2 if not found
+      pipelineId = 2;
+      console.warn(`[createDealFromQuote] Could not find "Configurator Leads UK" pipeline, falling back to pipeline ID 2`);
+    }
+  }
+
   // Check for duplicate deals before creating a new one
   // Look for existing deals for this person with the same product
   let existingDealId: number | undefined;
   if (personId) {
     try {
       const dealTitlePattern = `${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`;
-      const pipelineId = config?.pipelineId || 2;
       
       console.log(`[createDealFromQuote] Checking for duplicate deals for person ${personId} with pattern: "${dealTitlePattern}"`);
       const duplicateSearch = await searchDealsByPersonAndTitle(personId, dealTitlePattern, pipelineId);
@@ -102,22 +118,38 @@ export async function createDealFromQuote(
   
   // Create the deal
   // Note: quote.id will be updated to the deal ID after creation
-  const pipelineId = config?.pipelineId || 2; // Default to Saunamo Website pipeline (ID 2)
+  // pipelineId is already determined above
   
-  // Log all available stages for debugging
-  try {
-    const stagesResponse = await getStages(pipelineId);
-    const stages = stagesResponse.data || [];
-    console.log(`[createDealFromQuote] Available stages in pipeline ${pipelineId}:`);
-    stages.forEach((stage: any) => {
-      console.log(`  - Stage ID ${stage.id}: "${stage.name}"`);
-    });
-  } catch (e) {
-    console.log(`[createDealFromQuote] Could not fetch stages for logging`);
+  // Get the first stage of the pipeline (or use configured stage ID)
+  let stageId: number;
+  if (config?.stageId) {
+    stageId = config.stageId;
+  } else {
+    // Get the first stage of the pipeline (typically the first stage is the entry point)
+    try {
+      const stagesResponse = await getStages(pipelineId);
+      const stages = stagesResponse.data || [];
+      
+      if (stages.length > 0) {
+        // Sort stages by order_nr to get the first stage
+        stages.sort((a: any, b: any) => (a.order_nr || 0) - (b.order_nr || 0));
+        stageId = stages[0].id;
+        console.log(`[createDealFromQuote] Using first stage of pipeline ${pipelineId}: Stage ID ${stageId} ("${stages[0].name}")`);
+        
+        // Log all available stages for debugging
+        console.log(`[createDealFromQuote] Available stages in pipeline ${pipelineId}:`);
+        stages.forEach((stage: any) => {
+          console.log(`  - Stage ID ${stage.id}: "${stage.name}" (order: ${stage.order_nr || 'N/A'})`);
+        });
+      } else {
+        throw new Error("No stages found in pipeline");
+      }
+    } catch (e) {
+      console.error(`[createDealFromQuote] Could not fetch stages for pipeline ${pipelineId}, using fallback stage ID 13:`, e);
+      // Fallback to stage ID 13 if we can't fetch stages
+      stageId = 13;
+    }
   }
-  
-  // Use stage ID 13 directly (hardcoded - do not change based on stage name)
-  const stageId: number = 13;
   
   const dealData: any = {
     title: `Config Quote UK: ${quote.customerName || quote.customerEmail.split("@")[0]}: ${quote.productName}`,
