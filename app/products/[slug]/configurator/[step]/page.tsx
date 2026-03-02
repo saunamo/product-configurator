@@ -800,13 +800,17 @@ export default function ProductConfiguratorStepPage() {
           const productName = config.productName || "";
           const slugLower = productSlug.toLowerCase();
           const nameLower = productName.toLowerCase();
-          const isHikiOrAisti = slugLower.includes("hiki") || 
+          const hasNoRearWall = slugLower.includes("hiki") || 
                                 slugLower.includes("aisti") ||
+                                slugLower.includes("thermo-black") ||
+                                slugLower.includes("aura") ||
                                 nameLower.includes("hiki") ||
-                                nameLower.includes("aisti");
+                                nameLower.includes("aisti") ||
+                                nameLower.includes("thermo black") ||
+                                nameLower.includes("aura");
           
-          if (isHikiOrAisti) {
-            // For Hiki/Aisti, show main product image (don't auto-select heater image)
+          if (hasNoRearWall) {
+            // For indoor saunas without rear-glass-wall step, show main product image
             setSelectedOptionImageUrl(undefined);
           } else {
             // For other products (Cube, Barrel), auto-select first heater image

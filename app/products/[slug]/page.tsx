@@ -31,12 +31,16 @@ export default function ProductPage() {
         // Get the product config to find the first step
         const config = await getProductConfig(product.id);
         // Filter out rear-glass-wall for Hiki/Aisti models
-        const isHikiOrAisti = product.slug.toLowerCase().includes("hiki") || 
+        const hasNoRearWall = product.slug.toLowerCase().includes("hiki") || 
                               product.slug.toLowerCase().includes("aisti") ||
+                              product.slug.toLowerCase().includes("thermo-black") ||
+                              product.slug.toLowerCase().includes("aura") ||
                               product.name.toLowerCase().includes("hiki") ||
-                              product.name.toLowerCase().includes("aisti");
+                              product.name.toLowerCase().includes("aisti") ||
+                              product.name.toLowerCase().includes("thermo black") ||
+                              product.name.toLowerCase().includes("aura");
         const availableSteps = config?.steps?.filter(s => {
-          if (isHikiOrAisti && s.id === "rear-glass-wall") return false;
+          if (hasNoRearWall && s.id === "rear-glass-wall") return false;
           return true;
         }) || [];
         const firstStep = availableSteps[0];
