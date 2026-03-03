@@ -266,8 +266,8 @@
           "title": "Standard Delivery UK",
           "description": "Curbside delivery within 2-3 weeks",
           "imageUrl": "",
-          "price": 200,
-          "pipedriveProductId": 18212
+          "price": 1000,
+          "pipedriveProductId": 18587
         },
         {
           "id": "delivery-outside-uk",
@@ -327,5 +327,5 @@
     "footerText": "Thank you for your interest. For questions, please contact us at the information above."
   },
   "mainProductImageUrl": "/indoor-sauna-thermo-black-150.png",
-  "mainProductPipedriveId": 0
+  "mainProductPipedriveId": 18558
 }

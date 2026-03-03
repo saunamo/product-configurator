@@ -231,8 +231,8 @@
           "title": "Standard Delivery UK",
           "description": "Curbside delivery within 2-3 weeks",
           "imageUrl": "",
-          "price": 200,
-          "pipedriveProductId": 18212
+          "price": 1000,
+          "pipedriveProductId": 18593
         },
         {
           "id": "delivery-outside-uk",
