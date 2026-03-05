@@ -2,119 +2,156 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Product } from "@/types/product";
+
+const PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23E8E4DF'/%3E%3C/svg%3E";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const response = await fetch("/api/products");
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data.products || []);
-        } else {
-          console.error("Failed to load products:", response.status);
-        }
-      } catch (error) {
-        console.error("Error loading products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProducts();
+    fetch("/api/products")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => setProducts(data.products || []))
+      .catch((e) => console.error("Failed to load products:", e))
+      .finally(() => setLoading(false));
   }, []);
 
-  const handleDelete = async (productId: string) => {
-    if (confirm("Are you sure you want to delete this product? This will also delete all its configuration.")) {
-      try {
-        const response = await fetch(`/api/products?productId=${productId}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          // Reload products
-          const productsResponse = await fetch("/api/products");
-          if (productsResponse.ok) {
-            const data = await productsResponse.json();
-            setProducts(data.products || []);
-          }
-        } else {
-          alert("Failed to delete product");
-        }
-      } catch (error) {
-        console.error("Error deleting product:", error);
-        alert("Failed to delete product");
-      }
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#faf9f7] p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-            <p className="text-gray-600 mt-2">Manage your product configurators</p>
-          </div>
-          <Link
-            href="/admin/products/new"
-            className="px-6 py-3 bg-green-800 text-white rounded-lg hover:bg-green-900 font-medium"
-          >
-            + Create New Product
-          </Link>
+    <div
+      className="min-h-screen"
+      style={{
+        background: "linear-gradient(160deg, #f5f2ef 0%, #ede9e4 100%)",
+      }}
+    >
+      <div className="pt-16 pb-10 px-6 text-center">
+        <div className="flex justify-center mb-10">
+          <Image
+            src="/saunamo-logo.webp"
+            alt="Saunamo"
+            width={220}
+            height={66}
+            className="h-14 w-auto object-contain"
+          />
         </div>
+        <h1
+          className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
+          style={{ color: "#1e2022", fontFamily: "Georgia, serif" }}
+        >
+          Choose your sauna
+        </h1>
+        <p className="text-lg max-w-xl mx-auto" style={{ color: "#6b6560" }}>
+          Select a model to configure your sauna and get a quote.
+        </p>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 pb-24">
         {loading ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <p className="text-gray-600">Loading products...</p>
-          </div>
-        ) : products.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <p className="text-gray-600 mb-4">No products yet.</p>
-            <Link
-              href="/admin/products/new"
-              className="inline-block px-6 py-3 bg-green-800 text-white rounded-lg hover:bg-green-900 font-medium"
-            >
-              Create Your First Product
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
               <div
-                key={product.id}
-                className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
+                key={i}
+                className="rounded-2xl overflow-hidden animate-pulse"
+                style={{ background: "#e8e3dd" }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                <p className="text-sm text-gray-500 mb-4">ID: {product.id}</p>
-                <div className="flex gap-2">
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="flex-1 px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900 text-center text-sm font-medium"
-                  >
-                    View Configurator
-                  </Link>
-                  <Link
-                    href={`/admin/products/${product.id}`}
-                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-center text-sm font-medium"
-                  >
-                    Configure
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium"
-                  >
-                    Delete
-                  </button>
+                <div className="aspect-[4/3] bg-[#ddd8d2]" />
+                <div className="p-6 space-y-3">
+                  <div className="h-5 bg-[#ddd8d2] rounded w-3/4" />
+                  <div className="h-10 bg-[#ddd8d2] rounded-xl w-full mt-4" />
                 </div>
               </div>
             ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product) => {
+              const imgSrc =
+                (product as any).imageUrl || PLACEHOLDER;
+              return (
+                <div
+                  key={product.id}
+                  className="group rounded-2xl overflow-hidden flex flex-col"
+                  style={{
+                    background: "#ffffff",
+                    boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
+                    transition:
+                      "box-shadow 0.25s ease, transform 0.25s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (
+                      e.currentTarget as HTMLDivElement
+                    ).style.boxShadow = "0 8px 32px rgba(0,0,0,0.13)";
+                    (
+                      e.currentTarget as HTMLDivElement
+                    ).style.transform = "translateY(-3px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (
+                      e.currentTarget as HTMLDivElement
+                    ).style.boxShadow = "0 2px 16px rgba(0,0,0,0.07)";
+                    (e.currentTarget as HTMLDivElement).style.transform =
+                      "translateY(0)";
+                  }}
+                >
+                  <div
+                    className="relative w-full overflow-hidden"
+                    style={{
+                      aspectRatio: "4/3",
+                      background: "#f0ece7",
+                    }}
+                  >
+                    <Image
+                      src={imgSrc}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      unoptimized={imgSrc.startsWith("data:")}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = PLACEHOLDER;
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col flex-1 p-6">
+                    <h2
+                      className="text-lg font-semibold mb-5 leading-snug"
+                      style={{ color: "#1e2022" }}
+                    >
+                      {product.name}
+                    </h2>
+                    <div className="mt-auto">
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="block w-full text-center py-3 px-6 rounded-xl font-semibold text-sm tracking-wide transition-all duration-200"
+                        style={{
+                          background: "#303337",
+                          color: "#ffffff",
+                          letterSpacing: "0.04em",
+                        }}
+                        onMouseEnter={(e) => {
+                          (
+                            e.currentTarget as HTMLAnchorElement
+                          ).style.background = "#1a1d20";
+                        }}
+                        onMouseLeave={(e) => {
+                          (
+                            e.currentTarget as HTMLAnchorElement
+                          ).style.background = "#303337";
+                        }}
+                      >
+                        Open configurator
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
     </div>
   );
 }
-

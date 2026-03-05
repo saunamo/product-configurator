@@ -420,6 +420,10 @@ export async function POST(request: NextRequest) {
         
         const companyName = process.env.COMPANY_NAME || "Saunamo, Arbor Eco LDA";
         
+        // Generate Pipedrive deal URL
+        const pipedriveDomain = process.env.PIPEDRIVE_COMPANY_DOMAIN || "saunamo";
+        const dealUrl = pipedriveDealId ? `https://${pipedriveDomain}.pipedrive.com/deal/${pipedriveDealId}` : undefined;
+
         const webhookPayload = {
           quoteId: quote.id,
           customerEmail: body.customerEmail,
@@ -446,6 +450,10 @@ export async function POST(request: NextRequest) {
           companyName: companyName,
           pdfBase64: pdfBuffer ? pdfBuffer.toString('base64') : undefined,
           pdfFilename: pdfBuffer ? `quote-${quote.id}.pdf` : undefined,
+          // Lead notification data for Zapier
+          pipedriveDealId: pipedriveDealId,
+          pipedriveDealUrl: dealUrl,
+          isNewLead: true, // Flag to indicate this is a new lead
         };
 
         console.log("📤 [Webhook] Payload summary:", {
