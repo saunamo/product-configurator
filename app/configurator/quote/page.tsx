@@ -79,7 +79,16 @@ export default function QuotePage() {
       }
 
       const data = await response.json();
-      
+
+      // Fire GTM conversion event for quote generation
+      if (typeof window !== "undefined" && (window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: "configurator_quote_generated",
+          quoteId: data.quoteId,
+          customerEmail: customerEmail,
+        });
+      }
+
       // Generate and open PDF locally
       try {
         // Load config to get quote settings

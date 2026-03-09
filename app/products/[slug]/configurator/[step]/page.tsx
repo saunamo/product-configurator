@@ -1418,7 +1418,17 @@ export default function ProductConfiguratorStepPage() {
       }
 
       const data = await response.json();
-      
+
+      // Fire GTM conversion event for quote generation
+      if (typeof window !== "undefined" && (window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: "configurator_quote_generated",
+          quoteId: data.quoteId,
+          productName: config?.productName,
+          customerEmail: customerEmail,
+        });
+      }
+
       if (data.quoteId) {
         router.push(`/quote/${data.quoteId}`);
       } else {
