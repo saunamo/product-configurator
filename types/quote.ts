@@ -22,6 +22,7 @@ export type Quote = {
   customerEmail: string;
   customerName?: string;
   customerPhone?: string;
+  customerAddress?: string;
   items: QuoteItem[];
   subtotal: number;
   discount?: number;
@@ -35,6 +36,7 @@ export type Quote = {
 };
 
 export type QuoteGenerationRequest = {
+  productSlug?: string; // Product slug for per-product mappings like delivery
   productId?: string; // For multi-product support
   productName?: string; // Product name if config not provided
   productConfig?: any; // Full product config (since server can't access localStorage)
@@ -44,7 +46,9 @@ export type QuoteGenerationRequest = {
   customerEmail: string;
   customerName?: string;
   customerPhone?: string;
+  customerAddress?: string;
   notes?: string;
   deliveryLocation?: string; // Delivery location for "Delivery Outside UK" option
+  attribution?: Record<string, string>;
 };
 

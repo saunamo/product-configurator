@@ -403,6 +403,7 @@ export function generateQuote(
       customerEmail: request.customerEmail,
       customerName: request.customerName,
       customerPhone: request.customerPhone,
+      customerAddress: request.customerAddress,
       items,
       subtotal,
       discount: discount > 0 ? discount : undefined,

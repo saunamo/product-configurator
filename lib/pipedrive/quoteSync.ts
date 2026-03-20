@@ -159,6 +159,11 @@ export async function createDealFromQuote(
     pipeline_id: pipelineId,
     stage_id: stageId,  // Always set stage_id to 13
   };
+
+  // Set installation address on the Location field
+  if (quote.customerAddress) {
+    dealData["4039dcb73e078f301d0d97af7cb47977c8bc1a61"] = quote.customerAddress;
+  }
   
   console.log(`[createDealFromQuote] IMPORTANT: stage_id is set to ${dealData.stage_id}`);
 

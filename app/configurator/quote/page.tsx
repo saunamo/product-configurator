@@ -8,6 +8,21 @@ import { STEPS } from "@/constants/steps";
 import ConfiguratorLayout from "@/components/ConfiguratorLayout";
 import { capitalize } from "@/utils/capitalize";
 
+const ATTR_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_id",
+  "utm_term",
+  "utm_content",
+];
+const ATTR_SESSION_KEY = "saunamo_attribution";
+const ADS_CONVERSION_SEND_TO = "AW-11139109502/X1BVCIqr4IMaEP6kxb8p";
+
 export default function QuotePage() {
   const router = useRouter();
   const { state } = useConfigurator();
@@ -15,6 +30,7 @@ export default function QuotePage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -29,6 +45,23 @@ export default function QuotePage() {
       router.push("/configurator/rear-glass-wall");
     }
   }, [hasSelections, router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const fresh = ATTR_KEYS.reduce<Record<string, string>>((acc, key) => {
+      const value = params.get(key);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+
+    if (Object.keys(fresh).length > 0) {
+      try {
+        sessionStorage.setItem(ATTR_SESSION_KEY, JSON.stringify(fresh));
+      } catch {}
+    }
+  }, []);
 
   if (!hasSelections) {
     return null;
@@ -51,9 +84,85 @@ export default function QuotePage() {
     return total;
   };
 
+  const getAttributionParams = () => {
+    if (typeof window === "undefined") return {} as Record<string, string>;
+
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = ATTR_KEYS.reduce<Record<string, string>>((acc, key) => {
+      const value = params.get(key);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+
+    if (Object.keys(fromUrl).length > 0) {
+      return fromUrl;
+    }
+
+    try {
+      const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+      if (stored) {
+        return JSON.parse(stored) as Record<string, string>;
+      }
+    } catch {}
+
+    return {} as Record<string, string>;
+  };
+
+  const fireLeadTracking = (quoteId?: string) => {
+    if (typeof window === "undefined") return;
+
+    const attribution = getAttributionParams();
+    const payload = {
+      quoteId,
+      productName: config?.productName,
+      customerEmail,
+      store: "en",
+      leadType: "configurator_quote",
+      ...attribution,
+    };
+    const win = window as any;
+
+    if (win.dataLayer) {
+      win.dataLayer.push({
+        event: "configurator_quote_generated",
+        ...payload,
+      });
+      win.dataLayer.push({
+        event: "saunamo_generate_lead",
+        ...payload,
+      });
+    }
+
+    if (typeof win.gtag === "function") {
+      win.gtag("event", "generate_lead", {
+        lead_type: "configurator_quote",
+        quote_id: quoteId,
+        product_name: config?.productName,
+        store: "en",
+        ...attribution,
+      });
+      win.gtag("event", "conversion", {
+        send_to: ADS_CONVERSION_SEND_TO,
+        ...(quoteId ? { transaction_id: quoteId } : {}),
+      });
+    }
+  };
+
   const handleGenerateQuote = async () => {
     if (!customerEmail) {
       setError("Please enter your email address");
+      return;
+    }
+    if (!customerName) {
+      setError("Please enter your full name");
+      return;
+    }
+    if (!customerPhone) {
+      setError("Please enter your phone number");
+      return;
+    }
+    if (!customerAddress) {
+      setError("Please enter your address");
       return;
     }
 
@@ -67,9 +176,11 @@ export default function QuotePage() {
         body: JSON.stringify({
           selections: state.selections,
           customerEmail,
-          customerName: customerName || undefined,
-          customerPhone: customerPhone || undefined,
+          customerName,
+          customerPhone,
+          customerAddress,
           notes: notes || undefined,
+          attribution: getAttributionParams(),
         }),
       });
 
@@ -80,14 +191,7 @@ export default function QuotePage() {
 
       const data = await response.json();
 
-      // Fire GTM conversion event for quote generation
-      if (typeof window !== "undefined" && (window as any).dataLayer) {
-        (window as any).dataLayer.push({
-          event: "configurator_quote_generated",
-          quoteId: data.quoteId,
-          customerEmail: customerEmail,
-        });
-      }
+      fireLeadTracking(data.quoteId);
 
       // Generate and open PDF locally
       try {
@@ -201,7 +305,7 @@ export default function QuotePage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
+              Full Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -209,19 +313,35 @@ export default function QuotePage() {
               onChange={(e) => setCustomerName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
               placeholder="John Doe"
+              required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
+              Phone Number <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
-              placeholder="+1 (555) 123-4567"
+              placeholder="+351 912 345 678"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Installation Address <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={customerAddress}
+              onChange={(e) => setCustomerAddress(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+              placeholder="Street, City, Country"
+              required
             />
           </div>
 
@@ -256,7 +376,7 @@ export default function QuotePage() {
           </button>
           <button
             onClick={handleGenerateQuote}
-            disabled={isGenerating || !customerEmail}
+            disabled={isGenerating || !customerEmail || !customerName || !customerPhone || !customerAddress}
             className="px-6 py-3 rounded-lg font-medium bg-green-800 text-white hover:bg-green-900 transition-colors disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             {isGenerating ? "Generating Quote..." : "Generate Quote →"}

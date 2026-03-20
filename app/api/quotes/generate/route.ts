@@ -10,6 +10,7 @@ import { stepDataMap } from "@/data";
 import { defaultDesignConfig } from "@/constants/defaultDesign";
 import { AdminConfig } from "@/types/admin";
 import { ProductConfig } from "@/types/product";
+import { getTransportPipedriveId } from "@/lib/ukTransportPipedrive";
 
 /**
  * POST /api/quotes/generate
@@ -124,6 +125,7 @@ export async function POST(request: NextRequest) {
       try {
         // Sync prices from Pipedrive products if configured
         const pipedriveProductIds: Record<string, number> = {};
+        const productSlug = body.productSlug || "";
         
         // Add main product Pipedrive ID if configured
         const productConfig = body.productConfig as any;
@@ -136,6 +138,13 @@ export async function POST(request: NextRequest) {
         const globalSettings = (adminConfig as any).globalSettings;
         if (globalSettings?.optionPipedriveProducts) {
           Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
+            if (optionId === "delivery-standard") {
+              const transportId = getTransportPipedriveId(productSlug);
+              if (transportId != null) {
+                pipedriveProductIds[optionId] = transportId;
+                return;
+              }
+            }
             if (typeof productId === 'number') {
               pipedriveProductIds[optionId] = productId;
             }
@@ -145,6 +154,13 @@ export async function POST(request: NextRequest) {
         // Also check option.pipedriveProductId as fallback
         Object.values(adminConfig.stepData).forEach((stepData) => {
           stepData.options.forEach((option) => {
+            if (option.id === "delivery-standard") {
+              const transportId = getTransportPipedriveId(productSlug);
+              if (transportId != null) {
+                pipedriveProductIds[option.id] = transportId;
+                return;
+              }
+            }
             if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
               pipedriveProductIds[option.id] = option.pipedriveProductId;
             }
@@ -181,6 +197,7 @@ export async function POST(request: NextRequest) {
       try {
         // Collect Pipedrive product IDs from quote items
         const pipedriveProductIds: Record<string, number> = {};
+        const productSlug = body.productSlug || "";
         
         // IMPORTANT: Add main product Pipedrive ID first (for base product like Cube 125)
         const productConfig = body.productConfig as any;
@@ -194,6 +211,13 @@ export async function POST(request: NextRequest) {
           const globalSettings = (adminConfig as any).globalSettings;
           if (globalSettings?.optionPipedriveProducts) {
             Object.entries(globalSettings.optionPipedriveProducts).forEach(([optionId, productId]) => {
+              if (optionId === "delivery-standard") {
+                const transportId = getTransportPipedriveId(productSlug);
+                if (transportId != null) {
+                  pipedriveProductIds[optionId] = transportId;
+                  return;
+                }
+              }
               if (typeof productId === 'number') {
                 pipedriveProductIds[optionId] = productId;
               }
@@ -203,6 +227,13 @@ export async function POST(request: NextRequest) {
           // Also check option.pipedriveProductId as fallback
           Object.values(adminConfig.stepData).forEach((stepData) => {
             stepData.options.forEach((option) => {
+              if (option.id === "delivery-standard") {
+                const transportId = getTransportPipedriveId(productSlug);
+                if (transportId != null) {
+                  pipedriveProductIds[option.id] = transportId;
+                  return;
+                }
+              }
               if (option.pipedriveProductId && !pipedriveProductIds[option.id]) {
                 pipedriveProductIds[option.id] = option.pipedriveProductId;
               }
@@ -212,7 +243,33 @@ export async function POST(request: NextRequest) {
         
         console.log("[Quote API] Final pipedriveProductIds for deal:", Object.keys(pipedriveProductIds));
 
-        const dealResult = await createDealFromQuote(quote, undefined, pipedriveProductIds);
+        const attributionCustomFields: Record<string, string> = {};
+        const PIPEDRIVE_ATTR_FIELDS: Record<string, string> = {
+          gclid: "3b91682d7bb477125badc0973d0503323e8c5c08",
+          utm_source: "f6f0264f2232f78221d452d93dc3d91360c8e8f7",
+          utm_medium: "3727bfbf3bb45a159c957e3a01099cd303a044dd",
+          utm_campaign: "2d0ff971b9627b6816e05c738ba9338afdbb85a5",
+          utm_content: "ee77190541cff33a9d9fe1ca286aaad74b45cb57",
+          utm_term: "1dd8722cbd41d197078e6b4690af3f5aa0cba1a0",
+        };
+
+        Object.entries(body.attribution || {}).forEach(([key, value]) => {
+          const fieldId = PIPEDRIVE_ATTR_FIELDS[key];
+          if (fieldId && value) {
+            attributionCustomFields[fieldId] = value;
+          }
+        });
+
+        const dealResult = await createDealFromQuote(
+          quote,
+          {
+            customFields:
+              Object.keys(attributionCustomFields).length > 0
+                ? attributionCustomFields
+                : undefined,
+          },
+          pipedriveProductIds
+        );
         pipedriveDealId = dealResult.dealId;
         
         // IMPORTANT: Wait for Pipedrive to fully index the new deal before we try to add notes
@@ -429,6 +486,7 @@ export async function POST(request: NextRequest) {
           customerEmail: body.customerEmail,
           customerName: body.customerName || "",
           customerPhone: body.customerPhone || "",
+          customerAddress: body.customerAddress || "",
           productName: quote.productName,
           productId: body.productId,
           productImageUrl: productImageUrl,
