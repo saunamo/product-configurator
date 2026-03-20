@@ -14,6 +14,22 @@ import { getProductConfig } from "@/utils/productStorage";
 import { ProductConfig } from "@/types/product";
 import { capitalize } from "@/utils/capitalize";
 import NavigationButtons from "@/components/NavigationButtons";
+import { getTransportPipedriveId } from "@/lib/ukTransportPipedrive";
+
+const ATTR_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_id",
+  "utm_term",
+  "utm_content",
+];
+const ATTR_SESSION_KEY = "saunamo_attribution";
+const ADS_CONVERSION_SEND_TO = "AW-11139109502/X1BVCIqr4IMaEP6kxb8p";
 
 export default function ProductConfiguratorStepPage() {
   const params = useParams();
@@ -130,6 +146,7 @@ export default function ProductConfiguratorStepPage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [quoteError, setQuoteError] = useState("");
@@ -231,6 +248,25 @@ export default function ProductConfiguratorStepPage() {
   // Also clear on initial load to ensure no stale selections from previous products
   const previousProductSlug = useRef<string | null>(null);
   const hasInitialized = useRef(false);
+  const attrCapturedRef = useRef(false);
+
+  // Persist gclid/UTMs before client-side navigation strips query params.
+  if (typeof window !== "undefined" && !attrCapturedRef.current) {
+    attrCapturedRef.current = true;
+    const params = new URLSearchParams(window.location.search);
+    const fresh = ATTR_KEYS.reduce<Record<string, string>>((acc, key) => {
+      const value = params.get(key);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+
+    if (Object.keys(fresh).length > 0) {
+      try {
+        sessionStorage.setItem(ATTR_SESSION_KEY, JSON.stringify(fresh));
+      } catch {}
+    }
+  }
+
   useEffect(() => {
     // Clear on first load OR when product actually changes
     if (!hasInitialized.current || (previousProductSlug.current !== null && previousProductSlug.current !== productSlug)) {
@@ -583,8 +619,8 @@ export default function ProductConfiguratorStepPage() {
             }
           }
           
-          // Apply global Pipedrive product if available
-          if (adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
+          // Delivery is product-specific; don't overwrite it with the global fallback ID.
+          if (opt.id !== "delivery-standard" && adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
             updatedOpt.pipedriveProductId = adminConfig.globalSettings.optionPipedriveProducts[opt.id];
           }
           
@@ -621,8 +657,8 @@ export default function ProductConfiguratorStepPage() {
           }
         }
         
-        // Apply global Pipedrive product if available
-        if (adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
+        // Delivery is product-specific; don't overwrite it with the global fallback ID.
+        if (opt.id !== "delivery-standard" && adminConfig?.globalSettings?.optionPipedriveProducts?.[opt.id]) {
           updatedOpt.pipedriveProductId = adminConfig.globalSettings.optionPipedriveProducts[opt.id];
         }
         
@@ -670,6 +706,14 @@ export default function ProductConfiguratorStepPage() {
     const globalSettings = adminConfig.globalSettings;
     
     stepData.options.forEach((option) => {
+      if (option.id === "delivery-standard") {
+        const transportId = getTransportPipedriveId(productSlug);
+        if (transportId && typeof transportId === "number") {
+          productIds.push(transportId);
+        }
+        return;
+      }
+
       // Check global settings first (preferred)
       const pipedriveProductId = globalSettings?.optionPipedriveProducts?.[option.id] || option.pipedriveProductId;
       if (pipedriveProductId && typeof pipedriveProductId === 'number') {
@@ -748,7 +792,7 @@ export default function ProductConfiguratorStepPage() {
         console.error('Failed to fetch prices in batch:', err);
         setIsLoadingPrices(false);
       });
-  }, [stepData, adminConfig, step]);
+  }, [stepData, adminConfig, step, productSlug]);
   
   // Clear selected option image when step changes (so step image can show)
   useEffect(() => {
@@ -1091,6 +1135,14 @@ export default function ProductConfiguratorStepPage() {
   // Helper function to get pre-fetched price for an option
   const getPreFetchedPrice = (optionId: string) => {
     if (!stepData || !stepData.options) return undefined;
+
+    if (optionId === "delivery-standard") {
+      const transportId = getTransportPipedriveId(productSlug);
+      if (transportId != null) {
+        return pipedrivePrices[transportId];
+      }
+    }
+
     const globalSettings = adminConfig?.globalSettings;
     const pipedriveProductId = globalSettings?.optionPipedriveProducts?.[optionId] || stepData.options.find(o => o.id === optionId)?.pipedriveProductId;
     if (pipedriveProductId && typeof pipedriveProductId === 'number') {
@@ -1375,10 +1427,91 @@ export default function ProductConfiguratorStepPage() {
     }
   };
 
+  const getAttributionParams = useCallback(() => {
+    if (typeof window === "undefined") return {} as Record<string, string>;
+
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = ATTR_KEYS.reduce<Record<string, string>>((acc, key) => {
+      const value = params.get(key);
+      if (value) acc[key] = value;
+      return acc;
+    }, {});
+
+    if (Object.keys(fromUrl).length > 0) {
+      return fromUrl;
+    }
+
+    try {
+      const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+      if (stored) {
+        return JSON.parse(stored) as Record<string, string>;
+      }
+    } catch {}
+
+    return {} as Record<string, string>;
+  }, []);
+
+  const fireLeadTracking = useCallback(
+    (quoteId?: string) => {
+      if (typeof window === "undefined") return;
+
+      const attribution = getAttributionParams();
+      const payload = {
+        quoteId,
+        productSlug,
+        productName: config?.productName,
+        customerEmail,
+        store: "en",
+        leadType: "configurator_quote",
+        ...attribution,
+      };
+      const win = window as any;
+
+      if (win.dataLayer) {
+        win.dataLayer.push({
+          event: "configurator_quote_generated",
+          ...payload,
+        });
+        win.dataLayer.push({
+          event: "saunamo_generate_lead",
+          ...payload,
+        });
+      }
+
+      if (typeof win.gtag === "function") {
+        win.gtag("event", "generate_lead", {
+          lead_type: "configurator_quote",
+          quote_id: quoteId,
+          product_slug: productSlug,
+          product_name: config?.productName,
+          store: "en",
+          ...attribution,
+        });
+        win.gtag("event", "conversion", {
+          send_to: ADS_CONVERSION_SEND_TO,
+          ...(quoteId ? { transaction_id: quoteId } : {}),
+        });
+      }
+    },
+    [config?.productName, customerEmail, getAttributionParams, productSlug]
+  );
+
   // Handle quote generation
   const handleGenerateQuote = useCallback(async () => {
     if (!customerEmail) {
       setQuoteError("Please enter your email address");
+      return;
+    }
+    if (!customerName) {
+      setQuoteError("Please enter your full name");
+      return;
+    }
+    if (!customerPhone) {
+      setQuoteError("Please enter your phone number");
+      return;
+    }
+    if (!customerAddress) {
+      setQuoteError("Please enter your installation address");
       return;
     }
 
@@ -1392,23 +1525,26 @@ export default function ProductConfiguratorStepPage() {
 
     try {
       // Get delivery location if available
-      const savedDeliveryLocation = typeof window !== "undefined" 
+      const savedDeliveryLocation = typeof window !== "undefined"
         ? localStorage.getItem(`delivery-location-${productSlug}`) || ""
         : "";
-      
+
       const response = await fetch("/api/quotes/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          productSlug,
           productId: config.productId,
           productName: config.productName,
           productConfig: config,
           selections: state.selections,
           customerEmail,
-          customerName: customerName || undefined,
-          customerPhone: customerPhone || undefined,
+          customerName,
+          customerPhone,
+          customerAddress,
           notes: notes || undefined,
           deliveryLocation: savedDeliveryLocation,
+          attribution: getAttributionParams(),
         }),
       });
 
@@ -1419,15 +1555,7 @@ export default function ProductConfiguratorStepPage() {
 
       const data = await response.json();
 
-      // Fire GTM conversion event for quote generation
-      if (typeof window !== "undefined" && (window as any).dataLayer) {
-        (window as any).dataLayer.push({
-          event: "configurator_quote_generated",
-          quoteId: data.quoteId,
-          productName: config?.productName,
-          customerEmail: customerEmail,
-        });
-      }
+      fireLeadTracking(data.quoteId);
 
       if (data.quoteId) {
         router.push(`/quote/${data.quoteId}`);
@@ -1439,7 +1567,7 @@ export default function ProductConfiguratorStepPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [customerEmail, customerName, customerPhone, notes, config, state.selections, router, productSlug]);
+  }, [customerEmail, customerName, customerPhone, customerAddress, notes, config, state.selections, router, productSlug, fireLeadTracking, getAttributionParams]);
 
   // Listen for generateQuote event from NavigationButtons
   useEffect(() => {
@@ -1654,7 +1782,7 @@ export default function ProductConfiguratorStepPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
+                Full Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -1662,12 +1790,13 @@ export default function ProductConfiguratorStepPage() {
                 onChange={(e) => setCustomerName(e.target.value)}
                 className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="John Doe"
+                required
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -1675,6 +1804,21 @@ export default function ProductConfiguratorStepPage() {
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
                 placeholder="+44 20 1234 5678"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Installation Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={customerAddress}
+                onChange={(e) => setCustomerAddress(e.target.value)}
+                className="quote-form-input w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+                placeholder="Street, City, Country"
+                required
               />
             </div>
 
@@ -1770,6 +1914,7 @@ export default function ProductConfiguratorStepPage() {
                         stepId={step}
                         productType={productType}
                         preFetchedPrice={getPreFetchedPrice(option.id)}
+                        isBatchLoading={isLoadingPrices}
                       />
                     );
                   })}
@@ -1829,6 +1974,7 @@ export default function ProductConfiguratorStepPage() {
                         stepId={step}
                         productType={productType}
                         preFetchedPrice={getPreFetchedPrice(option.id)}
+                        isBatchLoading={isLoadingPrices}
                       />
                     );
                   })}
@@ -1932,6 +2078,7 @@ export default function ProductConfiguratorStepPage() {
                     calculatedPrice={calculatedPrice}
                     calculatedQuantity={calculatedQuantity}
                     preFetchedPrice={getPreFetchedPrice(option.id)}
+                    isBatchLoading={isLoadingPrices}
                   />
                 );
               })}
@@ -1998,6 +2145,7 @@ export default function ProductConfiguratorStepPage() {
                     stepId={step}
                     productType={productType}
                     preFetchedPrice={getPreFetchedPrice(option.id)}
+                    isBatchLoading={isLoadingPrices}
                   />
                 );
               })}
@@ -2064,6 +2212,7 @@ export default function ProductConfiguratorStepPage() {
                     stepId={step}
                     productType={productType}
                     preFetchedPrice={getPreFetchedPrice(option.id)}
+                    isBatchLoading={isLoadingPrices}
                   />
                 );
               })}
@@ -2113,6 +2262,7 @@ export default function ProductConfiguratorStepPage() {
                 stepId={step}
                 productType={productType}
                 preFetchedPrice={getPreFetchedPrice(option.id)}
+                isBatchLoading={isLoadingPrices}
                 additionalContent={isOutsideUK && isSelected ? (
                   <div onClick={(e) => e.stopPropagation()}>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2209,6 +2359,7 @@ export default function ProductConfiguratorStepPage() {
                 baseLightingOptionId={baseLightingOptionId}
                 preFetchedPrice={getPreFetchedPrice(option.id)}
                 basePreFetchedPrice={basePreFetchedPrice}
+                isBatchLoading={isLoadingPrices}
               />
             );
           })}
