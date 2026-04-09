@@ -323,8 +323,9 @@
           "id": "heater-pyros-20-160kg",
           "title": "Pyros 20 (160kg)",
           "description": "",
-          "imageUrl": "",
-          "price": 0
+          "imageUrl": "/images/1769586103624-n2xiqcdz88r.webp",
+          "price": 0,
+          "pipedriveProductId": 18162
         }
       ],
       "selectionType": "multi",
