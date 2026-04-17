@@ -11,25 +11,33 @@ import { defaultDesignConfig } from "@/constants/defaultDesign";
 import { AdminConfig } from "@/types/admin";
 import { ProductConfig } from "@/types/product";
 import { getTransportPipedriveId } from "@/lib/ukTransportPipedrive";
+import { storefrontOptions, withStorefrontCors } from "@/lib/storefrontEmbed";
 
 /**
  * POST /api/quotes/generate
  * Generate a quote from configurator selections
  */
+export function OPTIONS(request: NextRequest) {
+  return storefrontOptions(request, "POST, OPTIONS");
+}
+
 export async function POST(request: NextRequest) {
+  const json = (body: any, init?: ResponseInit) =>
+    withStorefrontCors(request, NextResponse.json(body, init), "POST, OPTIONS");
+
   try {
     const body: QuoteGenerationRequest = await request.json();
 
     // Validate request
     if (!body.selections || Object.keys(body.selections).length === 0) {
-      return NextResponse.json(
+      return json(
         { success: false, error: "No selections provided" },
         { status: 400 }
       );
     }
 
     if (!body.customerEmail) {
-      return NextResponse.json(
+      return json(
         { success: false, error: "Customer email is required" },
         { status: 400 }
       );
@@ -107,7 +115,7 @@ export async function POST(request: NextRequest) {
       console.error("[Quote API] Failed to generate quote:", error);
       console.error("[Quote API] Error stack:", error.stack);
       console.error("[Quote API] Request body:", JSON.stringify(body, null, 2));
-      return NextResponse.json(
+      return json(
         {
           success: false,
           error: `Failed to generate quote: ${error.message || 'Unknown error'}`,
@@ -303,7 +311,7 @@ export async function POST(request: NextRequest) {
       // Ensure quote is initialized before using it
       if (!quote || !quote.id) {
         console.error("❌ CRITICAL: Quote is not initialized before PDF generation");
-        return NextResponse.json(
+        return json(
           {
             success: false,
             error: "Quote generation failed: Quote is not initialized",
@@ -404,7 +412,7 @@ export async function POST(request: NextRequest) {
       if (process.env.NETLIFY && pipedriveDealId) {
         // Deal was created but note wasn't - this is a critical failure
         console.error("❌ CRITICAL: Deal created but note not saved. Quote cannot be retrieved.");
-        return NextResponse.json(
+        return json(
           {
             success: false,
             error: `Failed to save quote: ${error.message || 'Note creation failed'}`,
@@ -552,7 +560,7 @@ export async function POST(request: NextRequest) {
     // Final validation before returning
     if (!quote || !quote.id) {
       console.error("❌ CRITICAL: Quote is missing or has no ID before returning response");
-      return NextResponse.json(
+      return json(
         {
           success: false,
           error: "Quote generation failed: Quote is missing or invalid",
@@ -567,7 +575,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Return success even if save failed - quote was generated successfully
-    return NextResponse.json({
+    return json({
       success: true,
       quoteId: quote.id,
       quote,
@@ -595,7 +603,7 @@ export async function POST(request: NextRequest) {
     
     // Return detailed error message in both dev and production
     // This helps debug issues on Netlify
-    return NextResponse.json(
+    return json(
       {
         success: false,
         error: error.message || "Failed to generate quote. Please try again.",
@@ -612,5 +620,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
 
