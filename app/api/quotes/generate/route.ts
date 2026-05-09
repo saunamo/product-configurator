@@ -12,6 +12,7 @@ import { AdminConfig } from "@/types/admin";
 import { ProductConfig } from "@/types/product";
 import { getTransportPipedriveId } from "@/lib/ukTransportPipedrive";
 import { storefrontOptions, withStorefrontCors } from "@/lib/storefrontEmbed";
+import { triggerConfiguratorFollowup } from "@/lib/followup/configuratorFollowup";
 
 /**
  * POST /api/quotes/generate
@@ -333,6 +334,7 @@ export async function POST(request: NextRequest) {
     // Initialize variables for quote saving and webhook
     let quoteSaved = false;
     let webhookResult: { success: boolean; error?: string } | undefined;
+    let followupResult: Record<string, unknown> | undefined;
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
 
     // CRITICAL: Save quote to server storage FIRST
@@ -522,6 +524,21 @@ export async function POST(request: NextRequest) {
           isNewLead: true, // Flag to indicate this is a new lead
         };
 
+        followupResult = await triggerConfiguratorFollowup({
+          quote,
+          quotePortalUrl,
+          productId: body.productId,
+          productSlug: body.productSlug,
+          productImageUrl,
+          pipedriveDealId,
+          pipedriveDealUrl: dealUrl,
+          customerAddress: body.customerAddress,
+          deliveryLocation: body.deliveryLocation,
+          attribution: body.attribution,
+          smsConsent: body.smsConsent,
+          whatsappConsent: body.whatsappConsent,
+        });
+
         console.log("📤 [Webhook] Payload summary:", {
           quoteId: webhookPayload.quoteId,
           customerEmail: webhookPayload.customerEmail,
@@ -557,6 +574,48 @@ export async function POST(request: NextRequest) {
       console.log("⚠️ [Webhook] Quote not saved, skipping webhook (email would have broken link)");
     }
 
+    if (!followupResult && quoteSaved) {
+      try {
+        let productionBaseUrl = "https://config.saunamo.co.uk";
+        if (process.env.NEXT_PUBLIC_SITE_URL) {
+          productionBaseUrl = process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+        } else if (process.env.QUOTE_PORTAL_URL) {
+          productionBaseUrl = process.env.QUOTE_PORTAL_URL.replace(/\/quote.*$/, '').replace(/\/$/, '');
+        } else if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) {
+          productionBaseUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+        }
+
+        const productConfig = body.productConfig as any;
+        let productImageUrl = productConfig?.mainProductImageUrl || (adminConfig as any)?.mainProductImageUrl || "";
+        if (productImageUrl && !productImageUrl.startsWith('http')) {
+          const cleanPath = productImageUrl.startsWith('/') ? productImageUrl : `/${productImageUrl}`;
+          productImageUrl = `${productionBaseUrl}${cleanPath}`;
+        }
+
+        const quotePortalUrl = `${productionBaseUrl}/quote/${quote.id}`;
+        const pipedriveDomain = process.env.PIPEDRIVE_COMPANY_DOMAIN || "saunamo";
+        const dealUrl = pipedriveDealId ? `https://${pipedriveDomain}.pipedrive.com/deal/${pipedriveDealId}` : undefined;
+
+        followupResult = await triggerConfiguratorFollowup({
+          quote,
+          quotePortalUrl,
+          productId: body.productId,
+          productSlug: body.productSlug,
+          productImageUrl,
+          pipedriveDealId,
+          pipedriveDealUrl: dealUrl,
+          customerAddress: body.customerAddress,
+          deliveryLocation: body.deliveryLocation,
+          attribution: body.attribution,
+          smsConsent: body.smsConsent,
+          whatsappConsent: body.whatsappConsent,
+        });
+      } catch (error: any) {
+        followupResult = { success: false, error: error?.message || String(error) };
+        console.error("❌ [Followup] Error triggering follow-up:", error?.message || error);
+      }
+    }
+
     // Final validation before returning
     if (!quote || !quote.id) {
       console.error("❌ CRITICAL: Quote is missing or has no ID before returning response");
@@ -586,6 +645,7 @@ export async function POST(request: NextRequest) {
       emailError: webhookResult?.error,
       webhookSent: webhookResult?.success || false,
       webhookError: webhookResult?.error,
+      followupResult,
       message: quoteSaved 
         ? "Quote generated successfully. Email will be sent via Zapier."
         : "Quote generated successfully, but could not be saved permanently. Email will not be sent.",
@@ -620,4 +680,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

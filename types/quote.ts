@@ -50,5 +50,6 @@ export type QuoteGenerationRequest = {
   notes?: string;
   deliveryLocation?: string; // Delivery location for "Delivery Outside UK" option
   attribution?: Record<string, string>;
+  smsConsent?: boolean;
+  whatsappConsent?: boolean;
 };
-
