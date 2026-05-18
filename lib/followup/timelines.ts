@@ -16,11 +16,38 @@ type WhatsAppFollowupPayload = {
 
 const TIMELINES_API_BASE = "https://app.timelines.ai/integrations/api";
 
-function normalizePhone(phone?: string) {
+const COUNTRY_PREFIX_BY_MARKET: Record<string, string> = {
+  uk: "44",
+  en: "44",
+  es: "34",
+  pt: "351",
+  fr: "33",
+  it: "39",
+};
+
+function inferMarketFromQuoteUrl(url?: string) {
+  const value = (url || "").toLowerCase();
+  if (value.includes("saunamo.shop")) return "uk";
+  if (value.includes("saunamo.co.uk") || value.includes("config.saunamo.co.uk")) return "uk";
+  if (value.includes("saunamo.es")) return "es";
+  if (value.includes("saunamo.pt")) return "pt";
+  if (value.includes("saunamo.fr")) return "fr";
+  if (value.includes("saunamo.it")) return "it";
+  return process.env.SAUNAMO_DEFAULT_PHONE_MARKET || "";
+}
+
+function normalizePhone(phone?: string, market?: string) {
   if (!phone) return "";
   const trimmed = phone.trim();
-  if (trimmed.startsWith("+")) return trimmed.replace(/[^\d+]/g, "");
-  return trimmed.replace(/\D/g, "");
+  if (trimmed.startsWith("+")) return `+${trimmed.replace(/\D/g, "")}`;
+  let digits = trimmed.replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("00")) return `+${digits.slice(2)}`;
+  const prefix = COUNTRY_PREFIX_BY_MARKET[(market || "").toLowerCase()];
+  if (!prefix) return digits;
+  if (digits.startsWith(prefix) && digits.length > prefix.length + 5) return `+${digits}`;
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  return `+${prefix}${digits}`;
 }
 
 async function sendTimelinesMessage(payload: TimelinesMessagePayload) {
@@ -56,7 +83,8 @@ async function sendTimelinesMessage(payload: TimelinesMessagePayload) {
 }
 
 export async function sendConfiguratorWhatsAppTouch(payload: WhatsAppFollowupPayload) {
-  const phone = normalizePhone(payload.quote.customerPhone);
+  const market = inferMarketFromQuoteUrl(payload.quotePortalUrl);
+  const phone = normalizePhone(payload.quote.customerPhone, market);
   if (!phone || !payload.whatsappConsent) {
     return { success: false, skipped: true, reason: "no_customer_whatsapp_consent" };
   }
@@ -79,7 +107,8 @@ export async function sendConfiguratorWhatsAppTouch(payload: WhatsAppFollowupPay
 }
 
 export async function sendConfiguratorInternalWhatsAppAlert(payload: WhatsAppFollowupPayload) {
-  const salesPhone = normalizePhone(process.env.SAUNAMO_SALES_WHATSAPP_PHONE);
+  const market = inferMarketFromQuoteUrl(payload.quotePortalUrl);
+  const salesPhone = normalizePhone(process.env.SAUNAMO_SALES_WHATSAPP_PHONE, market);
   if (!salesPhone) {
     console.log("[Timelines] SAUNAMO_SALES_WHATSAPP_PHONE not configured, skipping internal alert");
     return { success: false, skipped: true, reason: "missing_sales_phone" };
