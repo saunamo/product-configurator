@@ -6,6 +6,44 @@ import { STEPS } from "@/constants/steps";
 import { StepId, Step } from "@/types/configurator";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
 
+const ATTR_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "gad_campaignid",
+  "gclsrc",
+  "_gl",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_id",
+  "utm_term",
+  "utm_content",
+];
+const ATTR_SESSION_KEY = "saunamo_attribution";
+
+function withCurrentSearch(path: string): string {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  if ([...current.keys()].length > 0) return `${path}?${current.toString()}`;
+
+  try {
+    const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+    const attribution = stored ? JSON.parse(stored) as Record<string, string> : {};
+    const params = new URLSearchParams();
+    ATTR_KEYS.forEach((key) => {
+      const value = attribution[key];
+      if (value) params.set(key, value);
+    });
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
+  } catch {
+    return path;
+  }
+}
+
 interface StepperProps {
   currentStepId: StepId;
   steps?: Step[];
@@ -83,7 +121,7 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
 
   // Navigate without page reload - update URL directly without Next.js router
   const handleStepClick = (step: Step) => {
-    const route = getStepRoute(step);
+    const route = withCurrentSearch(getStepRoute(step));
     // Update URL directly using history API (no Next.js navigation = no reload)
     window.history.pushState({}, '', route);
     // Dispatch custom event to notify page component
@@ -180,4 +218,3 @@ export default function Stepper({ currentStepId, steps: propSteps, productSlug }
     </nav>
   );
 }
-

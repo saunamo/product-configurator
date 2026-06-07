@@ -5,6 +5,44 @@ import { STEPS } from "@/constants/steps";
 import { StepId, Step } from "@/types/configurator";
 import { useAdminConfig } from "@/contexts/AdminConfigContext";
 
+const ATTR_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "gad_campaignid",
+  "gclsrc",
+  "_gl",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_id",
+  "utm_term",
+  "utm_content",
+];
+const ATTR_SESSION_KEY = "saunamo_attribution";
+
+function withCurrentSearch(path: string): string {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  if ([...current.keys()].length > 0) return `${path}?${current.toString()}`;
+
+  try {
+    const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+    const attribution = stored ? JSON.parse(stored) as Record<string, string> : {};
+    const params = new URLSearchParams();
+    ATTR_KEYS.forEach((key) => {
+      const value = attribution[key];
+      if (value) params.set(key, value);
+    });
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
+  } catch {
+    return path;
+  }
+}
+
 interface NavigationButtonsProps {
   currentStepId: StepId;
   canProceed: boolean;
@@ -48,10 +86,11 @@ export default function NavigationButtons({
 
   // Navigate without page reload - update URL directly without Next.js router
   const handleNavigate = (route: string) => {
+    const nextRoute = withCurrentSearch(route);
     // Use instant navigation for all steps including quote
-    window.history.pushState({}, '', route);
+    window.history.pushState({}, '', nextRoute);
     // Dispatch custom event to notify page component
-    window.dispatchEvent(new CustomEvent('stepchange', { detail: { route } }));
+    window.dispatchEvent(new CustomEvent('stepchange', { detail: { route: nextRoute } }));
   };
 
   return (
@@ -118,4 +157,3 @@ export default function NavigationButtons({
     </div>
   );
 }
-

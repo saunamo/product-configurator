@@ -21,6 +21,9 @@ const ATTR_KEYS = [
   "gbraid",
   "wbraid",
   "gad_source",
+  "gad_campaignid",
+  "gclsrc",
+  "_gl",
   "utm_source",
   "utm_medium",
   "utm_campaign",
@@ -29,6 +32,29 @@ const ATTR_KEYS = [
   "utm_content",
 ];
 const ATTR_SESSION_KEY = "saunamo_attribution";
+
+function withCurrentSearch(path: string): string {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  if ([...current.keys()].length > 0) {
+    return `${path}?${current.toString()}`;
+  }
+
+  try {
+    const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+    const attribution = stored ? JSON.parse(stored) as Record<string, string> : {};
+    const params = new URLSearchParams();
+    ATTR_KEYS.forEach((key) => {
+      const value = attribution[key];
+      if (value) params.set(key, value);
+    });
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
+  } catch {
+    return path;
+  }
+}
 
 export default function ProductConfiguratorStepPage() {
   const params = useParams();
@@ -260,6 +286,7 @@ export default function ProductConfiguratorStepPage() {
     }, {});
 
     if (Object.keys(fresh).length > 0) {
+      fresh.landing_page = window.location.href;
       try {
         sessionStorage.setItem(ATTR_SESSION_KEY, JSON.stringify(fresh));
       } catch {}
@@ -892,7 +919,7 @@ export default function ProductConfiguratorStepPage() {
         const firstStep = config.steps[0];
         if (firstStep) {
           console.log(`↪️ Redirecting to first step: ${firstStep.id}`);
-          router.push(`/products/${productSlug}/configurator/${firstStep.id}`);
+          router.push(withCurrentSearch(`/products/${productSlug}/configurator/${firstStep.id}`));
           return;
         }
       }
@@ -903,10 +930,10 @@ export default function ProductConfiguratorStepPage() {
       // If stepData not found, redirect to first step of this product
       const firstStep = config.steps?.[0];
       if (firstStep) {
-        router.push(`/products/${productSlug}/configurator/${firstStep.id}`);
+        router.push(withCurrentSearch(`/products/${productSlug}/configurator/${firstStep.id}`));
       } else {
         // Fallback to default step
-        router.push(`/products/${productSlug}/configurator/${DEFAULT_STEP.route.split('/').pop()}`);
+        router.push(withCurrentSearch(`/products/${productSlug}/configurator/${DEFAULT_STEP.route.split('/').pop()}`));
       }
     }
   }, [stepData, router, productSlug, config, step]);
@@ -1437,6 +1464,7 @@ export default function ProductConfiguratorStepPage() {
     }, {});
 
     if (Object.keys(fromUrl).length > 0) {
+      fromUrl.landing_page = window.location.href;
       return fromUrl;
     }
 
@@ -2368,4 +2396,3 @@ export default function ProductConfiguratorStepPage() {
     </ConfiguratorLayout>
   );
 }
-

@@ -11,6 +11,44 @@ import { useConfigurator } from "@/contexts/ConfiguratorContext";
 import { StepId } from "@/types/configurator";
 import { DEFAULT_STEP } from "@/constants/steps";
 
+const ATTR_KEYS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "gad_campaignid",
+  "gclsrc",
+  "_gl",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_id",
+  "utm_term",
+  "utm_content",
+];
+const ATTR_SESSION_KEY = "saunamo_attribution";
+
+function withCurrentSearch(path: string): string {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  if ([...current.keys()].length > 0) return `${path}?${current.toString()}`;
+
+  try {
+    const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+    const attribution = stored ? JSON.parse(stored) as Record<string, string> : {};
+    const params = new URLSearchParams();
+    ATTR_KEYS.forEach((key) => {
+      const value = attribution[key];
+      if (value) params.set(key, value);
+    });
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
+  } catch {
+    return path;
+  }
+}
+
 export default function ConfiguratorStepPage() {
   const params = useParams();
   const router = useRouter();
@@ -24,7 +62,7 @@ export default function ConfiguratorStepPage() {
 
   useEffect(() => {
     if (!stepData) {
-      router.push(DEFAULT_STEP.route);
+      router.push(withCurrentSearch(DEFAULT_STEP.route));
     }
   }, [stepData, router]);
 
@@ -74,4 +112,3 @@ export default function ConfiguratorStepPage() {
     </ConfiguratorLayout>
   );
 }
-

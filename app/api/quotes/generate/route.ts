@@ -112,6 +112,7 @@ export async function POST(request: NextRequest) {
       
       console.log(`[Quote API] Generated quote ${quote.id} with ${quote.items?.length || 0} items`);
       console.log(`[Quote API] Quote items after generation:`, JSON.stringify(quote.items, null, 2));
+      quote.attribution = body.attribution || {};
     } catch (error: any) {
       console.error("[Quote API] Failed to generate quote:", error);
       console.error("[Quote API] Error stack:", error.stack);
@@ -255,11 +256,17 @@ export async function POST(request: NextRequest) {
         const attributionCustomFields: Record<string, string> = {};
         const PIPEDRIVE_ATTR_FIELDS: Record<string, string> = {
           gclid: "3b91682d7bb477125badc0973d0503323e8c5c08",
+          gbraid: "fcfa75bf3109c14860af2e9d0eb2cb625ad7536d",
+          wbraid: "fcd27ecb0f609590b61e4246ca4b6a8fd1ba1eb9",
+          gad_source: "57ba4986c0b8943d2a594449cf1bf92c82a207ee",
+          gad_campaignid: "5df4303c3895c09473f2baef7a90be80287a0c4b",
           utm_source: "f6f0264f2232f78221d452d93dc3d91360c8e8f7",
           utm_medium: "3727bfbf3bb45a159c957e3a01099cd303a044dd",
           utm_campaign: "2d0ff971b9627b6816e05c738ba9338afdbb85a5",
+          utm_id: "02e3c536b621a3ac90d998374ecb3e37a0ac1a92",
           utm_content: "ee77190541cff33a9d9fe1ca286aaad74b45cb57",
           utm_term: "1dd8722cbd41d197078e6b4690af3f5aa0cba1a0",
+          landing_page: "1ff6ebdb9a5508afaf7dfbcade490b33698f826c",
         };
 
         Object.entries(body.attribution || {}).forEach(([key, value]) => {
