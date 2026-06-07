@@ -21,7 +21,6 @@ const ATTR_KEYS = [
   "utm_content",
 ];
 const ATTR_SESSION_KEY = "saunamo_attribution";
-const ADS_CONVERSION_SEND_TO = "AW-11139109502/X1BVCIqr4IMaEP6kxb8p";
 
 export default function QuotePage() {
   const router = useRouter();
@@ -133,6 +132,11 @@ export default function QuotePage() {
       });
     }
 
+    // Google Ads conversion is fired by GTM (tag "Google Ads Conversion - UK Configurator
+    // Lead", label 9g4lCP) on the configurator_quote_generated dataLayer event pushed above.
+    // Do NOT fire the conversion inline too — the GTM tag carries no transaction_id, so a
+    // parallel inline fire would not dedupe and would double-count the lead. (Previously this
+    // fired AW-11139109502/X1BVCIqr… which is the "Pipedrive Legacy - Do Not Bid" action.)
     if (typeof win.gtag === "function") {
       win.gtag("event", "generate_lead", {
         lead_type: "configurator_quote",
@@ -140,10 +144,6 @@ export default function QuotePage() {
         product_name: config?.productName,
         store: "en",
         ...attribution,
-      });
-      win.gtag("event", "conversion", {
-        send_to: ADS_CONVERSION_SEND_TO,
-        ...(quoteId ? { transaction_id: quoteId } : {}),
       });
     }
   };
