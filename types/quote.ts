@@ -33,6 +33,7 @@ export type Quote = {
   createdAt: Date;
   expiresAt?: Date;
   notes?: string;
+  attribution?: Record<string, string>;
 };
 
 export type QuoteGenerationRequest = {

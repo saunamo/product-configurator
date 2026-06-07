@@ -13,6 +13,9 @@ const ATTR_KEYS = [
   "gbraid",
   "wbraid",
   "gad_source",
+  "gad_campaignid",
+  "gclsrc",
+  "_gl",
   "utm_source",
   "utm_medium",
   "utm_campaign",
@@ -21,6 +24,29 @@ const ATTR_KEYS = [
   "utm_content",
 ];
 const ATTR_SESSION_KEY = "saunamo_attribution";
+
+function withCurrentSearch(path: string): string {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  if ([...current.keys()].length > 0) {
+    return `${path}?${current.toString()}`;
+  }
+
+  try {
+    const stored = sessionStorage.getItem(ATTR_SESSION_KEY);
+    const attribution = stored ? JSON.parse(stored) as Record<string, string> : {};
+    const params = new URLSearchParams();
+    ATTR_KEYS.forEach((key) => {
+      const value = attribution[key];
+      if (value) params.set(key, value);
+    });
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
+  } catch {
+    return path;
+  }
+}
 
 export default function QuotePage() {
   const router = useRouter();
@@ -41,7 +67,7 @@ export default function QuotePage() {
 
   useEffect(() => {
     if (!hasSelections) {
-      router.push("/configurator/rear-glass-wall");
+      router.push(withCurrentSearch("/configurator/rear-glass-wall"));
     }
   }, [hasSelections, router]);
 
@@ -56,6 +82,7 @@ export default function QuotePage() {
     }, {});
 
     if (Object.keys(fresh).length > 0) {
+      fresh.landing_page = window.location.href;
       try {
         sessionStorage.setItem(ATTR_SESSION_KEY, JSON.stringify(fresh));
       } catch {}
@@ -94,6 +121,7 @@ export default function QuotePage() {
     }, {});
 
     if (Object.keys(fromUrl).length > 0) {
+      fromUrl.landing_page = window.location.href;
       return fromUrl;
     }
 
@@ -386,4 +414,3 @@ export default function QuotePage() {
     </ConfiguratorLayout>
   );
 }
-
