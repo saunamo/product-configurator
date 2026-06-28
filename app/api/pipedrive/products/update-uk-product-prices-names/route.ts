@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       
       // Ice Baths
       { skuPattern: "ERGO", namePattern: "Ergo", newName: "Ice bath Ergo", priceWithVAT: 5750 },
-      { skuPattern: "ICE", namePattern: "Ice Cube", newName: "Ice bath Cube", priceWithVAT: 5750 },
+      { skuPattern: "ICE", namePattern: "Ice Cube", newName: "Ice Bath Cube", priceWithVAT: 5750 },
       { skuPattern: "OFURO", namePattern: "Ofuro", newName: "Ice bath Ofuro", priceWithVAT: 6950 },
     ];
 

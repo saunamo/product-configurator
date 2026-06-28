@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   ];
 
   const notFound = [
-    { sku: "CT-CUBE-THE", name: "Ice bath Cube", priceWithVAT: "5750 GBP" },
+    { sku: "CT-CUBE-THE", name: "Ice Bath Cube", priceWithVAT: "5750 GBP" },
     { sku: "SPA-VELLAMO-XL", name: "Hot tub Vellamo XL", priceWithVAT: "9150 GBP" },
     { sku: "KB-SPAT-220", name: "Hot tub Therma 220", priceWithVAT: "7250 GBP" },
   ];

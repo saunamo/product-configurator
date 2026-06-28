@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const SKU_FIELD_KEY = "43a32efde94b5e07af24690d5b8db5dc18f5680a";
     
     const missingProducts = [
-      { searchSKU: "CT-CUBE-THE", searchName: "Ice bath Cube", correctName: "Ice bath Cube", priceWithVAT: 5750 },
+      { searchSKU: "CT-CUBE-THE", searchName: "Ice Bath Cube", correctName: "Ice Bath Cube", priceWithVAT: 5750 },
       { searchSKU: "SPA-VELLAMO-XL", searchName: "Vellamo XL", correctName: "Hot tub Vellamo XL", priceWithVAT: 9150 },
       { searchSKU: "KB-SPAT-220", searchName: "Therma 220", correctName: "Hot tub Therma 220", priceWithVAT: 7250 },
     ];

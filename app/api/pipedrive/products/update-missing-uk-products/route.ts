@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // Products found with alternative SKUs
     const productsToUpdate = [
-      { productId: 16408, sku: "ICE-BATH-INSTALLATION", correctSKU: "CT-CUBE-THE", name: "Ice bath Cube", priceWithVAT: 5750 },
+      { productId: 16408, sku: "ICE-BATH-INSTALLATION", correctSKU: "CT-CUBE-THE", name: "Ice Bath Cube", priceWithVAT: 5750 },
       { productId: 17952, sku: "SPAT-220", correctSKU: "KB-SPAT-220", name: "Hot tub Therma 220", priceWithVAT: 7250 },
     ];
 

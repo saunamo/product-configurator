@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       { name: "Electric Heater Kajo 6.6kW", basePriceGBP: 1050.00, sku: "ACC-KAJO66" },
       { name: "Electric Heater Taika 10.5kW", basePriceGBP: 2950.00, sku: "ACC-TAIKA105" },
       { name: "Electric Heater Taika 9kW", basePriceGBP: 2500.00, sku: "ACC-TAIKA9" },
-      { name: "Electric Heater Taika 6.6kW", basePriceGBP: 1975.00, sku: "ACC-TAIKA66" },
+      { name: "Electric Heater Taika 6.6kW", basePriceGBP: 1975.00, sku: "ACC-TAIKA66-WIFI" },
     ];
 
     // Country configurations

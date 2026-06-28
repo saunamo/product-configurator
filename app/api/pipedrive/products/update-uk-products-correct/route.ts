@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       
       // Ice Baths
       { sku: "CT-OFURO", name: "Ice bath Ofuro", priceWithVAT: 6950 },
-      { sku: "CT-CUBE-THE", name: "Ice bath Cube", priceWithVAT: 5750 },
+      { sku: "CT-CUBE-THE", name: "Ice Bath Cube", priceWithVAT: 5750 },
       { sku: "CT-ERGO-THE", name: "Ice bath Ergo", priceWithVAT: 5750 },
       
       // Hot Tubs

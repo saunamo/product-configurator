@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     // Name and Price Changes
     { sku: "SI-AISTI220", oldName: "Outdoor Sauna Aisti 220", newName: "Indoor Sauna Thermo Black 220", oldPrice: "7416.67 EUR", newPrice: "7916.67 GBP", priceWithVAT: "9500 GBP", nameChanged: true },
     { sku: "SI-AISTI150", oldName: "Outdoor Sauna Aisti 150", newName: "Indoor Sauna Aisti 150", oldPrice: "6250 EUR", newPrice: "6250 GBP", priceWithVAT: "7500 GBP", nameChanged: true },
-    { sku: "CT-CUBE-THE", oldSKU: "ICE-BATH-INSTALLATION", oldName: "Ice bath Cube", newName: "Ice bath Cube", oldPrice: "166.67 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false, skuChanged: true },
+    { sku: "CT-CUBE-THE", oldSKU: "ICE-BATH-INSTALLATION", oldName: "Ice Bath Cube", newName: "Ice Bath Cube", oldPrice: "166.67 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false, skuChanged: true },
     { sku: "CT-OFURO", oldName: "Ice bath Ofuro", newName: "Ice bath Ofuro", oldPrice: "5625 EUR", newPrice: "5791.67 GBP", priceWithVAT: "6950 GBP", nameChanged: false },
     { sku: "CT-ERGO-THE", oldName: "Ice bath Ergo", newName: "Ice bath Ergo", oldPrice: "4583.33 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false },
     { sku: "KB-SPAT-220", oldSKU: "SPAT-220", oldName: "Hot tub Therma 220", newName: "Hot tub Therma 220", oldPrice: "4041.67 EUR", newPrice: "6041.67 GBP", priceWithVAT: "7250 GBP", nameChanged: false, skuChanged: true },

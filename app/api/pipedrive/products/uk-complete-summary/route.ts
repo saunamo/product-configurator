@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     { sku: "SI-AISTI150", category: "Indoor Sauna", productName: "Indoor Sauna Aisti 150", oldName: "Outdoor Sauna Aisti 150", oldPrice: "6250 EUR", newPrice: "6250 GBP", priceWithVAT: "7500 GBP", nameChanged: true, priceChanged: true, skuChanged: false },
     
     // Ice Baths
-    { sku: "CT-CUBE-THE", category: "Ice Bath", productName: "Ice bath Cube", oldName: "Ice bath Cube", oldSKU: "ICE-BATH-INSTALLATION", oldPrice: "166.67 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false, priceChanged: true, skuChanged: true },
+    { sku: "CT-CUBE-THE", category: "Ice Bath", productName: "Ice Bath Cube", oldName: "Ice Bath Cube", oldSKU: "ICE-BATH-INSTALLATION", oldPrice: "166.67 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false, priceChanged: true, skuChanged: true },
     { sku: "CT-OFURO", category: "Ice Bath", productName: "Ice bath Ofuro", oldName: "Ice bath Ofuro", oldPrice: "5625 EUR", newPrice: "5791.67 GBP", priceWithVAT: "6950 GBP", nameChanged: false, priceChanged: true, skuChanged: false },
     { sku: "CT-ERGO-THE", category: "Ice Bath", productName: "Ice bath Ergo", oldName: "Ice bath Ergo", oldPrice: "4583.33 EUR", newPrice: "4791.67 GBP", priceWithVAT: "5750 GBP", nameChanged: false, priceChanged: true, skuChanged: false },
     

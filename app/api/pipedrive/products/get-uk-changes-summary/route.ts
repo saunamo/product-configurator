@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     // This is the data from the previous update run
     const updateHistory = [
-      { productId: 16408, sku: "ICE-BATH-INSTALLATION", oldName: "Ice bath installation | ICE-BATH-INSTALLATION", newName: "Ice bath Cube", oldPrice: 166.6666667, oldCurrency: "EUR", newPrice: 4791.67, newCurrency: "GBP", priceWithVAT: 5750 },
+      { productId: 16408, sku: "ICE-BATH-INSTALLATION", oldName: "Ice bath installation | ICE-BATH-INSTALLATION", newName: "Ice Bath Cube", oldPrice: 166.6666667, oldCurrency: "EUR", newPrice: 4791.67, newCurrency: "GBP", priceWithVAT: 5750 },
       { productId: 16416, sku: "SE-HIKI-L", oldName: "Outdoor Sauna Hiki L", newName: "Outdoor Sauna Hiki L", oldPrice: 9125, oldCurrency: "EUR", newPrice: 9125, newCurrency: "GBP", priceWithVAT: 10950 },
       { productId: 16421, sku: "SPA-VELLAMO-S", oldName: "Hot tub Vellamo S", newName: "Hot tub Vellamo S", oldPrice: 5958.333333, oldCurrency: "EUR", newPrice: 6125, newCurrency: "GBP", priceWithVAT: 7350 },
       { productId: 16422, sku: "SE-HIKI-S", oldName: "Outdoor Sauna Hiki S", newName: "Outdoor Sauna Hiki S", oldPrice: 7125, oldCurrency: "EUR", newPrice: 7375, newCurrency: "GBP", priceWithVAT: 8850 },
