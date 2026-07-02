@@ -7,6 +7,22 @@ import { Quote, QuoteItem, QuoteGenerationRequest } from "@/types/quote";
 import { AdminConfig } from "@/types/admin";
 import { StepId } from "@/types/configurator";
 
+const FORTIS_CONTROL_UNIT_INCLUDED_NOTE =
+  "Compatible Fortis control unit included in the heater price.";
+
+function appendUniqueDescriptionLine(description: string, line: string): string {
+  if (!line) return description;
+  if (description.toLowerCase().includes(line.toLowerCase())) return description;
+  return description ? `${description}\n${line}` : line;
+}
+
+function isFortisHeaterOption(stepId: string, option: { id: string; title: string }): boolean {
+  if (stepId !== "heater") return false;
+
+  const value = `${option.id} ${option.title}`.toLowerCase();
+  return value.includes("fortis") && !value.includes("control");
+}
+
 /**
  * Generate a quote from configurator selections
  */
@@ -284,6 +300,13 @@ export function generateQuote(
         displayDescription = displayDescription 
           ? `${displayDescription}\nIncluded`
           : "Included";
+      }
+
+      if (isFortisHeaterOption(stepId, option)) {
+        displayDescription = appendUniqueDescriptionLine(
+          displayDescription,
+          FORTIS_CONTROL_UNIT_INCLUDED_NOTE
+        );
       }
       
       // Handle POA (Price to be confirmed) options
