@@ -13,6 +13,10 @@ import { ProductConfig } from "@/types/product";
 import { getTransportPipedriveId } from "@/lib/ukTransportPipedrive";
 import { storefrontOptions, withStorefrontCors } from "@/lib/storefrontEmbed";
 import { triggerConfiguratorFollowup } from "@/lib/followup/configuratorFollowup";
+import {
+  sendConfiguratorLeadToOs,
+  type OsLeadIntakeResult,
+} from "@/lib/saunamo-os/lead-intake";
 
 /**
  * POST /api/quotes/generate
@@ -342,6 +346,7 @@ export async function POST(request: NextRequest) {
     let quoteSaved = false;
     let webhookResult: { success: boolean; error?: string } | undefined;
     let followupResult: Record<string, unknown> | undefined;
+    let osLeadResult: OsLeadIntakeResult | undefined;
     const zapierWebhookUrl = process.env.ZAPIER_WEBHOOK_URL;
 
     // CRITICAL: Save quote to server storage FIRST
@@ -444,6 +449,33 @@ export async function POST(request: NextRequest) {
         // For localhost: file system save failed, but try to continue
         console.warn("⚠️ File system save failed on localhost, but quote generation succeeded. Continuing...");
         quoteSaved = false; // Mark as not saved, but don't fail
+      }
+    }
+
+    if (quoteSaved) {
+      const quotePortalUrl = `https://config.saunamo.co.uk/quote/${quote.id}`;
+      try {
+        osLeadResult = await sendConfiguratorLeadToOs({
+          quote,
+          quotePortalUrl,
+          productId: body.productId,
+          productSlug: body.productSlug,
+          deliveryLocation: body.deliveryLocation,
+          attribution: body.attribution,
+        });
+        console.log(
+          `✅ [OS Intake] Quote ${quote.id} stored as deal ${osLeadResult.os.deal_id}`
+        );
+      } catch (error: any) {
+        console.error("❌ [OS Intake] Direct lead intake failed:", error?.message || error);
+        return json(
+          {
+            success: false,
+            error: "The quote was saved, but the sales team intake failed. Please retry.",
+            quoteId: quote.id,
+          },
+          { status: 502 }
+        );
       }
     }
 
@@ -646,6 +678,8 @@ export async function POST(request: NextRequest) {
       quoteId: quote.id,
       quote,
       pipedriveDealId,
+      osDealId: osLeadResult?.os.deal_id,
+      osAgentTaskId: osLeadResult?.agent_task.id,
       quoteSaved, // Indicate if quote was actually saved
       // Email is handled by Zapier webhook
       emailSent: webhookResult?.success || false,
